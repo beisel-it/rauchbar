@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rauchbar Ops Board Preview</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="ops-board">
+    <div class="control-bar" data-ui>
+      <div class="control-group">
+        <span class="control-label">Ops preview</span>
+        <span>Admin monitoring, approvals, and dispatch</span>
+      </div>
+      <label class="toggle">
+        <input id="screenshot-toggle" type="checkbox" />
+        <span>Screenshot mode</span>
+      </label>
+      <a href="/">Open homepage preview</a>
+    </div>
+
+    <main class="page-shell">
+      <section class="panel member-hero">
+        <div>
+          <p class="eyebrow">Uebersicht</p>
+          <h1>Operations-Cockpit fuer Deals, Freigaben und Versand.</h1>
+          <p class="lead">
+            Ein Screenshot dieser Oberflaeche zeigt sofort, dass Rauchbar nicht nur
+            Frontend hat, sondern ein internes Qualitaets- und Versandsystem.
+          </p>
+        </div>
+        <div class="badge-row">
+          <span class="badge badge-success">7 Shops gesund</span>
+          <span class="badge badge-warning">2 in Pruefung</span>
+          <span class="badge badge-danger">1 Versandfehler</span>
+        </div>
+      </section>
+
+      <section class="four-up">
+        <article class="panel">
+          <p class="eyebrow">Crawler</p>
+          <h2>9 Shops</h2>
+          <p class="metric-large">7 gesund</p>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Freigaben</p>
+          <h2>Review Queue</h2>
+          <p class="metric-large">14 offen</p>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Alerts</p>
+          <h2>Hot-Deal Runs</h2>
+          <p class="metric-large">3 aktiv</p>
+        </article>
+        <article class="panel panel-contrast">
+          <p class="eyebrow">Warnung</p>
+          <h2>1 Versandlauf braucht Retry</h2>
+          <p>Letzter Fehler: WhatsApp provider timeout bei 6 Empfaengern.</p>
+        </article>
+      </section>
+
+      <section class="two-column">
+        <article class="panel">
+          <div class="section-heading">
+            <p class="eyebrow">Freigaben</p>
+            <h2>Deals mit operativer Relevanz</h2>
+          </div>
+          <div class="queue-table">
+            <div class="queue-row queue-header">
+              <span>Deal</span>
+              <span>Status</span>
+              <span>Shop</span>
+              <span>Aktion</span>
+            </div>
+            <div class="queue-row">
+              <span>Davidoff Winston Churchill Robusto</span>
+              <span class="badge badge-warning">in_review</span>
+              <span>Cigarworld</span>
+              <span>Freigeben</span>
+            </div>
+            <div class="queue-row">
+              <span>Padron 2000 Maduro</span>
+              <span class="badge badge-success">approved</span>
+              <span>Zigarrenversand</span>
+              <span>Mitglieder sichtbar</span>
+            </div>
+            <div class="queue-row">
+              <span>Arturo Fuente Gran Reserva</span>
+              <span class="badge badge-danger">held_for_review</span>
+              <span>StarkeZigarren</span>
+              <span>Pruefen</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel panel-contrast">
+          <div class="section-heading">
+            <p class="eyebrow">Versand</p>
+            <h2>Digest- und Hot-Deal-Status</h2>
+          </div>
+          <ul class="stack-list">
+            <li><span class="badge badge-success">Digest gesendet</span> 312 Empfaenger, heute 07:00</li>
+            <li><span class="badge badge-warning">Hot-Deal sending</span> 48 Empfaenger, E-Mail aktiv</li>
+            <li><span class="badge badge-danger">partial_failure</span> 6 WhatsApp Sends brauchen Retry</li>
+            <li><span class="badge">public_delay</span> 24h Release-Fenster laeuft fuer 11 Deals</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="three-up">
+        <article class="panel">
+          <p class="eyebrow">Shop health</p>
+          <ul class="stack-list">
+            <li><span class="badge badge-success">gesund</span> Cigarworld</li>
+            <li><span class="badge badge-success">gesund</span> Zigarrenversand</li>
+            <li><span class="badge badge-warning">verlangsamt</span> StarkeZigarren</li>
+            <li><span class="badge badge-danger">auth_issue</span> Shop 9</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Operator actions</p>
+          <ul class="stack-list">
+            <li>Bulk-Approve hochwertige Deals</li>
+            <li>Retry fehlgeschlagene Sends</li>
+            <li>Inspect raw source data</li>
+            <li>Filter nach Risiko und Queue-Alter</li>
+          </ul>
+        </article>
+        <article class="panel panel-contrast">
+          <p class="eyebrow">UX note</p>
+          <p>
+            This is the best README image for admin and ops because it combines
+            system health, review flow, and dispatch in one screenshot.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/ux-preview.js"></script>
+  </body>
+</html>

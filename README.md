@@ -22,15 +22,31 @@ Rauchbar fokussiert sich im ersten Schnitt auf drei Kernoberflaechen und gemeins
 
 ## Produkt in Bildern
 
-Die README ist fuer eine kurze visuelle Tour vorbereitet. Sobald Screenshot-Assets vorliegen, sollte die Reihenfolge so aussehen:
+### Homepage und Mitgliederwert
 
-1. Homepage Hero mit Mitgliedervorteil und primarem CTA
-2. Delayed-Deal-Preview mit 24h-Mitgliederfenster
-3. Praeferenzen und Alert-Steuerung im Member-Bereich
-4. Admin-Dashboard mit Shop-, Review- und Versandstatus
-5. Review-Queue oder Dispatch-Runs als operativer Kontrollpunkt
+![Rauchbar Homepage mit Hero, Delayed-Deal-Preview und Mitgliedervorteil](artifacts/readme-screenshots/homepage-default.png)
 
-Die komplette Screenshot- und Caption-Richtung liegt in [docs/design/readme-visual-plan.md](docs/design/readme-visual-plan.md).
+Die Startseite erklaert das Produktversprechen, zeigt den 24h-Mitgliedervorsprung und macht den Signup-Einstieg sichtbar.
+
+### Admin und Operations
+
+![Admin-Ops-Board mit Shop-Health, Freigaben und Versandstatus](artifacts/readme-screenshots/admin-ops-board.png)
+
+Das Ops-Board verdichtet Merchant-Monitoring, Freigabe-Queue und Dispatch-Kontrolle in einer internen Arbeitsansicht.
+
+### Personalisierte Mitgliedersurface
+
+![Mitgliederansicht mit Digest, Alerts und Praeferenzsteuerung](artifacts/readme-screenshots/member-home.png)
+
+Die Mitgliedersurface zeigt, dass Rauchbar ueber eine Marketing-Seite hinausgeht und Digests, Alerts und Praeferenzpflege verbindet.
+
+### Lifecycle und Statuslogik
+
+![Lifecycle-State-Lab mit Deal-, Versand- und Sichtbarkeitszustaenden](artifacts/readme-screenshots/lifecycle-state-lab.png)
+
+Die Statusansicht macht die Trennung zwischen interner Freigabe, Mitgliederfenster und oeffentlicher Publikation nachvollziehbar.
+
+Der Screenshot-Satz und die Reproduktionsschritte sind in [docs/ux/readme-screenshot-plan.md](docs/ux/readme-screenshot-plan.md) dokumentiert.
 
 ## Nutzer- und Surface-Modell
 
@@ -116,6 +132,16 @@ Root-Skripte:
 - `pnpm test`: fuehrt alle Tests aus
 - `pnpm typecheck`: prueft alle TypeScript-Pakete
 
+## Lokale Demo
+
+Fuer Walkthroughs gibt es einen expliziten localhost-only Pfad fuer die aktuelle `site`-App:
+
+1. Abhaengigkeiten installieren: `npm run install:local`
+2. Demo auf `127.0.0.1:4173` starten: `npm run demo:dev`
+3. Produktionsbuild pruefen: `npm run demo:build`
+
+Die App bindet dabei bewusst nur an `127.0.0.1`. Der detaillierte Ablauf steht in `docs/demo/local-demo.md`.
+
 ## Delivery-Status
 
 Fertig definierte Handoffs liegen fuer Produkt, UX, Admin-Surface und embedded Design vor. Die groessten verbleibenden Integrationsrisiken liegen aktuell bei:
@@ -147,6 +173,7 @@ docker compose run --rm worker pnpm install
 ```
 
 Die aktuellen App-Skripte sind noch Platzhalter. Das Compose-Setup ist deshalb als Bootstrap fuer die naechsten Implementierungsschritte gedacht, nicht als produktionsreifes Runtime-Layout.
+
 ## UX Testing Preview
 
 Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:
