@@ -10,8 +10,8 @@ Shared TypeScript contracts for the Rauchbar MVP deal pipeline.
 - adapter ingestion input and output payloads
 - normalized deal entities and lifecycle state
 - ingest run telemetry
-- hot-deal evaluation input and result payloads
-- subscriber preference and digest entry shapes
+- admin review and publication shapes
+- subscriber preference, hot-deal, and digest matching payloads
 
 ## Lifecycle
 
@@ -26,18 +26,27 @@ The current MVP deal lifecycle is:
 7. `published-public`
 8. `archived`
 
-`normalizationStatus` and `reviewStatus` are separate from lifecycle to keep worker output, admin moderation, and publication timing decoupled.
+`normalizationStatus` and `reviewStatus` stay separate from lifecycle so worker output, admin moderation, and publication timing remain decoupled.
 
-## Integration Notes
+## Domain Coverage
 
-- Worker ingestion should emit `SourceAdapterOutput`, then persist or upsert `NormalizedDealPayload`.
-- Admin should treat `reviewStatus` and `lifecycleStatus` as the operational control surface.
-- Site should use `publication.memberVisibleAt` and `publication.publicVisibleAt` to enforce the 24h public delay.
-- Notifications should consume `HotDealEvaluationResult` plus `SubscriberDealPreferences` to decide whether to send immediate alerts.
+- `MerchantReference`, `SourceReference`, `SourceOffer`, and `SourceAdapterOutput` cover shop ingestion.
+- `ProductCatalogEntry`, `NormalizedDealCandidate`, and `PublishedDeal` add the richer domain layer needed for curation and delayed publication.
+- `Subscription`, `SubscriberPreferences`, `HotDealRule`, `DigestRule`, `DealMatch`, `WorkerContracts`, and `AdminContracts` define the cross-app boundaries for member matching and operations.
 
 ## Current Assumptions
 
 - MVP merchants are German-speaking market shops in `DE`, `AT`, or `CH`.
 - Currency is fixed to `EUR`.
+- Email and WhatsApp are the only immediate-notification channels in scope.
+- Weekly digest is the only digest cadence in MVP.
+- Public publication remains delayed by `24` hours relative to member access.
 - Cross-stream identifiers are opaque strings for now. Storage-specific formats are intentionally left open.
-- The delivery-plan file referenced by the task was not present in this worktree while these contracts were authored, so the package aligns to the PRD and architecture docs plus coordinator guidance received through ClawTeam.
+
+## Notes
+
+The task referenced `docs/roadmap/cycle-001-delivery-plan.md`, but that file was not present in this worktree while these contracts were authored. This package therefore aligns to:
+
+- `docs/product/prd.md`
+- `docs/architecture/overview.md`
+- `docs/roadmap/mvp-cycle-001.md`

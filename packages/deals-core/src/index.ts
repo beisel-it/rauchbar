@@ -2,16 +2,19 @@ export type ISODateString = string;
 export type CurrencyCode = 'EUR';
 export type CountryCode = 'DE' | 'AT' | 'CH';
 
-export const dealChannels = ['digest', 'email-hot-deal', 'whatsapp-hot-deal'] as const;
+export const dealChannels = ['digest', 'email-hot-deal', 'whatsapp-hot-deal', 'public-site'] as const;
 export type DealChannel = (typeof dealChannels)[number];
 
-export const sourceAdapterKinds = ['html', 'rss', 'api', 'manual'] as const;
+export type DealVisibility = 'members-only' | 'public';
+export type PublicationStatus = 'draft' | 'approved' | 'scheduled' | 'published' | 'suppressed';
+
+export const sourceAdapterKinds = ['html', 'rss', 'api', 'manual', 'xml'] as const;
 export type SourceAdapterKind = (typeof sourceAdapterKinds)[number];
 
 export const ingestRunStatuses = ['pending', 'running', 'succeeded', 'partial', 'failed'] as const;
 export type IngestRunStatus = (typeof ingestRunStatuses)[number];
 
-export const normalizationStatuses = ['raw', 'normalized', 'needs-review', 'rejected'] as const;
+export const normalizationStatuses = ['raw', 'normalized', 'needs-review', 'rejected', 'discarded'] as const;
 export type NormalizationStatus = (typeof normalizationStatuses)[number];
 
 export const reviewStatuses = ['pending', 'approved', 'rejected'] as const;
@@ -38,8 +41,34 @@ export const hotDealReasonCodes = [
   'limited-product',
   'member-preference-match',
   'merchant-priority',
+  'stock-drop',
+  'digest-pick',
+  'manual-curation',
 ] as const;
 export type HotDealReasonCode = (typeof hotDealReasonCodes)[number];
+
+export type NotificationChannel = 'email' | 'whatsapp';
+export type AlertCadence = 'instant' | 'daily-digest' | 'weekly-digest';
+export type PriceSensitivity = 'balanced' | 'deal-hunter' | 'rare-finds';
+
+export type CigarOrigin =
+  | 'cuba'
+  | 'dominican-republic'
+  | 'honduras'
+  | 'nicaragua'
+  | 'mixed'
+  | 'unknown';
+
+export type ProductFormat =
+  | 'robusto'
+  | 'corona'
+  | 'churchill'
+  | 'torpedo'
+  | 'toro'
+  | 'petit-coro'
+  | 'figurado'
+  | 'sampler'
+  | 'other';
 
 export type Money = {
   amountCents: number;
@@ -52,6 +81,7 @@ export type DealId = string;
 export type IngestRunId = string;
 export type SubscriberId = string;
 export type DigestIssueId = string;
+export type CatalogEntryId = string;
 
 export type MerchantReference = {
   id: MerchantId;
@@ -81,6 +111,23 @@ export type ProductIdentity = {
   limitedEdition: boolean;
 };
 
+export type ProductFingerprint = {
+  brand: string;
+  line?: string;
+  vitola?: string;
+  format?: ProductFormat;
+  origin?: CigarOrigin;
+  boxQuantity?: number;
+  unitCount?: number;
+};
+
+export type ProductCatalogEntry = {
+  id: CatalogEntryId;
+  canonicalTitle: string;
+  fingerprint: ProductFingerprint;
+  tags: string[];
+};
+
 export type OfferObservation = {
   externalId?: string;
   title: string;
@@ -91,6 +138,21 @@ export type OfferObservation = {
   availability: AvailabilityStatus;
   observedAt: ISODateString;
   discoveredAt: ISODateString;
+};
+
+export type SourceOffer = {
+  id: string;
+  merchantId: MerchantId;
+  sourceRef: string;
+  title: string;
+  url: string;
+  capturedAt: ISODateString;
+  price: Money;
+  previousPrice?: Money;
+  availability: AvailabilityStatus;
+  stockCount?: number;
+  catalogHint?: Partial<ProductFingerprint>;
+  rawAttributes: Record<string, string>;
 };
 
 export type SourceAdapterInput = {
@@ -131,6 +193,64 @@ export type NormalizedDealPayload = {
   publication: DealPublicationWindow;
 };
 
+export type NormalizationDecision = {
+  status: Extract<NormalizationStatus, 'normalized' | 'needs-review' | 'rejected' | 'discarded'>;
+  confidence: 'low' | 'medium' | 'high';
+  reasons: string[];
+};
+
+export type NormalizedDealCandidate = {
+  id: DealId;
+  merchant: MerchantReference;
+  source: SourceReference;
+  catalogEntry: ProductCatalogEntry;
+  sourceOffer: SourceOffer;
+  currentPrice: Money;
+  referencePrice?: Money;
+  savingsAmount?: Money;
+  savingsPercent?: number;
+  score: number;
+  triggers: HotDealReasonCode[];
+  normalization: NormalizationDecision;
+};
+
+export type DealLifecycle = {
+  discoveredAt: ISODateString;
+  reviewedAt?: ISODateString;
+  approvedAt?: ISODateString;
+  publishedAt?: ISODateString;
+  membersVisibleUntil?: ISODateString;
+  publicVisibleFrom?: ISODateString;
+};
+
+export type DealReview = {
+  reviewerId: string;
+  status: ReviewStatus;
+  note?: string;
+  reviewedAt: ISODateString;
+};
+
+export type PublishedDeal = {
+  id: DealId;
+  slug: string;
+  candidateId: DealId;
+  title: string;
+  merchantId: MerchantId;
+  catalogEntryId: CatalogEntryId;
+  url: string;
+  currentPrice: Money;
+  referencePrice?: Money;
+  savingsAmount?: Money;
+  savingsPercent?: number;
+  score: number;
+  channels: DealChannel[];
+  visibility: DealVisibility;
+  status: PublicationStatus;
+  triggers: HotDealReasonCode[];
+  lifecycle: DealLifecycle;
+  review?: DealReview;
+};
+
 export type IngestRun = {
   id: IngestRunId;
   merchantId: MerchantId;
@@ -153,7 +273,7 @@ export type HotDealReason = {
 };
 
 export type HotDealEvaluationInput = {
-  deal: NormalizedDealPayload;
+  deal: NormalizedDealPayload | NormalizedDealCandidate | PublishedDeal;
   historicalLowPrice?: Money;
   typicalPrice?: Money;
   priceDropPercent?: number;
@@ -168,6 +288,8 @@ export type HotDealEvaluationResult = {
   reasons: HotDealReason[];
 };
 
+export type PreferenceWeight = 'avoid' | 'neutral' | 'prefer';
+
 export type SubscriberDealPreferences = {
   subscriberId: SubscriberId;
   favoriteBrands: string[];
@@ -176,6 +298,58 @@ export type SubscriberDealPreferences = {
   minDiscountPercent?: number;
   hotDealChannels: DealChannel[];
   digestEnabled: boolean;
+};
+
+export type SubscriberPreferences = {
+  subscriberId: SubscriberId;
+  favoriteBrands: Array<{
+    brand: string;
+    weight: PreferenceWeight;
+  }>;
+  preferredFormats: Array<{
+    format: ProductFormat;
+    weight: PreferenceWeight;
+  }>;
+  preferredOrigins: Array<{
+    origin: CigarOrigin;
+    weight: PreferenceWeight;
+  }>;
+  maxPricePerCigarCents?: number;
+  minSavingsPercent?: number;
+  priceSensitivity: PriceSensitivity;
+  mutedMerchantIds: MerchantId[];
+};
+
+export type SubscriberChannelPreference = {
+  channel: NotificationChannel;
+  enabled: boolean;
+  cadence: AlertCadence;
+  verified: boolean;
+};
+
+export type Subscription = {
+  id: string;
+  email: string;
+  whatsappE164?: string;
+  locale: 'de-DE';
+  status: 'pending-verification' | 'active' | 'paused' | 'unsubscribed';
+  preferences: SubscriberPreferences;
+  channels: SubscriberChannelPreference[];
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+};
+
+export type HotDealRule = {
+  id: string;
+  name: string;
+  enabled: boolean;
+  channels: NotificationChannel[];
+  minScore: number;
+  minSavingsPercent?: number;
+  maxPriceCents?: number;
+  requiredTriggers?: HotDealReasonCode[];
+  includeMerchantIds?: MerchantId[];
+  excludeMerchantIds?: MerchantId[];
 };
 
 export type DigestDealEntry = {
@@ -189,3 +363,54 @@ export type DigestIssue = {
   generatedAt: ISODateString;
   dealEntries: DigestDealEntry[];
 };
+
+export type DigestRule = {
+  id: string;
+  name: string;
+  enabled: boolean;
+  cadence: 'weekly';
+  maxDeals: number;
+  minScore: number;
+  includeNewOnly: boolean;
+};
+
+export type DealMatch = {
+  dealId: DealId;
+  subscriberId: SubscriberId;
+  matchedChannels: NotificationChannel[];
+  matchScore: number;
+  reasons: string[];
+};
+
+export type WorkerContracts = {
+  normalizeOffer: {
+    input: SourceOffer;
+    output: NormalizedDealCandidate;
+  };
+  evaluateHotDeal: {
+    deal: NormalizedDealCandidate | PublishedDeal;
+    rules: HotDealRule[];
+    matches: DealMatch[];
+  };
+  buildDigest: {
+    deals: PublishedDeal[];
+    rule: DigestRule;
+    audience: Subscription[];
+  };
+};
+
+export type AdminContracts = {
+  approveDeal: {
+    dealId: DealId;
+    review: DealReview;
+    status: PublicationStatus;
+  };
+  schedulePublication: {
+    dealId: DealId;
+    publishAt: ISODateString;
+    publicVisibleFrom: ISODateString;
+  };
+  manageMerchant: MerchantReference;
+};
+
+export const PUBLIC_ARCHIVE_DELAY_HOURS = 24;
