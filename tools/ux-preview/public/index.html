@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rauchbar UX Preview</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="homepage" data-home-state="default">
+    <div class="control-bar" data-ui>
+      <div class="control-group">
+        <span class="control-label">Homepage state</span>
+        <button data-home-switch="default">Default</button>
+        <button data-home-switch="sparse">Sparse archive</button>
+        <button data-home-switch="empty">Empty archive</button>
+        <button data-home-switch="metrics-fallback">Metrics fallback</button>
+      </div>
+      <label class="toggle">
+        <input id="screenshot-toggle" type="checkbox" />
+        <span>Screenshot mode</span>
+      </label>
+      <a href="/state-lab.html">Open lifecycle/state lab</a>
+    </div>
+
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-mark">RB</span>
+        <span>Rauchbar</span>
+      </div>
+      <nav class="site-nav">
+        <a href="#archive">Deals entdecken</a>
+        <a href="#how-it-works">So funktioniert's</a>
+        <a href="#signup">Mitglied werden</a>
+        <a href="#login">Login</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Zigarren-Deals fuer deutsche Shops</p>
+          <h1>Gute Angebote frueher sehen, statt sie zu verpassen.</h1>
+          <p class="lead">
+            Kuratierte Deals, persoenliche Praeferenzen und Hot-Deal-Alerts auf
+            Wunsch. Mitglieder sehen Angebote vor der oeffentlichen Freigabe.
+          </p>
+          <ul class="pill-row">
+            <li>24h Mitglieder-Vorsprung</li>
+            <li>Woechentlicher Digest</li>
+            <li>E-Mail oder WhatsApp</li>
+          </ul>
+          <div class="cta-row" id="signup">
+            <a class="button button-primary" href="#signup">Mitglied werden</a>
+            <a class="button button-secondary" href="#archive">Verzoegerte Deals ansehen</a>
+          </div>
+        </div>
+        <aside class="hero-proof panel panel-contrast" data-metrics-panel>
+          <p class="panel-label">Proof of cadence</p>
+          <h2>Letzte Woche</h2>
+          <dl class="metrics-list">
+            <div>
+              <dt>Deals entdeckt</dt>
+              <dd>41</dd>
+            </div>
+            <div>
+              <dt>Shops beobachtet</dt>
+              <dd>9</dd>
+            </div>
+            <div>
+              <dt>Hot-Deal-Treffer</dt>
+              <dd>7</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="trust-strip panel panel-inline">
+        <span>Beobachtet deutsche Shops</span>
+        <span>Taegliches Monitoring</span>
+        <span>Keine Preisjagd per Hand</span>
+      </section>
+
+      <section id="how-it-works" class="panel">
+        <div class="section-heading">
+          <p class="eyebrow">So funktioniert's</p>
+          <h2>Ein kurzer Weg von Interesse zu relevanten Treffern.</h2>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-number">1</span>
+            <h3>Praeferenzen waehlen</h3>
+            <p>Marken, Formate, Preisrahmen und bevorzugte Shops festlegen.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">2</span>
+            <h3>Deals frueher erhalten</h3>
+            <p>Mitglieder sehen Deals vor der oeffentlichen 24h-Freigabe.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">3</span>
+            <h3>Nur relevante Alerts bekommen</h3>
+            <p>Hot-Deal-Alerts laufen optional und orientieren sich an deinen Regeln.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="archive" class="panel">
+        <div class="section-heading">
+          <p class="eyebrow">Verzoegerte Deal-Vorschau</p>
+          <h2>Diese Deals sind jetzt oeffentlich. Mitglieder sahen sie frueher.</h2>
+        </div>
+        <div class="archive-grid" data-archive-grid>
+          <article class="deal-card" data-card>
+            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
+            <h3>Davidoff Winston Churchill Robusto</h3>
+            <p class="deal-meta">Cigarworld · Robusto</p>
+            <p class="deal-price">18,90 EUR <span>statt 23,50 EUR</span></p>
+            <p class="deal-foot">Oeffentlich seit heute, 09:20</p>
+          </article>
+          <article class="deal-card" data-card>
+            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
+            <h3>Arturo Fuente Gran Reserva</h3>
+            <p class="deal-meta">StarkeZigarren · Toro</p>
+            <p class="deal-price">12,50 EUR <span>statt 15,20 EUR</span></p>
+            <p class="deal-foot">Oeffentlich seit heute, 08:10</p>
+          </article>
+          <article class="deal-card" data-card>
+            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
+            <h3>Padron 2000 Maduro</h3>
+            <p class="deal-meta">Zigarrenversand · Maduro</p>
+            <p class="deal-price">14,90 EUR <span>statt 17,90 EUR</span></p>
+            <p class="deal-foot">Oeffentlich seit gestern, 18:40</p>
+          </article>
+        </div>
+        <div class="archive-empty hidden" data-archive-empty>
+          <p class="empty-title">Noch keine oeffentlichen Deals im 24h-Fenster.</p>
+          <p>
+            Mitglieder erhalten neue Treffer zuerst. Der oeffentliche Bereich folgt
+            zeitversetzt, sobald das Mitgliederfenster abgelaufen ist.
+          </p>
+        </div>
+        <a class="button button-secondary" href="#archive">Alle verzoegerten Deals ansehen</a>
+      </section>
+
+      <section class="panel two-column">
+        <div>
+          <p class="eyebrow">Personalisierung</p>
+          <h2>Mehr Relevanz, ohne schweren Setup-Prozess.</h2>
+          <p class="lead">
+            Mitglieder koennen Marken, Formate, Preiszonen und Shops in wenigen
+            Schritten steuern.
+          </p>
+          <ul class="pill-row">
+            <li>Davidoff</li>
+            <li>Robusto</li>
+            <li>unter 20 EUR</li>
+            <li>Cigarworld</li>
+          </ul>
+        </div>
+        <div class="panel panel-contrast">
+          <p class="panel-label">UX note</p>
+          <p>
+            Die Vorschau zeigt Nutzen statt Formulare. Konkrete Eingaben passieren
+            erst im Signup-Flow.
+          </p>
+          <a class="button button-primary" href="#signup">Praeferenzen anlegen</a>
+        </div>
+      </section>
+
+      <section class="panel two-column">
+        <div class="panel panel-contrast">
+          <p class="eyebrow">Wochen-Digest</p>
+          <h2>Die Standard-Erfahrung fuer Mitglieder.</h2>
+          <p>Ein kompakter Wochenrueckblick mit passenden Angeboten und Priorisierung.</p>
+        </div>
+        <div class="panel panel-contrast">
+          <p class="eyebrow">Hot-Deal-Alerts</p>
+          <h2>Optional, selektiv und kanalbasiert.</h2>
+          <p>E-Mail oder WhatsApp nur dann, wenn Regeln und Relevanz zusammenpassen.</p>
+        </div>
+      </section>
+
+      <section class="panel faq-list">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2>Die Fragen, die vor der Anmeldung geklaert werden muessen.</h2>
+        </div>
+        <article>
+          <h3>Wie funktioniert der 24h Vorsprung?</h3>
+          <p>Mitglieder sehen freigegebene Deals zuerst, bevor sie oeffentlich im Archiv erscheinen.</p>
+        </article>
+        <article>
+          <h3>Muss ich WhatsApp nutzen?</h3>
+          <p>Nein. Der Digest kommt per E-Mail, Hot-Deal-Alerts sind optional.</p>
+        </article>
+        <article>
+          <h3>Kann ich Praeferenzen spaeter aendern?</h3>
+          <p>Ja. Marken, Formate, Shops und Preisgrenzen bleiben spaeter anpassbar.</p>
+        </article>
+      </section>
+
+      <section class="panel cta-band">
+        <div>
+          <p class="eyebrow">Bereit fuer fruehere Deal-Sicht?</p>
+          <h2>Mitglieder sehen relevante Angebote, bevor sie im oeffentlichen Archiv landen.</h2>
+        </div>
+        <a class="button button-primary" href="#signup">Mitglied werden</a>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="login">
+      <span>FAQ</span>
+      <span>Datenschutz/Impressum</span>
+      <span>Kontakt</span>
+    </footer>
+
+    <script src="/ux-preview.js"></script>
+  </body>
+</html>

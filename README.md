@@ -25,6 +25,9 @@ docs/
   architecture/
   product/
   roadmap/
+  ux/
+tools/
+  ux-preview/   Lokaler UX-Prototyp fuer Browser- und Screenshot-Reviews
 ```
 
 ## Arbeitsmodell
@@ -44,3 +47,11 @@ Rauchbar wird ueber ClawTeam in getrennten Workstreams entwickelt:
 - MVP fuer Site, Admin und Worker aufsetzen
 - erste Haendleradapter und Hot-Deal-Regeln definieren
 
+## UX Testing Preview
+
+Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:
+
+- `pnpm ux:preview`
+- `pnpm ux:preview:host` fuer Browserzugriff ueber `0.0.0.0:4173`
+
+Die Artefakte und Review-Ablauf sind in `docs/ux/testing-setup.md` dokumentiert.
