@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-03-25T18:21:55.700Z",
+  "packageVersion": "0.1.0",
+  "gitRevision": "f2aaee276f90b11259573a2f16ce640acce308dd",
+  "gitBranch": "clawteam/rauchbar-dev/ux-developer",
+  "assetCount": 5,
+  "assets": [
+    {
+      "id": "homepage-default",
+      "file": "homepage-default.png",
+      "route": "/?screenshot=1",
+      "surface": "site",
+      "priority": "primary",
+      "title": "Homepage Hero and Proof",
+      "purpose": "Top-of-README product impression and member-first value proposition.",
+      "viewport": {
+        "width": 1440,
+        "height": 2200
+      },
+      "bytes": 525555
+    },
+    {
+      "id": "member-home",
+      "file": "member-home.png",
+      "route": "/member-home.html?screenshot=1",
+      "surface": "member",
+      "priority": "primary",
+      "title": "Member Home",
+      "purpose": "Digest, alerts, and preference tuning in one frame.",
+      "viewport": {
+        "width": 1440,
+        "height": 1800
+      },
+      "bytes": 440755
+    },
+    {
+      "id": "admin-ops-board",
+      "file": "admin-ops-board.png",
+      "route": "/ops-board.html?screenshot=1",
+      "surface": "admin",
+      "priority": "primary",
+      "title": "Admin Ops Board",
+      "purpose": "Operational cockpit for reviews, health, and dispatch status.",
+      "viewport": {
+        "width": 1440,
+        "height": 1900
+      },
+      "bytes": 500089
+    },
+    {
+      "id": "lifecycle-state-lab",
+      "file": "lifecycle-state-lab.png",
+      "route": "/state-lab.html?screenshot=1",
+      "surface": "cross-surface",
+      "priority": "primary",
+      "title": "Lifecycle State Lab",
+      "purpose": "Shared lifecycle and state language across product surfaces.",
+      "viewport": {
+        "width": 1440,
+        "height": 1600
+      },
+      "bytes": 436592
+    },
+    {
+      "id": "homepage-empty-archive",
+      "file": "homepage-empty-archive.png",
+      "route": "/?state=empty&screenshot=1",
+      "surface": "site",
+      "priority": "secondary",
+      "title": "Homepage Empty Archive State",
+      "purpose": "Secondary capture for empty-state review and delayed-publication messaging.",
+      "viewport": {
+        "width": 1440,
+        "height": 2200
+      },
+      "bytes": 534695
+    }
+  ]
+}

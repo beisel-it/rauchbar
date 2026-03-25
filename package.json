@@ -14,6 +14,8 @@
     "demo:build": "corepack pnpm --filter @rauchbar/site build",
     "ux:preview": "node tools/ux-preview/server.mjs",
     "ux:preview:host": "node tools/ux-preview/server.mjs --host 0.0.0.0 --port 4173",
-    "ux:preview:capture": "node tools/ux-preview/capture-screenshots.mjs"
+    "ux:preview:capture": "node tools/ux-preview/capture-screenshots.mjs",
+    "ux:docs:refresh": "node tools/ux-preview/refresh-doc-assets.mjs",
+    "ux:docs:manifest": "node tools/ux-preview/refresh-doc-assets.mjs --manifest-only"
   }
 }
