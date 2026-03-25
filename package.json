@@ -4,11 +4,14 @@
   "private": true,
   "packageManager": "pnpm@10.6.1",
   "scripts": {
-    "build": "pnpm -r build",
-    "dev": "pnpm --filter @rauchbar/site dev",
-    "lint": "pnpm -r lint",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck",
+    "install:local": "corepack pnpm install",
+    "build": "corepack pnpm -r build",
+    "dev": "corepack pnpm --filter @rauchbar/site dev",
+    "lint": "corepack pnpm -r lint",
+    "test": "corepack pnpm -r test",
+    "typecheck": "corepack pnpm -r typecheck",
+    "demo:dev": "corepack pnpm --filter @rauchbar/site dev",
+    "demo:build": "corepack pnpm --filter @rauchbar/site build",
     "ux:preview": "node tools/ux-preview/server.mjs",
     "ux:preview:host": "node tools/ux-preview/server.mjs --host 0.0.0.0 --port 4173"
   }

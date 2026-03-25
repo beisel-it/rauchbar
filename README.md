@@ -104,6 +104,16 @@ Root-Skripte:
 - `pnpm test`: fuehrt alle Tests aus
 - `pnpm typecheck`: prueft alle TypeScript-Pakete
 
+## Lokale Demo
+
+Fuer Walkthroughs gibt es einen expliziten localhost-only Pfad fuer die aktuelle `site`-App:
+
+1. Abhaengigkeiten installieren: `npm run install:local`
+2. Demo auf `127.0.0.1:4173` starten: `npm run demo:dev`
+3. Produktionsbuild pruefen: `npm run demo:build`
+
+Die App bindet dabei bewusst nur an `127.0.0.1`. Der detaillierte Ablauf steht in `docs/demo/local-demo.md`.
+
 ## Delivery-Status
 
 Fertig definierte Handoffs liegen fuer Produkt, UX, Admin-Surface und embedded Design vor. Die groessten verbleibenden Integrationsrisiken liegen aktuell bei:
@@ -135,6 +145,7 @@ docker compose run --rm worker pnpm install
 ```
 
 Die aktuellen App-Skripte sind noch Platzhalter. Das Compose-Setup ist deshalb als Bootstrap fuer die naechsten Implementierungsschritte gedacht, nicht als produktionsreifes Runtime-Layout.
+
 ## UX Testing Preview
 
 Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:

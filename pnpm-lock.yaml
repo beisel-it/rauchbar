@@ -50,7 +50,11 @@ importers:
 
   packages/design-system: {}
 
-  packages/notifications: {}
+  packages/notifications:
+    dependencies:
+      '@rauchbar/deals-core':
+        specifier: workspace:*
+        version: link:../deals-core
 
 packages:
 

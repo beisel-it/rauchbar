@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import type { Deal, NotificationPreference } from '@rauchbar/deals-core';
 import { brandTokens } from '@rauchbar/design-system';
-import { defaultNotificationPreference, preferenceOptions, sampleDeals } from './mockData';
+import {
+  defaultNotificationPreference,
+  preferenceOptions,
+  sampleDeals,
+  type SiteDeal,
+  type SiteNotificationPreference,
+} from './mockData';
 
 type SignupState = {
   email: string;
   formats: string[];
   brands: string[];
   priceBand: string;
-  notifications: NotificationPreference;
+  notifications: SiteNotificationPreference;
 };
 
 const initialSignupState: SignupState = {
@@ -29,12 +34,10 @@ const dateTime = new Intl.DateTimeFormat('de-DE', {
   timeStyle: 'short',
 });
 
-const publicationLabels: Record<Deal['publicationStatus'], string> = {
-  draft: 'Entwurf',
+const publicationLabels: Record<SiteDeal['publicationStatus'], string> = {
   'member-visible': 'nur fuer Mitglieder sichtbar',
   'public-scheduled': 'oeffentliche Freigabe geplant',
   'public-visible': 'oeffentlich sichtbar',
-  expired: 'abgelaufen',
 };
 
 const toggleValue = (values: string[], value: string) =>
@@ -230,7 +233,7 @@ export function App() {
           <article className="flow-step">
             <span>01</span>
             <h3>Review + Freigabe</h3>
-            <p>Worker und Admin landen auf `approved`. Die Site zeigt noch nichts, solange der Deal `draft` bleibt.</p>
+            <p>Worker und Admin landen auf `approved`. Die Site zeigt noch nichts, solange der Deal intern bleibt.</p>
           </article>
           <article className="flow-step">
             <span>02</span>
@@ -285,14 +288,16 @@ function SectionHeading(props: { eyebrow: string; title: string; text: string })
   );
 }
 
-function DealCard(props: { deal: Deal; audience: 'members' | 'public' }) {
+function DealCard(props: { deal: SiteDeal; audience: 'members' | 'public' }) {
   const { deal, audience } = props;
+  const currentPrice = deal.observation.currentPrice.amountCents;
+  const previousPrice = deal.observation.previousPrice?.amountCents;
 
   return (
     <article className="deal-card">
       <div className="deal-header">
         <div>
-          <p className="deal-kicker">{deal.brand ?? 'Unbekannte Marke'}</p>
+          <p className="deal-kicker">{deal.product.brand}</p>
           <h3>{deal.title}</h3>
         </div>
         <span className={audience === 'members' ? 'badge badge-members' : 'badge badge-public'}>
@@ -300,8 +305,8 @@ function DealCard(props: { deal: Deal; audience: 'members' | 'public' }) {
         </span>
       </div>
       <p className="deal-price">
-        {formatPrice(deal.currentPriceCents)}
-        <span>{formatPrice(deal.previousPriceCents ?? deal.currentPriceCents)}</span>
+        {formatPrice(currentPrice)}
+        <span>{formatPrice(previousPrice ?? currentPrice)}</span>
       </p>
       <dl className="deal-meta">
         <div>
@@ -318,7 +323,7 @@ function DealCard(props: { deal: Deal; audience: 'members' | 'public' }) {
         </div>
       </dl>
       <p className="deal-footnote">
-        Kanaele: {deal.channels.join(', ')}. Source of truth bleibt `publicationStatus` plus `visibility`.
+        Kanaele: {deal.publication.channels.join(', ')}. Source of truth bleibt `publication` plus abgeleiteter Sichtbarkeitsstatus.
       </p>
     </article>
   );
