@@ -25,3 +25,12 @@ Fixture-basierte Parser-Tests liegen unter `src/scrapers/*.test.ts` und `src/__f
 Die aktuelle Abdeckung umfasst Parser-Assertions fuer Cigarworld-Angebotskarten sowie einen End-to-End-Test vom queuebaren `ScrapeJob` bis zu den normalisierten Deals.
 
 Siehe `docs/architecture/worker-ingestion-blueprint.md` fuer die implementierbare Pipeline-Grenze zwischen Source-Adaptern, `@rauchbar/deals-core`, Monitoring und Hot-Deal-Handoff.
+Siehe `docs/architecture/worker-runtime-contract.md` fuer den deployment-relevanten Start-, Health- und Logging-Vertrag.
+
+## Runtime Contract
+
+- Start: `pnpm --filter @rauchbar/worker start`
+- Health: `GET /healthz`
+- Readiness: `GET /readyz`
+- Logs: newline-delimited JSON auf stdout/stderr
+- Docker runtime: `apps/worker/Dockerfile`

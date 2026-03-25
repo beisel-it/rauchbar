@@ -4,8 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --experimental-strip-types src/index.ts",
+    "dev": "node --experimental-strip-types src/service.ts",
+    "start": "node --experimental-strip-types src/service.ts",
     "build": "tsc --noEmit -p tsconfig.json",
+    "healthcheck": "node --experimental-strip-types src/healthcheck.ts",
     "lint": "echo \"worker lint pending\"",
     "test": "node --test --experimental-strip-types $(find src -name '*.test.ts' -print)",
     "typecheck": "tsc --noEmit -p tsconfig.json"
