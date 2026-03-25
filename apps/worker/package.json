@@ -2,12 +2,19 @@
   "name": "@rauchbar/worker",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "echo \"worker scaffold pending\"",
-    "build": "echo \"worker build pending\"",
+    "dev": "node --experimental-strip-types src/index.ts",
+    "build": "tsc --noEmit -p tsconfig.json",
     "lint": "echo \"worker lint pending\"",
-    "test": "echo \"worker tests pending\"",
-    "typecheck": "echo \"worker typecheck pending\""
+    "test": "node --test --experimental-strip-types $(find src -name '*.test.ts' -print)",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@rauchbar/deals-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.3"
   }
 }
-
