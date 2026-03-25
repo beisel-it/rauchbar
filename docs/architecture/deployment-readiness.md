@@ -36,6 +36,10 @@ Expected behavior:
 - Both services are stateless and do not write runtime data to local disk.
 - The site serves build artifacts from `apps/site/dist`.
 - The admin service is deployable as a placeholder, but it is not the final MVP admin UI.
+- Local Docker Compose startup now exposes the same ports the services actually bind:
+  - site: `4173:4173`
+  - admin: `10001:10001`
+- Compose explicitly injects `HOST=0.0.0.0` so the web services are reachable from the host machine.
 
 ## Remaining Gaps
 
