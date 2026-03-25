@@ -20,6 +20,18 @@ Rauchbar fokussiert sich im ersten Schnitt auf drei Kernoberflaechen und gemeins
 - `packages/design-system`: visuelle Sprache fuer Site, Admin und Mailings
 - `packages/notifications`: Kanalabstraktionen fuer E-Mail und WhatsApp
 
+## Produkt in Bildern
+
+Die README ist fuer eine kurze visuelle Tour vorbereitet. Sobald Screenshot-Assets vorliegen, sollte die Reihenfolge so aussehen:
+
+1. Homepage Hero mit Mitgliedervorteil und primarem CTA
+2. Delayed-Deal-Preview mit 24h-Mitgliederfenster
+3. Praeferenzen und Alert-Steuerung im Member-Bereich
+4. Admin-Dashboard mit Shop-, Review- und Versandstatus
+5. Review-Queue oder Dispatch-Runs als operativer Kontrollpunkt
+
+Die komplette Screenshot- und Caption-Richtung liegt in [docs/design/readme-visual-plan.md](docs/design/readme-visual-plan.md).
+
 ## Nutzer- und Surface-Modell
 
 Das Produkt trennt klar zwischen drei Perspektiven:
