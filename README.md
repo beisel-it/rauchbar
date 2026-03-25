@@ -47,6 +47,23 @@ Rauchbar wird ueber ClawTeam in getrennten Workstreams entwickelt:
 - MVP fuer Site, Admin und Worker aufsetzen
 - erste Haendleradapter und Hot-Deal-Regeln definieren
 
+## Docker Setup
+
+Fuer die lokale Monorepo-Entwicklung liegt ein initiales Container-Setup im Repo:
+
+- `Dockerfile` baut eine gemeinsame Node-22-/pnpm-Basis fuer alle Apps
+- `docker-compose.yml` startet getrennte Services fuer `site`, `admin` und `worker`
+- persistente Volumes halten pnpm-Store und `node_modules` ausserhalb des Bind-Mounts
+
+Beispiele:
+
+```bash
+docker compose up site
+docker compose up admin worker
+docker compose run --rm worker pnpm install
+```
+
+Die aktuellen App-Skripte sind noch Platzhalter. Das Compose-Setup ist deshalb als Bootstrap fuer die naechsten Implementierungsschritte gedacht, nicht als produktionsreifes Runtime-Layout.
 ## UX Testing Preview
 
 Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:
