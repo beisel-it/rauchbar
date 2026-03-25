@@ -2,7 +2,7 @@
 
 Stand: 2026-03-25
 
-Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. Sie ist die Referenz fuer `render.yaml`, `.env.example` und spaetere Secret-Einpflege in Render.
+Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. In diesem Branch ist `render.yaml` bewusst auf Environments plus managed infra reduziert; konkrete App-Service-Stanzas werden erst nach Merge der zugehoerigen Runtime-Artefakte aktiviert.
 
 ## Geltungsbereich
 
@@ -10,29 +10,32 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. S
 - `preview` bleibt im MVP manuell und selektiv fuer `site` und `admin`.
 - `staging` und `production` werden in `render.yaml` modelliert.
 - Secrets werden in Render oder GitHub gepflegt, nicht im Repo.
+- `render.yaml` provisioniert in diesem Branch nur Environment Groups, Postgres und Key Value. Web-/Worker-Services werden nach Runtime-Integration in einem Folge-PR aktiviert.
 
 ## App- und Runtime-Vertrag
 
 ### Site
 
-- Docker-Web-Service
+- Zielbild: Docker-Web-Service
 - Build: `corepack pnpm --filter @rauchbar/site build`
 - Start: `corepack pnpm --filter @rauchbar/site start`
 - Bind: `HOST=0.0.0.0`, `PORT` aus Env
 - Health: `GET /health/live`, `GET /health/ready`
+- Aktueller Branch-Zustand: lokale Vite-Dev-Konfiguration nutzt noch festen Dev-Port `4173`; deshalb ist dieser Service noch nicht im Blueprint aktiviert.
 
 ### Admin
 
 - Zielvertrag identisch zu Site
-- aktueller Stand ist ein deploybarer Placeholder-Web-Service; das Descriptor-Skelett bildet genau diesen Zielvertrag ab
+- aktueller Stand auf dem readiness-Branch ist ein deploybarer Placeholder-Web-Service; in diesem Branch ist der Service noch nicht im Blueprint aktiviert
 
 ### Worker
 
-- Docker-Service mit HTTP-Startprozess: `corepack pnpm --filter @rauchbar/worker start`
+- Zielbild: Docker-Service mit HTTP-Startprozess `corepack pnpm --filter @rauchbar/worker start`
 - Standard-Port: `8080`
 - Health: `GET /healthz`, `GET /readyz`
 - Logs: newline-delimited JSON auf `stdout`/`stderr`
 - Rollensteuerung ueber `WORKER_ROLE=worker|scrape|digest`
+- Aktueller Branch-Zustand: der Worker-Dockerfile liegt upstream auf `backend-crawlers`, aber nicht in diesem Branch; deshalb ist der Service noch nicht im Blueprint aktiviert.
 
 ## Variablenmatrix
 
@@ -41,7 +44,7 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. S
 | `NODE_ENV` | all | `development` | `production` | `production` | `production` | Runtime-Modus |
 | `APP_ENV` | all | `local` | `preview` | `staging` | `production` | Fachliches Environment |
 | `HOST` | site, admin | `0.0.0.0` | `0.0.0.0` | `0.0.0.0` | `0.0.0.0` | HTTP bind host |
-| `PORT` | site, admin | `3000`/`3001` | provider | `10000` | `10000` | Render-intern fuer Web-Container |
+| `PORT` | site, admin | branch-spezifisch | provider | provider | provider | erst nach Runtime-Merge verbindlich |
 | `PORT` | worker | `8080` | `8080` | `8080` | `8080` | Worker-Health-Port |
 | `LOG_LEVEL` | all | `debug` | `info` | `info` | `info` | Muss JSON-Logging nicht verhindern |
 | `DATABASE_URL` | all app services | local DB | preview DB | staging DB | prod DB | Secret/managed reference |
@@ -77,8 +80,12 @@ Folgende Werte muessen beim Provisioning manuell oder ueber den Provider gesetzt
 - Preview fuer Worker ist standardmaessig deaktiviert.
 - Preview-Datenbank darf Testdaten enthalten, aber keine Kopie produktiver personenbezogener Daten ohne gesonderte Freigabe.
 
-## Offene Integrationspunkte
+## Aktivierung der App-Services
 
-- Der Worker-Vertrag ist upstream bereits definiert und muss vor dem ersten echten Render-Sync mit diesem Blueprint zusammengefuehrt werden.
-- Site- und Admin-Runtime liegen auf einem sauberen Upstream-Branch vor und muessen nach dem Merge per Staging-Smoke-Test gegen `render.yaml` bestaetigt werden.
-- Falls Admin beim Merge doch nicht denselben Web-Service-Vertrag behaelt, bleibt `rauchbar-admin-*` im Blueprint blocked statt stillschweigend falsch deployed.
+Nach Merge der Runtime-Branches werden folgende Stanzas in `render.yaml` ergaenzt:
+
+- `site` als Web-Service mit Start `corepack pnpm --filter @rauchbar/site start`
+- `admin` als Web-Service mit Start `corepack pnpm --filter @rauchbar/admin start`
+- `worker` als Background-Worker plus separate `scrape`- und `digest`-Cron-Jobs
+
+Bis dahin bleibt die Blueprint-Datei bewusst frei von App-Service-Referenzen, damit sie keine nicht vorhandenen Dockerfiles oder Portannahmen codiert.

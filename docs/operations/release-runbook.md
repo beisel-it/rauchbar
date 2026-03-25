@@ -4,6 +4,8 @@ Stand: 2026-03-25
 
 Dieses Dokument ist die erste Betriebsgrundlage fuer Staging- und Produktionsdeployments auf Basis von `render.yaml`. Es ist bewusst knapp, aber konkret genug fuer die naechste Delivery-Stufe.
 
+In diesem Branch deckt `render.yaml` nur die provisionierbaren Infrastrukturteile ab. Die App-Service-Deploys fuer Site, Admin und Worker werden erst aktiviert, wenn die zugehoerigen Runtime-Artefakte auf `main` integriert sind.
+
 ## Voraussetzungen
 
 - `main` ist gruen in CI.
@@ -16,12 +18,15 @@ Dieses Dokument ist die erste Betriebsgrundlage fuer Staging- und Produktionsdep
 
 1. Merge auf `main` nur bei gruener CI.
 2. Render synced `staging` mit `autoDeployTrigger: checksPass`.
-3. Nach Deploy pruefen:
+3. Nach Infra-Sync pruefen:
+   - Postgres und Key Value wurden im richtigen Environment angelegt
+   - Shared Env-Groups enthalten die erwarteten Werte
+4. Nach dem spaeteren Aktivieren der App-Services pruefen:
    - `site`: `GET /health/live`, `GET /health/ready`
    - `admin`: `GET /health/live`, `GET /health/ready`
    - `worker`: `GET /healthz`, `GET /readyz`
-4. Einen Smoke-Test fuer Signup, Admin-Login und einen Worker-Pfad ausfuehren.
-5. Bestaetigen, dass `ALLOW_REAL_EMAIL_SEND=false` und `ALLOW_REAL_WHATSAPP_SEND=false` aktiv sind.
+5. Einen Smoke-Test fuer Signup, Admin-Login und einen Worker-Pfad ausfuehren.
+6. Bestaetigen, dass `ALLOW_REAL_EMAIL_SEND=false` und `ALLOW_REAL_WHATSAPP_SEND=false` aktiv sind.
 
 ## Produktions-Release
 
@@ -31,13 +36,15 @@ Dieses Dokument ist die erste Betriebsgrundlage fuer Staging- und Produktionsdep
    - geplante Migration ist ausgefuehrt
    - Provider-Secrets sind vorhanden
    - Domains und TLS sind gesund
-4. Nach Deploy pruefen:
+4. Nach Infra-Sync pruefen:
+   - DB, Key Value und Env-Groups stimmen mit dem Release-Plan ueberein
+5. Nach dem spaeteren App-Deploy pruefen:
    - `https://rauchbar.de/health/live`
    - `https://rauchbar.de/health/ready`
    - `https://admin.rauchbar.de/health/live`
    - `https://admin.rauchbar.de/health/ready`
    - Worker-Service intern auf `/healthz` und `/readyz`
-5. Einen manuellen E2E-Smoketest durchfuehren:
+6. Einen manuellen E2E-Smoketest durchfuehren:
    - Signup / Session
    - Deal-Seite oder Mitgliederbereich
    - Admin-Grundnavigation
@@ -87,6 +94,6 @@ Dieses Dokument ist die erste Betriebsgrundlage fuer Staging- und Produktionsdep
 ## Bekannte Luecken
 
 - Die konkreten Worker-Artefakte liegen upstream bereits vor, sind aber in diesem Branch noch nicht enthalten.
-- Site/Admin-Vertragsdetails liegen upstream auf einem bereinigten Branch vor und muessen vor dem ersten echten Render-Sync integriert werden.
-- Worker-, Site- und Admin-Dockerfiles muessen vor erstem echten Sync gegen `render.yaml` gemeinsam in einem integrierten Branch getestet werden.
+- Site/Admin-Vertragsdetails liegen upstream auf einem bereinigten Branch vor, sind aber in diesem Branch noch nicht enthalten.
+- Ein Folge-PR muss die App-Service-Stanzas in `render.yaml` erst dann aktivieren, wenn die zugehoerigen Dockerfiles/Startkommandos wirklich auf `main` liegen.
 - Ein separates Restore-Runbook fuer Postgres-PITR fehlt noch und ist als naechster Ops-Schritt einzuplanen.
