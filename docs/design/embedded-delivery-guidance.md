@@ -13,6 +13,7 @@ Source inputs reviewed:
 - `docs/product/prd.md`
 - `docs/architecture/overview.md`
 - `docs/roadmap/mvp-cycle-001.md`
+- `docs/ux/implementation-support.md`
 - `clawteam/rauchbar-design-lab-1/brand-system:docs/design/brand-language.md`
 - `clawteam/rauchbar-design-lab-1/lifecycle-flows:docs/design/lifecycle-flows.md`
 - `clawteam/rauchbar-dev/admin-console:docs/product/admin-surface.md`
@@ -43,30 +44,36 @@ Convert visitors by making the member advantage obvious:
 
 1. Hero with a clear editorial promise, not generic lifestyle copy
 2. Proof band showing how member access differs from the delayed public archive
-3. Deal teaser module with member/public timing labels
-4. Short signup module with minimal friction
-5. Preference/onboarding continuation after confirmation
+3. "So funktioniert's" three-step explainer
+4. Deal teaser or delayed archive module with member/public timing labels
+5. Short signup module with minimal friction
+6. Preference/onboarding continuation after confirmation
 
 ### Design guardrails
 
 - Use `cream` or `paper` as the main field background and reserve darker hero treatments for high-value moments only.
 - Keep the primary CTA visually plain and high-contrast. Brass or ember should accent, not flood, the page.
+- The hero should prove freshness or cadence immediately. A deal count, run cadence, or recent-publication signal is stronger than generic brand copy.
 - Deal cards need three facts above the fold: merchant, current price, and access state.
 - Member-first timing should appear as a structured label, not buried in body copy.
 - Preference onboarding should feel guided and finite. The MVP should look like two steps, not a profile wizard.
 - Archive cards for public visitors should clearly signal delayed visibility so the member benefit remains legible.
+- The site navigation should stay narrow: `Deals entdecken`, `So funktioniert's`, `Mitglied werden`, `Login`.
 
 ### Critique for delivery
 
-- The current upstream material defines tone well, but not homepage information hierarchy. Delivery should avoid drifting into a generic luxury landing page.
+- The new UX contract fixes the homepage IA gap, but delivery can still drift if the hero and explainer become visually heavy and push signup below the decision threshold.
 - Signup risk is over-explaining the product before collecting email. The first form should ask only for email and promise the next step.
 - Preference capture can easily become too dense if brands, formats, budgets, and channels are all presented equally. Lead with taste and alert intent; secondary controls can follow.
+- Member home should answer three questions fast: what was sent last, whether alerts are active, and how to tune relevance quickly.
 
 ### Handoff notes
 
 - Add reusable labels for `Members first`, `Public in 24h`, and `Hot deal`.
 - Treat the deal card as a cross-surface primitive that can render in site and digest contexts with the same status language.
 - For empty or weak-match states, keep the tone editorial: explain that matching improves after preferences are refined.
+- Align module order with `docs/ux/implementation-support.md`: proof, delayed deals, personalization explainer, digest/alert example, FAQ.
+- Preserve explicit empty, loading, unavailable, and no-result states in the archive instead of collapsing them into generic placeholders.
 
 ## Surface 2: Admin Console
 
@@ -88,6 +95,7 @@ The admin is an operations cockpit. It should optimize for intervention speed, a
 - Approval detail should keep original source data and normalized data adjacent so editors can compare rather than remember.
 - Every destructive or state-changing control should be paired with visible audit framing: what will change, where it propagates, and whether it is reversible.
 - Dispatch pages should distinguish content issues from provider issues at a glance.
+- Operators need one-click movement from dashboard aggregates into the failed merchant, deal, or send entity.
 
 ### Critique for delivery
 
@@ -96,12 +104,14 @@ The admin is an operations cockpit. It should optimize for intervention speed, a
   incoming is triage,
   approval is editorial decisioning.
 - Dispatch Runs risk hiding the real question operators need answered: "Did this fail because of content, audience eligibility, or provider delivery?"
+- Admin navigation should not fragment beyond the UX contract core: `Uebersicht`, `Shops`, `Deals`, `Freigaben`, `Versand`.
 
 ### Handoff notes
 
 - Standardize status badge families across merchants, deals, and dispatch runs instead of inventing per-screen labels.
 - Build queue rows so the same visual slots can host approval, send, and crawl statuses.
 - Use right-side or inline detail panes for fast review flows where possible; avoid making operators bounce between unrelated routes for single decisions.
+- Keep failed-job and notification-log views as secondary utility destinations, not new top-level silos.
 
 ## Surface 3: Notifications
 
@@ -144,6 +154,7 @@ Notifications are where Rauchbar makes its product promise tangible. They should
   channel status copy.
 - Add preview states for `sent`, `paused`, `failed`, and `suppressed` in admin so operators see the same language users receive.
 - Build email and WhatsApp variants from shared semantic fields, not channel-specific ad hoc strings.
+- Mirror the member surface language for delivery health so account settings, last-send status, and admin send states do not diverge semantically.
 
 ## Cross-Surface Guardrails
 
@@ -166,14 +177,12 @@ Notifications are where Rauchbar makes its product promise tangible. They should
 
 These gaps do not block design guidance, but they do increase delivery drift risk:
 
-- No concrete homepage IA or wireframe artifact is present in this worktree or the `site-foundation` branch.
 - No notification contract beyond channel preference types is present in `packages/notifications`.
 - No sequence diagrams or annotated state artifacts from the lifecycle handoff are checked into the repo yet.
 - No shared copy deck exists for status labels, consent language, or member/public timing language.
 
 Recommended next additions from delivery or coordination:
 
-- homepage content skeleton with module order and CTA copy hooks
 - notification payload contract and preview fixture data
 - shared glossary for approval, suppression, delay, and channel states
 - lightweight wireflows for signup, approval, and dispatch recovery
