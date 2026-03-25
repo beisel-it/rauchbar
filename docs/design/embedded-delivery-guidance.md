@@ -14,6 +14,8 @@ Source inputs reviewed:
 - `docs/architecture/overview.md`
 - `docs/roadmap/mvp-cycle-001.md`
 - `docs/ux/implementation-support.md`
+- `docs/ux/homepage-ia-wireframe.md`
+- `docs/ux/lifecycle-state-map.md`
 - `clawteam/rauchbar-design-lab-1/brand-system:docs/design/brand-language.md`
 - `clawteam/rauchbar-design-lab-1/lifecycle-flows:docs/design/lifecycle-flows.md`
 - `clawteam/rauchbar-dev/admin-console:docs/product/admin-surface.md`
@@ -42,12 +44,18 @@ Convert visitors by making the member advantage obvious:
 
 ### Recommended structure
 
-1. Hero with a clear editorial promise, not generic lifestyle copy
-2. Proof band showing how member access differs from the delayed public archive
-3. "So funktioniert's" three-step explainer
-4. Deal teaser or delayed archive module with member/public timing labels
-5. Short signup module with minimal friction
-6. Preference/onboarding continuation after confirmation
+Adopt the homepage IA in `docs/ux/homepage-ia-wireframe.md` as the build order:
+
+1. Header / primary navigation
+2. Hero
+3. Trust strip / cadence proof
+4. "So funktioniert's" three-step explainer
+5. Delayed deal preview
+6. Preference and personalization explainer
+7. Digest and alert value section
+8. FAQ
+9. Final CTA band
+10. Footer
 
 ### Design guardrails
 
@@ -59,6 +67,7 @@ Convert visitors by making the member advantage obvious:
 - Preference onboarding should feel guided and finite. The MVP should look like two steps, not a profile wizard.
 - Archive cards for public visitors should clearly signal delayed visibility so the member benefit remains legible.
 - The site navigation should stay narrow: `Deals entdecken`, `So funktioniert's`, `Mitglied werden`, `Login`.
+- Mobile delivery should preserve section order and keep CTAs thumb-reachable; do not introduce horizontal card overflow in delayed-deal previews.
 
 ### Critique for delivery
 
@@ -72,8 +81,11 @@ Convert visitors by making the member advantage obvious:
 - Add reusable labels for `Members first`, `Public in 24h`, and `Hot deal`.
 - Treat the deal card as a cross-surface primitive that can render in site and digest contexts with the same status language.
 - For empty or weak-match states, keep the tone editorial: explain that matching improves after preferences are refined.
-- Align module order with `docs/ux/implementation-support.md`: proof, delayed deals, personalization explainer, digest/alert example, FAQ.
+- Align module order with `docs/ux/homepage-ia-wireframe.md` and keep CTA hierarchy stable:
+  primary `Mitglied werden`,
+  secondary `Verzoegerte Deals ansehen`.
 - Preserve explicit empty, loading, unavailable, and no-result states in the archive instead of collapsing them into generic placeholders.
+- For homepage low-data fallback, remove live metrics cleanly and keep proposition, proof copy, and CTA intact.
 
 ## Surface 2: Admin Console
 
@@ -155,6 +167,7 @@ Notifications are where Rauchbar makes its product promise tangible. They should
 - Add preview states for `sent`, `paused`, `failed`, and `suppressed` in admin so operators see the same language users receive.
 - Build email and WhatsApp variants from shared semantic fields, not channel-specific ad hoc strings.
 - Mirror the member surface language for delivery health so account settings, last-send status, and admin send states do not diverge semantically.
+- Use `docs/ux/lifecycle-state-map.md` as the shared reference for deal, homepage, member, admin, and notification state language unless product or backend introduces a different canonical enum.
 
 ## Cross-Surface Guardrails
 
@@ -164,6 +177,10 @@ Notifications are where Rauchbar makes its product promise tangible. They should
 - Dense data views must use spacing and border rhythm to create calm instead of removing information.
 - The product promise "members see deals before the public archive" should be visible on site, in digest framing, and in admin preview logic.
 - Suppression, pause, and approval states must use consistent wording across UI and notifications.
+- State presentation should follow one stable grammar across surfaces:
+  badge label,
+  one-line explanation,
+  next action or next event.
 
 ## Implementation Priorities For Delivery
 
@@ -178,11 +195,9 @@ Notifications are where Rauchbar makes its product promise tangible. They should
 These gaps do not block design guidance, but they do increase delivery drift risk:
 
 - No notification contract beyond channel preference types is present in `packages/notifications`.
-- No sequence diagrams or annotated state artifacts from the lifecycle handoff are checked into the repo yet.
 - No shared copy deck exists for status labels, consent language, or member/public timing language.
 
 Recommended next additions from delivery or coordination:
 
 - notification payload contract and preview fixture data
 - shared glossary for approval, suppression, delay, and channel states
-- lightweight wireflows for signup, approval, and dispatch recovery
