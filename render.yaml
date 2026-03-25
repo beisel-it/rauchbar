@@ -61,7 +61,9 @@ projects:
             dockerfilePath: ./apps/site/Dockerfile
             dockerContext: .
             autoDeployTrigger: checksPass
-            healthCheckPath: /health/live
+            domains:
+              - staging.rauchbar.de
+            healthCheckPath: /health/ready
             envVars:
               - fromGroup: rauchbar-staging-shared
               - key: HOST
@@ -95,7 +97,9 @@ projects:
             dockerfilePath: ./apps/admin/Dockerfile
             dockerContext: ./apps/admin
             autoDeployTrigger: checksPass
-            healthCheckPath: /health/live
+            domains:
+              - admin-staging.rauchbar.de
+            healthCheckPath: /health/ready
             envVars:
               - fromGroup: rauchbar-staging-shared
               - key: HOST
@@ -206,7 +210,9 @@ projects:
             dockerfilePath: ./apps/site/Dockerfile
             dockerContext: .
             autoDeployTrigger: off
-            healthCheckPath: /health/live
+            domains:
+              - rauchbar.de
+            healthCheckPath: /health/ready
             envVars:
               - fromGroup: rauchbar-production-shared
               - key: HOST
@@ -240,7 +246,9 @@ projects:
             dockerfilePath: ./apps/admin/Dockerfile
             dockerContext: ./apps/admin
             autoDeployTrigger: off
-            healthCheckPath: /health/live
+            domains:
+              - admin.rauchbar.de
+            healthCheckPath: /health/ready
             envVars:
               - fromGroup: rauchbar-production-shared
               - key: HOST
