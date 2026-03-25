@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "main": "src/index.ts",
+  "dependencies": {
+    "@rauchbar/deals-core": "workspace:*"
+  },
   "scripts": {
     "build": "echo \"notifications build pending\"",
     "lint": "echo \"notifications lint pending\"",
@@ -11,4 +14,3 @@
     "typecheck": "echo \"notifications typecheck pending\""
   }
 }
-
