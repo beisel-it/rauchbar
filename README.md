@@ -117,3 +117,29 @@ Fertig definierte Handoffs liegen fuer Produkt, UX, Admin-Surface und embedded D
 - nativer Mobile-App-Scope
 - Checkout oder In-App-Kauf
 - vollautomatische Preisprognosen
+
+## Docker Setup
+
+Fuer die lokale Monorepo-Entwicklung liegt ein initiales Container-Setup im Repo:
+
+- `Dockerfile` baut eine gemeinsame Node-22-/pnpm-Basis fuer alle Apps
+- `docker-compose.yml` startet getrennte Services fuer `site`, `admin` und `worker`
+- persistente Volumes halten pnpm-Store und `node_modules` ausserhalb des Bind-Mounts
+
+Beispiele:
+
+```bash
+docker compose up site
+docker compose up admin worker
+docker compose run --rm worker pnpm install
+```
+
+Die aktuellen App-Skripte sind noch Platzhalter. Das Compose-Setup ist deshalb als Bootstrap fuer die naechsten Implementierungsschritte gedacht, nicht als produktionsreifes Runtime-Layout.
+## UX Testing Preview
+
+Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:
+
+- `pnpm ux:preview`
+- `pnpm ux:preview:host` fuer Browserzugriff ueber `0.0.0.0:4173`
+
+Die Artefakte und Review-Ablauf sind in `docs/ux/testing-setup.md` dokumentiert.

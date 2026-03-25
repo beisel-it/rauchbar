@@ -1,0 +1,11 @@
+.git
+.github
+.clawteam
+node_modules
+**/node_modules
+dist
+build
+.next
+.turbo
+.DS_Store
+pnpm-lock.yaml

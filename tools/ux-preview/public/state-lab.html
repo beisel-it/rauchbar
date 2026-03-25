@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rauchbar Lifecycle State Lab</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="state-lab">
+    <div class="control-bar" data-ui>
+      <div class="control-group">
+        <span class="control-label">State review</span>
+        <span>Static reference for UX validation</span>
+      </div>
+      <label class="toggle">
+        <input id="screenshot-toggle" type="checkbox" />
+        <span>Screenshot mode</span>
+      </label>
+      <a href="/">Open homepage preview</a>
+    </div>
+
+    <main class="page-shell">
+      <section class="panel">
+        <div class="section-heading">
+          <p class="eyebrow">Deal lifecycle</p>
+          <h1>Shared lifecycle grammar across site, member, and admin.</h1>
+        </div>
+        <div class="lifecycle-flow">
+          <span class="badge">discovered</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge">normalized</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge badge-warning">in_review</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge badge-success">approved</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge badge-success">member_visible</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge badge-success">public_visible</span>
+          <span class="flow-arrow">-></span>
+          <span class="badge">expired</span>
+        </div>
+      </section>
+
+      <section class="three-up">
+        <article class="panel">
+          <p class="eyebrow">Public site</p>
+          <h2>Homepage and archive states</h2>
+          <ul class="stack-list">
+            <li><span class="badge badge-success">public_visible</span> full card with public timestamp</li>
+            <li><span class="badge">expired</span> preserved shell with unavailable copy</li>
+            <li><span class="badge badge-warning">empty</span> explain member-first delay and keep signup CTA</li>
+            <li><span class="badge badge-danger">error</span> retry-friendly copy without losing primary actions</li>
+          </ul>
+        </article>
+
+        <article class="panel">
+          <p class="eyebrow">Member surface</p>
+          <h2>Member home state stack</h2>
+          <ul class="stack-list">
+            <li><span class="badge badge-success">sent</span> latest digest delivered</li>
+            <li><span class="badge badge-warning">pending_verification</span> WhatsApp channel needs action</li>
+            <li><span class="badge">partial</span> preferences can be tuned for better relevance</li>
+            <li><span class="badge badge-warning">scheduled</span> next digest queued</li>
+          </ul>
+        </article>
+
+        <article class="panel">
+          <p class="eyebrow">Admin operations</p>
+          <h2>Operational severity and queue treatment</h2>
+          <ul class="stack-list">
+            <li><span class="badge badge-warning">warning</span> crawler delayed, intervention may be needed soon</li>
+            <li><span class="badge badge-danger">critical</span> send failure requires operator action</li>
+            <li><span class="badge badge-warning">held_for_review</span> item needs manual quality check</li>
+            <li><span class="badge badge-success">healthy</span> shop and pipeline are within normal bounds</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="two-column">
+        <article class="panel panel-contrast">
+          <p class="eyebrow">Badge guidance</p>
+          <h2>Semantic groupings</h2>
+          <div class="badge-row">
+            <span class="badge badge-success">success</span>
+            <span class="badge badge-warning">warning</span>
+            <span class="badge badge-danger">danger</span>
+            <span class="badge">neutral</span>
+          </div>
+          <p>
+            Keep wording identical across surfaces even if the visual treatment differs.
+          </p>
+        </article>
+
+        <article class="panel panel-contrast">
+          <p class="eyebrow">Screenshot targets</p>
+          <h2>Suggested review captures</h2>
+          <ul class="stack-list">
+            <li>deal lifecycle overview</li>
+            <li>member status stack</li>
+            <li>admin severity stack</li>
+            <li>public archive empty/error guidance</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <script src="/ux-preview.js"></script>
+  </body>
+</html>

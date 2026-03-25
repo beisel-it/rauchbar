@@ -1,0 +1,47 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    command: sh -lc "pnpm install --no-frozen-lockfile && pnpm --filter @rauchbar/site dev"
+    volumes:
+      - .:/workspace
+      - pnpm-store:/pnpm/store
+      - root-node-modules:/workspace/node_modules
+      - site-node-modules:/workspace/apps/site/node_modules
+    ports:
+      - "3000:3000"
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    command: sh -lc "pnpm install --no-frozen-lockfile && pnpm --filter @rauchbar/admin dev"
+    volumes:
+      - .:/workspace
+      - pnpm-store:/pnpm/store
+      - root-node-modules:/workspace/node_modules
+      - admin-node-modules:/workspace/apps/admin/node_modules
+    ports:
+      - "3001:3000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    command: sh -lc "pnpm install --no-frozen-lockfile && pnpm --filter @rauchbar/worker dev"
+    volumes:
+      - .:/workspace
+      - pnpm-store:/pnpm/store
+      - root-node-modules:/workspace/node_modules
+      - worker-node-modules:/workspace/apps/worker/node_modules
+
+volumes:
+  pnpm-store:
+  root-node-modules:
+  site-node-modules:
+  admin-node-modules:
+  worker-node-modules:
