@@ -20,6 +20,34 @@ Rauchbar fokussiert sich im ersten Schnitt auf drei Kernoberflaechen und gemeins
 - `packages/design-system`: visuelle Sprache fuer Site, Admin und Mailings
 - `packages/notifications`: Kanalabstraktionen fuer E-Mail und WhatsApp
 
+## Produkt in Bildern
+
+### Homepage und Mitgliederwert
+
+![Rauchbar Homepage mit Hero, Delayed-Deal-Preview und Mitgliedervorteil](artifacts/readme-screenshots/homepage-default.png)
+
+Die Startseite erklaert das Produktversprechen, zeigt den 24h-Mitgliedervorsprung und macht den Signup-Einstieg sichtbar.
+
+### Admin und Operations
+
+![Admin-Ops-Board mit Shop-Health, Freigaben und Versandstatus](artifacts/readme-screenshots/admin-ops-board.png)
+
+Das Ops-Board verdichtet Merchant-Monitoring, Freigabe-Queue und Dispatch-Kontrolle in einer internen Arbeitsansicht.
+
+### Personalisierte Mitgliedersurface
+
+![Mitgliederansicht mit Digest, Alerts und Praeferenzsteuerung](artifacts/readme-screenshots/member-home.png)
+
+Die Mitgliedersurface zeigt, dass Rauchbar ueber eine Marketing-Seite hinausgeht und Digests, Alerts und Praeferenzpflege verbindet.
+
+### Lifecycle und Statuslogik
+
+![Lifecycle-State-Lab mit Deal-, Versand- und Sichtbarkeitszustaenden](artifacts/readme-screenshots/lifecycle-state-lab.png)
+
+Die Statusansicht macht die Trennung zwischen interner Freigabe, Mitgliederfenster und oeffentlicher Publikation nachvollziehbar.
+
+Der Screenshot-Satz und die Reproduktionsschritte sind in [docs/ux/readme-screenshot-plan.md](docs/ux/readme-screenshot-plan.md) dokumentiert.
+
 ## Nutzer- und Surface-Modell
 
 Das Produkt trennt klar zwischen drei Perspektiven:
