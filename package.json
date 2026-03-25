@@ -10,6 +10,7 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "ux:preview": "node tools/ux-preview/server.mjs",
-    "ux:preview:host": "node tools/ux-preview/server.mjs --host 0.0.0.0 --port 4173"
+    "ux:preview:host": "node tools/ux-preview/server.mjs --host 0.0.0.0 --port 4173",
+    "ux:preview:capture": "node tools/ux-preview/capture-screenshots.mjs"
   }
 }

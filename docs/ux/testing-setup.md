@@ -28,6 +28,8 @@ http://127.0.0.1:4173
 Routes:
 
 - `/` homepage wireframe prototype
+- `/member-home.html` member value and preferences prototype
+- `/ops-board.html` admin and operations prototype
 - `/state-lab.html` lifecycle and state review surface
 
 For LAN or external browser access:
@@ -65,6 +67,24 @@ Use `/state-lab.html` to validate:
 - badge consistency
 - operational severity treatment
 
+## README Capture
+
+For GitHub-ready product images:
+
+```bash
+pnpm ux:preview:capture
+```
+
+Outputs:
+
+- `artifacts/readme-screenshots/homepage-default.png`
+- `artifacts/readme-screenshots/member-home.png`
+- `artifacts/readme-screenshots/admin-ops-board.png`
+- `artifacts/readme-screenshots/lifecycle-state-lab.png`
+- `artifacts/readme-screenshots/homepage-empty-archive.png`
+
+The concrete screenshot rationale and ordering live in `docs/ux/readme-screenshot-plan.md`.
+
 ## Screenshot Guidance
 
 The preview includes a `Screenshot mode` toggle that:
@@ -85,9 +105,9 @@ Suggested captures:
 - homepage default
 - homepage empty archive
 - homepage sparse archive
+- member home
+- admin ops board
 - lifecycle overview
-- member home state stack
-- admin operations state stack
 
 ## Why This Exists
 

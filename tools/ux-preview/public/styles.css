@@ -154,7 +154,8 @@ a {
 
 .hero,
 .two-column,
-.three-up {
+.three-up,
+.four-up {
   display: grid;
   gap: 20px;
 }
@@ -169,6 +170,10 @@ a {
 
 .three-up {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.four-up {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .eyebrow,
@@ -347,6 +352,37 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.member-hero {
+  display: grid;
+  gap: 20px;
+}
+
+.metric-large {
+  font-size: 2.3rem;
+  font-weight: 700;
+}
+
+.queue-table {
+  display: grid;
+  gap: 10px;
+}
+
+.queue-row {
+  display: grid;
+  grid-template-columns: 2.3fr 1.1fr 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(214, 195, 170, 0.8);
+}
+
+.queue-header {
+  background: rgba(35, 23, 15, 0.08);
+  font-weight: 700;
+}
+
 .cta-band {
   display: flex;
   justify-content: space-between;
@@ -400,10 +436,15 @@ body[data-screenshot="true"] .control-bar {
   .hero,
   .two-column,
   .three-up,
+  .four-up,
   .steps-grid,
   .archive-grid,
   .faq-list,
   .metrics-list {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-row {
     grid-template-columns: 1fr;
   }
 
