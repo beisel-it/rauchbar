@@ -4,11 +4,14 @@
 
 Define an implementable ingestion pipeline for Rauchbar that keeps source-specific scraping isolated, hands normalized data into `@rauchbar/deals-core`, and exposes enough ingestion state for admin and notification workflows.
 
+Horizontal scalability across multiple queued workers is a hard requirement. The ingestion design must stay safe when many worker processes pull jobs concurrently from the same queue.
+
 ## Ownership Boundaries
 
 ### Worker owns
 
 - merchant source adapters and scheduling
+- queue job planning and idempotent source-level work decomposition
 - source payload fetch and extraction into `SourceAdapterOutput`
 - normalization into `NormalizedDealPayload`
 - `IngestRun` logging and source health derivation from run history
@@ -48,12 +51,26 @@ Boundary rules:
 - adapters do not assign normalization, review, or lifecycle status
 - adapters may emit `warnings` for partial parsing issues without failing the whole run
 - adapters should keep transport details outside the shared contract except for `requestUrl`, `contentType`, and `payload`
+- adapters must remain stateless so a queued job can run on any worker instance
+
+## Queue-Friendly Worker Decomposition
+
+Workers must decompose scraping into one queueable job per `(merchant, source)` pair.
+
+Required properties:
+
+- each queued job is self-contained: merchant reference, source reference, request URL, and requested timestamp travel with the job
+- workers do not rely on shared in-memory registries for job ownership or scheduling decisions
+- queue claims should use a deterministic source-level key such as `merchantId:sourceId`
+- normalization must be idempotent so retries or duplicated deliveries do not create duplicate canonical deals
+- queue sharding may use source origin such as `newsletter-mail` versus `webshop`, but execution semantics stay identical
 
 ## Ingestion Stages
 
 ### 1. Fetch source payloads
 
-- fetch one payload per active `SourceReference`
+- enqueue one job per active `SourceReference`
+- allow any available worker to claim and execute a job independently
 - persist a pending-to-running `IngestRun` around each fetch-and-parse attempt
 - skip inactive merchants or sources before creating work
 
@@ -75,6 +92,7 @@ Boundary rules:
 - create or update canonical `NormalizedDealPayload` records
 - move `lifecycleStatus` from `discovered` to `normalized` to `ready-for-review`
 - reserve `approved` and `scheduled` for records that passed auto or manual review
+- keep upserts safe under concurrent workers by using the same dedupe key during retries and duplicate deliveries
 
 ### 5. Evaluate hot-deal eligibility
 
@@ -115,6 +133,7 @@ Retries should reuse the shared `IngestRun` statuses instead of inventing a sepa
 - retry `partial` runs only when warnings indicate transport or parse instability
 - stop automatic retries when merchant or source `active` is `false`
 - after the retry budget is exhausted, surface the source as failing in admin using run-history aggregation
+- retries must re-enqueue the same source-scoped job shape so another worker can resume without local process context
 
 ## Hot-Deal Plug-In Point
 
@@ -132,3 +151,4 @@ Start with one adapter per merchant listing source and keep product-detail crawl
 - capture `OfferObservation.externalId` when available to improve dedupe stability
 - add product-detail enrichment only when listing data is insufficient for pricing or availability
 - expose source health from `IngestRun` trends in admin before scaling to more merchants
+- validate the first adapter against queue-style execution rather than a single long-running worker loop
