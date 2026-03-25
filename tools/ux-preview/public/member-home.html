@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rauchbar Member Home Preview</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="member-home">
+    <div class="control-bar" data-ui>
+      <div class="control-group">
+        <span class="control-label">Member preview</span>
+        <span>Delivery, alerts, and preference tuning</span>
+      </div>
+      <label class="toggle">
+        <input id="screenshot-toggle" type="checkbox" />
+        <span>Screenshot mode</span>
+      </label>
+      <a href="/">Open homepage preview</a>
+    </div>
+
+    <main class="page-shell">
+      <section class="panel member-hero">
+        <div>
+          <p class="eyebrow">Fuer dich</p>
+          <h1>Deine passenden Deals und der naechste Digest auf einen Blick.</h1>
+          <p class="lead">
+            Mitglieder sehen passende Angebote frueher und koennen Alerts sowie
+            Praeferenzen ohne Umwege nachschaerfen.
+          </p>
+        </div>
+        <div class="badge-row">
+          <span class="badge badge-success">Digest gesendet</span>
+          <span class="badge badge-warning">WhatsApp ausstehend</span>
+          <span class="badge">Praeferenzen: teiloptimiert</span>
+        </div>
+      </section>
+
+      <section class="three-up">
+        <article class="panel panel-contrast">
+          <p class="eyebrow">Lieferstatus</p>
+          <h2>Letzter Digest</h2>
+          <p>Gesendet heute, 07:00 Uhr</p>
+          <p class="panel-label">Naechster Lauf geplant fuer Freitag, 07:00 Uhr</p>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Alerts</p>
+          <h2>Hot-Deal Kanaele</h2>
+          <ul class="stack-list">
+            <li><span class="badge badge-success">E-Mail aktiv</span> sofortige Hot-Deals erlaubt</li>
+            <li><span class="badge badge-warning">WhatsApp ausstehend</span> Kanal bestaetigen</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Praeferenzen</p>
+          <h2>Verbesserungspotenzial</h2>
+          <ul class="stack-list">
+            <li><span class="badge">Marken: 4</span> Davidoff, Padron, Fuente, AJ Fernandez</li>
+            <li><span class="badge">Formate: 2</span> Robusto, Toro</li>
+            <li><span class="badge badge-warning">Shops unvollstaendig</span> noch keine Ausschluesse</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <p class="eyebrow">Neu fuer dich</p>
+          <h2>Treffer, die heute besonders relevant sind.</h2>
+        </div>
+        <div class="archive-grid">
+          <article class="deal-card">
+            <span class="badge badge-accent">Neu fuer Mitglieder</span>
+            <h3>Padron 2000 Maduro</h3>
+            <p class="deal-meta">Zigarrenversand · Maduro</p>
+            <p class="deal-price">14,90 EUR <span>passt zu deinem Preisrahmen</span></p>
+            <p class="deal-foot">Alert-Potenzial: hoch</p>
+          </article>
+          <article class="deal-card">
+            <span class="badge badge-accent">Digest Highlight</span>
+            <h3>Davidoff Winston Churchill Robusto</h3>
+            <p class="deal-meta">Cigarworld · Robusto</p>
+            <p class="deal-price">18,90 EUR <span>starkes Marken-Match</span></p>
+            <p class="deal-foot">im heutigen Digest enthalten</p>
+          </article>
+          <article class="deal-card">
+            <span class="badge badge-accent">Beobachten</span>
+            <h3>Arturo Fuente Gran Reserva</h3>
+            <p class="deal-meta">StarkeZigarren · Toro</p>
+            <p class="deal-price">12,50 EUR <span>unter deiner Komfortzone</span></p>
+            <p class="deal-foot">noch kein Hot-Deal, aber relevant</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="two-column">
+        <article class="panel">
+          <p class="eyebrow">Quick actions</p>
+          <h2>Was du in unter einer Minute anpassen kannst.</h2>
+          <ul class="stack-list">
+            <li><span class="badge">Marken</span> Lieblingsmarken anpassen</li>
+            <li><span class="badge">Preisrahmen</span> Preisgrenzen enger fassen</li>
+            <li><span class="badge">Shops</span> Haendler einschliessen oder ausschliessen</li>
+            <li><span class="badge">Kanaele</span> Hot-Deal-Alerts scharf oder leise stellen</li>
+          </ul>
+        </article>
+        <article class="panel panel-contrast">
+          <p class="eyebrow">UX note</p>
+          <h2>Member view for README</h2>
+          <p>
+            This screen concentrates delivery status, channel state, relevance, and
+            preference tuning into a single screenshot-friendly frame.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/ux-preview.js"></script>
+  </body>
+</html>
