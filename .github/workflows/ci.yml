@@ -9,6 +9,12 @@ on:
   pull_request:
     branches:
       - main
+  pull_request_target:
+    types:
+      - labeled
+      - synchronize
+      - reopened
+      - ready_for_review
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -47,3 +53,26 @@ jobs:
         run: |
           echo "::notice::Typecheck is intentionally excluded from required CI for now."
           echo "::notice::apps/site still imports removed @rauchbar/deals-core symbols and must be aligned before pnpm -r typecheck can go green."
+
+  enable-pr-reviewer-automerge:
+    name: Enable Auto-Merge For pr-reviewer Approval
+    if: >
+      github.event_name == 'pull_request_target' &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.draft == false &&
+      contains(github.event.pull_request.labels.*.name, 'pr-reviewer-approved')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Enable GitHub auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr merge "$PR_NUMBER" --auto --squash --delete-branch=false
+
+      - name: Auto-merge guidance
+        run: |
+          echo "::notice::Auto-merge requested because the PR carries the pr-reviewer-approved label."
+          echo "::notice::Repository Settings > General > Pull Requests > Allow auto-merge must be enabled before this step can succeed."
