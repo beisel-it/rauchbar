@@ -4,7 +4,7 @@ Stand: 2026-03-25
 
 Dieses Dokument ist die erste Betriebsgrundlage fuer Staging- und Produktionsdeployments auf Basis von `render.yaml`. Es ist bewusst knapp, aber konkret genug fuer die naechste Delivery-Stufe.
 
-In diesem Branch deckt `render.yaml` nur die provisionierbaren Infrastrukturteile ab. Die App-Service-Deploys fuer Site, Admin und Worker werden erst aktiviert, wenn die zugehoerigen Runtime-Artefakte auf `main` integriert sind.
+In diesem Branch deckt `render.yaml` sowohl die provisionierbaren Infrastrukturteile als auch die aktivierten App-Services fuer `site`, `admin` und `worker` ab.
 
 ## Voraussetzungen
 
@@ -18,10 +18,11 @@ In diesem Branch deckt `render.yaml` nur die provisionierbaren Infrastrukturteil
 
 1. Merge auf `main` nur bei gruener CI.
 2. Render synced `staging` mit `autoDeployTrigger: checksPass`.
-3. Nach Infra-Sync pruefen:
+3. Nach Blueprint-Sync pruefen:
    - Postgres und Key Value wurden im richtigen Environment angelegt
    - Shared Env-Groups enthalten die erwarteten Werte
-4. Nach dem spaeteren Aktivieren der App-Services pruefen:
+   - die Services `rauchbar-site-staging`, `rauchbar-admin-staging` und `rauchbar-worker-staging` sind angelegt
+4. Danach pruefen:
    - `site`: `GET /health/live`, `GET /health/ready`
    - `admin`: `GET /health/live`, `GET /health/ready`
    - `worker`: `GET /healthz`, `GET /readyz`
@@ -36,9 +37,9 @@ In diesem Branch deckt `render.yaml` nur die provisionierbaren Infrastrukturteil
    - geplante Migration ist ausgefuehrt
    - Provider-Secrets sind vorhanden
    - Domains und TLS sind gesund
-4. Nach Infra-Sync pruefen:
-   - DB, Key Value und Env-Groups stimmen mit dem Release-Plan ueberein
-5. Nach dem spaeteren App-Deploy pruefen:
+4. Nach Blueprint-Sync pruefen:
+   - DB, Key Value, Env-Groups und Services stimmen mit dem Release-Plan ueberein
+5. Nach dem App-Deploy pruefen:
    - `https://rauchbar.de/health/live`
    - `https://rauchbar.de/health/ready`
    - `https://admin.rauchbar.de/health/live`
@@ -93,7 +94,6 @@ In diesem Branch deckt `render.yaml` nur die provisionierbaren Infrastrukturteil
 
 ## Bekannte Luecken
 
-- Die konkreten Worker-Artefakte liegen upstream bereits vor, sind aber in diesem Branch noch nicht enthalten.
-- Site/Admin-Vertragsdetails liegen upstream auf einem bereinigten Branch vor, sind aber in diesem Branch noch nicht enthalten.
-- Ein Folge-PR muss die App-Service-Stanzas in `render.yaml` erst dann aktivieren, wenn die zugehoerigen Dockerfiles/Startkommandos wirklich auf `main` liegen.
+- Die produktive URL-Zuteilung fuer `staging.rauchbar.de` und `admin-staging.rauchbar.de` haengt weiter von DNS-/Domain-Mapping ausserhalb des Repos ab.
+- Der Worker ist als dauerhafter Service modelliert; separate `scrape`- und `digest`-Cron-Jobs fehlen noch.
 - Ein separates Restore-Runbook fuer Postgres-PITR fehlt noch und ist als naechster Ops-Schritt einzuplanen.

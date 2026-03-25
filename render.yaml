@@ -37,6 +37,8 @@ projects:
                 value: scrape-staging
               - key: QUEUE_CONCURRENCY
                 value: "2"
+              - key: SESSION_SECRET
+                generateValue: true
         databases:
           - name: rauchbar-postgres-staging
             databaseName: rauchbar
@@ -51,6 +53,110 @@ projects:
             plan: starter
             region: frankfurt
             ipAllowList: []
+          - type: web
+            runtime: docker
+            name: rauchbar-site-staging
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/site/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: checksPass
+            healthCheckPath: /health/live
+            envVars:
+              - fromGroup: rauchbar-staging-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "10000"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-staging
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: port
+          - type: web
+            runtime: docker
+            name: rauchbar-admin-staging
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/admin/Dockerfile
+            dockerContext: ./apps/admin
+            autoDeployTrigger: checksPass
+            healthCheckPath: /health/live
+            envVars:
+              - fromGroup: rauchbar-staging-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "10001"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-staging
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: port
+          - type: worker
+            runtime: docker
+            name: rauchbar-worker-staging
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/worker/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: checksPass
+            maxShutdownDelaySeconds: 120
+            envVars:
+              - fromGroup: rauchbar-staging-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "8080"
+              - key: WORKER_ROLE
+                value: worker
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-staging
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-staging
+                  property: port
 
       - name: production
         envVarGroups:
@@ -76,6 +182,8 @@ projects:
                 value: scrape-production
               - key: QUEUE_CONCURRENCY
                 value: "4"
+              - key: SESSION_SECRET
+                generateValue: true
         databases:
           - name: rauchbar-postgres-production
             databaseName: rauchbar
@@ -90,3 +198,107 @@ projects:
             plan: starter
             region: frankfurt
             ipAllowList: []
+          - type: web
+            runtime: docker
+            name: rauchbar-site-production
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/site/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: off
+            healthCheckPath: /health/live
+            envVars:
+              - fromGroup: rauchbar-production-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "10000"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-production
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: port
+          - type: web
+            runtime: docker
+            name: rauchbar-admin-production
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/admin/Dockerfile
+            dockerContext: ./apps/admin
+            autoDeployTrigger: off
+            healthCheckPath: /health/live
+            envVars:
+              - fromGroup: rauchbar-production-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "10001"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-production
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: port
+          - type: worker
+            runtime: docker
+            name: rauchbar-worker-production
+            plan: starter
+            region: frankfurt
+            dockerfilePath: ./apps/worker/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: off
+            maxShutdownDelaySeconds: 120
+            envVars:
+              - fromGroup: rauchbar-production-shared
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: "8080"
+              - key: WORKER_ROLE
+                value: worker
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rauchbar-postgres-production
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: connectionString
+              - key: REDIS_HOST
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: host
+              - key: REDIS_PORT
+                fromService:
+                  type: keyvalue
+                  name: rauchbar-redis-production
+                  property: port

@@ -43,6 +43,6 @@ Expected behavior:
 
 ## Remaining Gaps
 
-- Render descriptor files, env skeletons, and release/rollback mechanics are still external to this pass.
 - The admin runtime is intentionally only a deployment placeholder and still needs the full operator UI implementation.
 - No external API or auth integration is present yet, so readiness today is process/runtime readiness rather than upstream dependency readiness.
+- Dedicated `scrape` and `digest` service variants are not modeled yet in the active blueprint.

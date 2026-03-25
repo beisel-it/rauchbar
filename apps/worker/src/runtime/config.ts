@@ -17,8 +17,8 @@ export function getWorkerRuntimeConfig(env: NodeJS.ProcessEnv = process.env): Wo
     host: env.HOST || '0.0.0.0',
     port: parseInteger(env.PORT, 8080),
     logLevel: env.LOG_LEVEL || 'info',
-    workerRole: env.WORKER_ROLE || 'scrape-service',
-    scraperJobQueue: env.SCRAPER_JOB_QUEUE || 'scraper-jobs',
-    queueConcurrency: parseInteger(env.QUEUE_CONCURRENCY, 4),
+    workerRole: env.WORKER_ROLE || 'worker',
+    scraperJobQueue: env.SCRAPER_JOB_QUEUE || 'scrape-default',
+    queueConcurrency: parseInteger(env.QUEUE_CONCURRENCY, 1),
   };
 }
