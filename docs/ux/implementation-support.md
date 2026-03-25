@@ -10,6 +10,11 @@ This document translates the Rauchbar product definition into implementation-rea
 
 It is intended to reduce interpretation drift between product, frontend, admin, backend, and notification workstreams.
 
+Related artifacts:
+
+- `docs/ux/homepage-ia-wireframe.md`
+- `docs/ux/lifecycle-state-map.md`
+
 ## Shared UX Principles
 
 - Prioritize speed to relevant deals over browsing depth.
