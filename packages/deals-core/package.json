@@ -1,0 +1,14 @@
+{
+  "name": "@rauchbar/deals-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo \"deals-core build pending\"",
+    "lint": "echo \"deals-core lint pending\"",
+    "test": "echo \"deals-core tests pending\"",
+    "typecheck": "echo \"deals-core typecheck pending\""
+  }
+}
+

@@ -1,0 +1,13 @@
+{
+  "name": "@rauchbar/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"admin app scaffold pending\"",
+    "build": "echo \"admin build pending\"",
+    "lint": "echo \"admin lint pending\"",
+    "test": "echo \"admin tests pending\"",
+    "typecheck": "echo \"admin typecheck pending\""
+  }
+}
+

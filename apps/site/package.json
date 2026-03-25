@@ -1,0 +1,13 @@
+{
+  "name": "@rauchbar/site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"site app scaffold pending\"",
+    "build": "echo \"site build pending\"",
+    "lint": "echo \"site lint pending\"",
+    "test": "echo \"site tests pending\"",
+    "typecheck": "echo \"site typecheck pending\""
+  }
+}
+

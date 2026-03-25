@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@rauchbar/deals-core": [
+        "packages/deals-core/src"
+      ],
+      "@rauchbar/design-system": [
+        "packages/design-system/src"
+      ],
+      "@rauchbar/notifications": [
+        "packages/notifications/src"
+      ]
+    }
+  }
+}
+

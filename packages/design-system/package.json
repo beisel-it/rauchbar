@@ -1,0 +1,14 @@
+{
+  "name": "@rauchbar/design-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo \"design-system build pending\"",
+    "lint": "echo \"design-system lint pending\"",
+    "test": "echo \"design-system tests pending\"",
+    "typecheck": "echo \"design-system typecheck pending\""
+  }
+}
+

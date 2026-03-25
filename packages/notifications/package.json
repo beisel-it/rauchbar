@@ -1,0 +1,14 @@
+{
+  "name": "@rauchbar/notifications",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo \"notifications build pending\"",
+    "lint": "echo \"notifications lint pending\"",
+    "test": "echo \"notifications tests pending\"",
+    "typecheck": "echo \"notifications typecheck pending\""
+  }
+}
+

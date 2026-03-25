@@ -1,0 +1,13 @@
+{
+  "name": "@rauchbar/worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"worker scaffold pending\"",
+    "build": "echo \"worker build pending\"",
+    "lint": "echo \"worker lint pending\"",
+    "test": "echo \"worker tests pending\"",
+    "typecheck": "echo \"worker typecheck pending\""
+  }
+}
+

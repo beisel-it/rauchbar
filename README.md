@@ -1,0 +1,46 @@
+# 🚬 Rauchbar
+
+Rauchbar ist ein deutscher Newsletter- und Alert-Service fuer Zigarren-Deals. Nutzer melden sich mit ihren Praeferenzen an und erhalten woechentliche Digests, optional sofortige Hot-Deal-Benachrichtigungen per E-Mail oder WhatsApp. Deals werden erst nach einem Mitgliederfenster von einem Tag oeffentlich auf der Homepage sichtbar.
+
+## Produktkern
+
+- woechentliche Deal-Digests nach Marken-, Shop-, Preis- und Format-Praeferenzen
+- optionale Hot-Deal-Alerts per E-Mail oder WhatsApp
+- Mitglieder-exklusive Deal-Sicht vor der oeffentlichen Homepage
+- Scraping und Monitoring fuer die groessten deutschen Zigarren-Haendler
+- moderne Homepage, Admin-Konsole und wiederverwendbare Mailing-Designsprache
+
+## Monorepo-Struktur
+
+```text
+apps/
+  site/          Marketing- und Mitglieder-Homepage
+  admin/         Admin und Operations UI
+  worker/        Scraping, Monitoring, Digest- und Alert-Pipelines
+packages/
+  deals-core/    Gemeinsame Domainmodelle fuer Deals, Shops und Regeln
+  design-system/ Gemeinsame visuelle Sprache fuer UI und Mailings
+  notifications/ Kanaele fuer E-Mail und WhatsApp
+docs/
+  architecture/
+  product/
+  roadmap/
+```
+
+## Arbeitsmodell
+
+Rauchbar wird ueber ClawTeam in getrennten Workstreams entwickelt:
+
+- design
+- backend-scraping
+- admin
+- frontend-site
+- notifications
+
+## Nächste Schritte
+
+- Produkt- und Compliance-Scope schaerfen
+- Datenmodell fuer Deals, Shops, Alerts und Nutzerpraeferenzen stabilisieren
+- MVP fuer Site, Admin und Worker aufsetzen
+- erste Haendleradapter und Hot-Deal-Regeln definieren
+

@@ -1,0 +1,16 @@
+node_modules/
+.next/
+dist/
+coverage/
+.turbo/
+*.log
+.env
+.env.local
+.env.*.local
+.DS_Store
+__pycache__/
+
+# local clawteam compatibility
+.clawteam-data/
+.clawteam-data
+
