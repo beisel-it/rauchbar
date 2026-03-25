@@ -4,28 +4,28 @@ services:
       context: .
       dockerfile: Dockerfile
     working_dir: /workspace
-    command: sh -lc "pnpm install --no-frozen-lockfile && pnpm --filter @rauchbar/site dev"
+    command: sh -lc "pnpm install --no-frozen-lockfile && HOST=0.0.0.0 PORT=4173 pnpm --filter @rauchbar/site dev"
     volumes:
       - .:/workspace
       - pnpm-store:/pnpm/store
       - root-node-modules:/workspace/node_modules
       - site-node-modules:/workspace/apps/site/node_modules
     ports:
-      - "3000:3000"
+      - "4173:4173"
 
   admin:
     build:
       context: .
       dockerfile: Dockerfile
     working_dir: /workspace
-    command: sh -lc "pnpm install --no-frozen-lockfile && pnpm --filter @rauchbar/admin dev"
+    command: sh -lc "pnpm install --no-frozen-lockfile && HOST=0.0.0.0 PORT=10001 pnpm --filter @rauchbar/admin dev"
     volumes:
       - .:/workspace
       - pnpm-store:/pnpm/store
       - root-node-modules:/workspace/node_modules
       - admin-node-modules:/workspace/apps/admin/node_modules
     ports:
-      - "3001:3000"
+      - "10001:10001"
 
   worker:
     build:
