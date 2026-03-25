@@ -20,3 +20,27 @@ Die Admin-Konsole ist in drei Operations-Bereiche gegliedert:
 - Audit Log
 
 Die ausformulierte Produktdefinition liegt in [docs/product/admin-surface.md](../../../docs/product/admin-surface.md).
+
+## UX Scope
+
+- operator dashboard
+- shop and crawler health monitoring
+- deal review and approval queue
+- digest and hot-deal send operations
+
+## Required Navigation
+
+- Uebersicht
+- Shops
+- Deals
+- Freigaben
+- Versand
+
+## Implementation Reference
+
+See `docs/ux/implementation-support.md` for:
+
+- admin information architecture
+- dashboard questions and widgets
+- review queue row/detail requirements
+- delivery-state and failure-handling guidance
