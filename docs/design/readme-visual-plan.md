@@ -4,6 +4,8 @@
 
 This document defines how the top-level `README.md` should be extended once screenshot assets are available. It keeps the GitHub landing page visually coherent with the current product, UX, and embedded design handoff.
 
+For automation and publication rules around screenshot refresh, see `docs/design/screenshot-refresh-requirements.md`.
+
 The goal is not to dump every surface into the README. The goal is to create a short visual story:
 
 1. what Rauchbar is
