@@ -2,12 +2,26 @@
   "name": "@rauchbar/site",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "echo \"site app scaffold pending\"",
-    "build": "echo \"site build pending\"",
+    "dev": "vite",
+    "build": "vite build",
     "lint": "echo \"site lint pending\"",
     "test": "echo \"site tests pending\"",
-    "typecheck": "echo \"site typecheck pending\""
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@rauchbar/deals-core": "workspace:*",
+    "@rauchbar/design-system": "workspace:*",
+    "@rauchbar/notifications": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
   }
 }
-
