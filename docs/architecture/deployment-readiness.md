@@ -36,9 +36,13 @@ Expected behavior:
 - Both services are stateless and do not write runtime data to local disk.
 - The site serves build artifacts from `apps/site/dist`.
 - The admin service is deployable as a placeholder, but it is not the final MVP admin UI.
+- Local Docker Compose startup now exposes the same ports the services actually bind:
+  - site: `4173:4173`
+  - admin: `10001:10001`
+- Compose explicitly injects `HOST=0.0.0.0` so the web services are reachable from the host machine.
 
 ## Remaining Gaps
 
-- Render descriptor files, env skeletons, and release/rollback mechanics are still external to this pass.
 - The admin runtime is intentionally only a deployment placeholder and still needs the full operator UI implementation.
 - No external API or auth integration is present yet, so readiness today is process/runtime readiness rather than upstream dependency readiness.
+- Dedicated `scrape` and `digest` service variants are not modeled yet in the active blueprint.

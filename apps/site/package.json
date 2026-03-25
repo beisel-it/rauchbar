@@ -4,13 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "dev": "vite --host ${HOST:-127.0.0.1} --port ${PORT:-4173} --strictPort",
     "build": "vite build",
     "lint": "echo \"site lint pending\"",
     "start": "node server.mjs",
     "test": "echo \"site tests pending\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort"
+    "preview": "vite preview --host ${HOST:-127.0.0.1} --port ${PORT:-4173} --strictPort"
   },
   "dependencies": {
     "@rauchbar/deals-core": "workspace:*",

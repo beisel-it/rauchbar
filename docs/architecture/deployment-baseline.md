@@ -41,9 +41,15 @@ This document defines the current deployment contract for Rauchbar web surfaces 
   - `/health/ready`: placeholder service is booted and ready to answer traffic
 - state model: placeholder stateless web surface until the full admin UI replaces it
 
-## Descriptor Inputs Still Needed
+## Current Descriptor Shape
 
-- concrete Render descriptor files and env schemas per service
-- image build strategy per app versus shared root image
-- release/rollback wiring
+- `render.yaml` defines environment-scoped `site`, `admin`, and `worker` services for staging and production
+- `apps/site/Dockerfile` builds and packages the static site plus Node health server
+- `apps/admin/Dockerfile` packages the placeholder admin runtime
+- `apps/worker/Dockerfile` packages the worker runtime with `PORT=8080`
+
+## Remaining Inputs
+
+- release-tag or promotion mechanics if production should move beyond manual Render deploys
+- dedicated cron/service modeling for `WORKER_ROLE=scrape|digest`
 - environment variable ownership once real API, auth, and notification providers are connected

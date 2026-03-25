@@ -2,7 +2,7 @@
 
 Stand: 2026-03-25
 
-Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. Sie ist die Referenz fuer `render.yaml`, `.env.example` und spaetere Secret-Einpflege in Render.
+Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. In diesem Branch enthaelt `render.yaml` jetzt die aktivierten Stanzas fuer `site`, `admin` und `worker` sowie die zugehoerigen Environment Groups und Managed Services.
 
 ## Geltungsbereich
 
@@ -10,29 +10,32 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. S
 - `preview` bleibt im MVP manuell und selektiv fuer `site` und `admin`.
 - `staging` und `production` werden in `render.yaml` modelliert.
 - Secrets werden in Render oder GitHub gepflegt, nicht im Repo.
+- `render.yaml` provisioniert sowohl die Shared Infrastructure als auch die derzeit deploybaren Web- und Worker-Services.
 
 ## App- und Runtime-Vertrag
 
 ### Site
 
-- Docker-Web-Service
+- Zielbild: Docker-Web-Service
 - Build: `corepack pnpm --filter @rauchbar/site build`
 - Start: `corepack pnpm --filter @rauchbar/site start`
 - Bind: `HOST=0.0.0.0`, `PORT` aus Env
 - Health: `GET /health/live`, `GET /health/ready`
+- Aktueller Branch-Zustand: dedizierter Docker-Build vorhanden; der Service ist im Blueprint fuer Staging und Production aktiviert.
 
 ### Admin
 
 - Zielvertrag identisch zu Site
-- aktueller Stand ist ein deploybarer Placeholder-Web-Service; das Descriptor-Skelett bildet genau diesen Zielvertrag ab
+- aktueller Stand: deploybarer Placeholder-Web-Service mit eigener Docker-Verpackung; im Blueprint fuer Staging und Production aktiviert
 
 ### Worker
 
-- Docker-Service mit HTTP-Startprozess: `corepack pnpm --filter @rauchbar/worker start`
+- Zielbild: Docker-Service mit HTTP-Startprozess `corepack pnpm --filter @rauchbar/worker start`
 - Standard-Port: `8080`
 - Health: `GET /healthz`, `GET /readyz`
 - Logs: newline-delimited JSON auf `stdout`/`stderr`
 - Rollensteuerung ueber `WORKER_ROLE=worker|scrape|digest`
+- Aktueller Branch-Zustand: der Worker-Dockerfile und die Health-Runtime sind integriert; der Worker-Service ist im Blueprint fuer Staging und Production aktiviert.
 
 ## Variablenmatrix
 
@@ -41,7 +44,8 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. S
 | `NODE_ENV` | all | `development` | `production` | `production` | `production` | Runtime-Modus |
 | `APP_ENV` | all | `local` | `preview` | `staging` | `production` | Fachliches Environment |
 | `HOST` | site, admin | `0.0.0.0` | `0.0.0.0` | `0.0.0.0` | `0.0.0.0` | HTTP bind host |
-| `PORT` | site, admin | `3000`/`3001` | provider | `10000` | `10000` | Render-intern fuer Web-Container |
+| `PORT` | site | `3000` | provider | `10000` | `10000` | Docker-Default im Site-Image, Render setzt explizit |
+| `PORT` | admin | `3001` | provider | `10001` | `10001` | Docker-Default im Admin-Image, Render setzt explizit |
 | `PORT` | worker | `8080` | `8080` | `8080` | `8080` | Worker-Health-Port |
 | `LOG_LEVEL` | all | `debug` | `info` | `info` | `info` | Muss JSON-Logging nicht verhindern |
 | `DATABASE_URL` | all app services | local DB | preview DB | staging DB | prod DB | Secret/managed reference |
@@ -55,7 +59,8 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. S
 | `QUEUE_CONCURRENCY` | worker | `1` | `1` | `2` | `4` | tuning pro environment |
 | `ALLOW_REAL_EMAIL_SEND` | notifications | `false` | `false` | `false` | `true` | harte Safety-Grenze |
 | `ALLOW_REAL_WHATSAPP_SEND` | notifications | `false` | `false` | `false` | `true` | harte Safety-Grenze |
-| `SESSION_SECRET` | site, admin | local secret | preview secret | generated/secret | secret | nie committen |
+| `SESSION_SECRET` | site, admin | local secret | preview secret | generated in env group | generated in env group | nie committen |
+| `REDIS_URL` | all app services | local redis URL | preview Redis URL | staging Redis URL | prod Redis URL | private-network connection string |
 | `EMAIL_PROVIDER_API_KEY` | worker/notifications | local sandbox | preview sandbox | staging sandbox | prod secret | `sync: false` |
 | `WHATSAPP_PROVIDER_API_KEY` | worker/notifications | local sandbox | preview sandbox | staging sandbox | prod secret | `sync: false` |
 | `SENTRY_DSN` | all | optional | preview DSN | staging DSN | prod DSN | `sync: false` |
@@ -66,7 +71,7 @@ Folgende Werte muessen beim Provisioning manuell oder ueber den Provider gesetzt
 
 - alle echten Provider-API-Keys
 - alle DSNs/Webhook-Secrets
-- Production-`SESSION_SECRET`
+- zusaetzliche manuelle Provider-Secrets fuer Notifications/Auth
 - eventuelle OAuth-/Auth-Provider-Secrets
 - zusaetzliche DB- oder Queue-Credentials ausserhalb der Render-Referenzen
 
@@ -77,8 +82,12 @@ Folgende Werte muessen beim Provisioning manuell oder ueber den Provider gesetzt
 - Preview fuer Worker ist standardmaessig deaktiviert.
 - Preview-Datenbank darf Testdaten enthalten, aber keine Kopie produktiver personenbezogener Daten ohne gesonderte Freigabe.
 
-## Offene Integrationspunkte
+## Aktivierte App-Services
 
-- Der Worker-Vertrag ist upstream bereits definiert und muss vor dem ersten echten Render-Sync mit diesem Blueprint zusammengefuehrt werden.
-- Site- und Admin-Runtime liegen auf einem sauberen Upstream-Branch vor und muessen nach dem Merge per Staging-Smoke-Test gegen `render.yaml` bestaetigt werden.
-- Falls Admin beim Merge doch nicht denselben Web-Service-Vertrag behaelt, bleibt `rauchbar-admin-*` im Blueprint blocked statt stillschweigend falsch deployed.
+Aktuell definiert `render.yaml` folgende Services pro Environment:
+
+- `site` als Docker-Web-Service mit `GET /health/live` und `GET /health/ready`
+- `admin` als Docker-Web-Service mit dem gleichen Health-Vertrag
+- `worker` als Docker-Worker mit `PORT=8080` fuer interne Health-Probes
+
+Separate `scrape`- und `digest`-Cron-Jobs bleiben ein Folge-Schritt, sobald die Worker-Rollen ueber eigene Startprofile oder Commands modelliert werden.
