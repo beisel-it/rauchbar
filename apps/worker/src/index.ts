@@ -1,13 +1,24 @@
 import type { PublishedDeal } from '@rauchbar/deals-core';
 import type {
+  HotDealDealItem,
+  HotDealEmailCommand,
+  HotDealRecipient,
+  HotDealWhatsappCommand,
+  NotificationDecision,
+  NotificationDispatchRecord,
+  WhatsappNotificationChannel,
   WeeklyDigestDealItem,
   WeeklyDigestEmailCommand,
   WeeklyDigestRecipient,
 } from '@rauchbar/notifications';
+import { canQueueNotification, createQueuedDispatch } from '@rauchbar/notifications';
 
 export * from './scrapers/registry.ts';
 export * from './scrapers/types.ts';
 export * from './scrapers/cigarworld-webshop.ts';
+
+const HOT_DEAL_EMAIL_CHANNEL = 'email-hot-deal';
+const HOT_DEAL_WHATSAPP_CHANNEL: WhatsappNotificationChannel = 'whatsapp-hot-deal';
 
 export type WeeklyDigestBuildInput = {
   baseUrl: string;
@@ -20,6 +31,24 @@ export type WeeklyDigestBuildInput = {
 };
 
 export const WEEKLY_DIGEST_TEMPLATE = 'weekly-digest';
+export const HOT_DEAL_EMAIL_TEMPLATE = 'hot-deal-email';
+export const HOT_DEAL_WHATSAPP_TEMPLATE = 'hot-deal-whatsapp';
+
+export type HotDealBuildInput = {
+  baseUrl: string;
+  deal: PublishedDeal;
+  decisions: NotificationDecision[];
+  dispatchedAt: string;
+  recipient: HotDealRecipient;
+  unsubscribeUrl: string;
+  merchantDisplayNames?: Record<string, string>;
+};
+
+export type HotDealDispatchPlan = {
+  channel: typeof HOT_DEAL_EMAIL_CHANNEL | typeof HOT_DEAL_WHATSAPP_CHANNEL;
+  dispatch: NotificationDispatchRecord;
+  command: HotDealEmailCommand | HotDealWhatsappCommand;
+};
 
 export function selectWeeklyDigestDeals(deals: PublishedDeal[]): PublishedDeal[] {
   return deals.filter((deal) => deal.channels.includes('digest'));
@@ -81,6 +110,57 @@ export function buildWeeklyDigestEmailCommand(
   };
 }
 
+export function buildHotDealDispatchPlans(input: HotDealBuildInput): HotDealDispatchPlan[] {
+  const plans: HotDealDispatchPlan[] = [];
+  const hotDealItem = mapDealToHotDealItem(input.baseUrl, input.deal, input.merchantDisplayNames);
+
+  if (
+    canQueueNotification({
+      channel: HOT_DEAL_EMAIL_CHANNEL,
+      deal: input.deal,
+      decisions: input.decisions,
+      recipient: input.recipient,
+      at: input.dispatchedAt,
+    }).allowed
+  ) {
+    plans.push({
+      channel: HOT_DEAL_EMAIL_CHANNEL,
+      dispatch: createQueuedDispatch({
+        dispatchId: buildHotDealDispatchId(input.recipient.memberId, input.deal.id, HOT_DEAL_EMAIL_CHANNEL),
+        dealId: input.deal.id,
+        channel: HOT_DEAL_EMAIL_CHANNEL,
+      }),
+      command: buildHotDealEmailCommand(input, hotDealItem),
+    });
+  }
+
+  if (
+    canQueueNotification({
+      channel: HOT_DEAL_WHATSAPP_CHANNEL,
+      deal: input.deal,
+      decisions: input.decisions,
+      recipient: input.recipient,
+      at: input.dispatchedAt,
+    }).allowed
+  ) {
+    plans.push({
+      channel: HOT_DEAL_WHATSAPP_CHANNEL,
+      dispatch: createQueuedDispatch({
+        dispatchId: buildHotDealDispatchId(
+          input.recipient.memberId,
+          input.deal.id,
+          HOT_DEAL_WHATSAPP_CHANNEL,
+        ),
+        dealId: input.deal.id,
+        channel: HOT_DEAL_WHATSAPP_CHANNEL,
+      }),
+      command: buildHotDealWhatsappCommand(input, hotDealItem),
+    });
+  }
+
+  return plans;
+}
+
 function buildDigestId(memberId: string, weekOf: string): string {
   return `digest-${memberId}-${weekOf}`;
 }
@@ -118,4 +198,97 @@ function buildDigestPreviewText(items: WeeklyDigestDealItem[]): string {
   }
 
   return `${leadItem.title} und ${items.length - 1} weitere Deals diese Woche.`;
+}
+
+function mapDealToHotDealItem(
+  baseUrl: string,
+  deal: PublishedDeal,
+  merchantDisplayNames?: Record<string, string>,
+): HotDealDealItem {
+  return {
+    dealId: deal.id,
+    title: deal.title,
+    merchantName: merchantDisplayNames?.[deal.merchantId] ?? deal.merchantId,
+    currentPriceCents: deal.currentPrice.amountCents,
+    previousPriceCents: deal.referencePrice?.amountCents,
+    savingsPercent: deal.savingsPercent,
+    score: deal.score,
+    sourceUrl: buildDealUrl(baseUrl, deal.slug),
+  };
+}
+
+function buildHotDealEmailCommand(
+  input: HotDealBuildInput,
+  deal: HotDealDealItem,
+): HotDealEmailCommand {
+  return {
+    channel: 'email',
+    template: HOT_DEAL_EMAIL_TEMPLATE,
+    subject: `Rauchbar Hot Deal: ${deal.title}`,
+    previewText: buildHotDealPreviewText(deal),
+    recipient: {
+      email: input.recipient.email ?? '',
+    },
+    payload: {
+      alertId: buildHotDealAlertId(input.recipient.memberId, input.deal.id, HOT_DEAL_EMAIL_CHANNEL),
+      recipient: input.recipient,
+      dispatchedAt: input.dispatchedAt,
+      deal,
+      unsubscribeUrl: input.unsubscribeUrl,
+    },
+    metadata: {
+      notificationType: HOT_DEAL_EMAIL_CHANNEL,
+      recipientMemberId: input.recipient.memberId,
+      dealId: input.deal.id,
+    },
+  };
+}
+
+function buildHotDealWhatsappCommand(
+  input: HotDealBuildInput,
+  deal: HotDealDealItem,
+): HotDealWhatsappCommand {
+  return {
+    channel: 'whatsapp',
+    template: HOT_DEAL_WHATSAPP_TEMPLATE,
+    recipient: {
+      e164: input.recipient.whatsappE164 ?? '',
+    },
+    payload: {
+      alertId: buildHotDealAlertId(input.recipient.memberId, input.deal.id, HOT_DEAL_WHATSAPP_CHANNEL),
+      recipient: {
+        memberId: input.recipient.memberId,
+        locale: input.recipient.locale,
+        whatsappE164: input.recipient.whatsappE164,
+      },
+      dispatchedAt: input.dispatchedAt,
+      deal,
+      optInRecordedAt: input.recipient.whatsappOptedInAt ?? '',
+    },
+    metadata: {
+      notificationType: HOT_DEAL_WHATSAPP_CHANNEL,
+      recipientMemberId: input.recipient.memberId,
+      dealId: input.deal.id,
+    },
+  };
+}
+
+function buildHotDealDispatchId(memberId: string, dealId: string, channel: string): string {
+  return `dispatch-${memberId}-${dealId}-${channel}`;
+}
+
+function buildHotDealAlertId(memberId: string, dealId: string, channel: string): string {
+  return `alert-${memberId}-${dealId}-${channel}`;
+}
+
+function buildHotDealPreviewText(deal: HotDealDealItem): string {
+  if (deal.previousPriceCents) {
+    return `${deal.title} jetzt fuer ${formatCents(deal.currentPriceCents)} statt ${formatCents(deal.previousPriceCents)}.`;
+  }
+
+  return `${deal.title} ist jetzt als Hot Deal verfuegbar.`;
+}
+
+function formatCents(amountCents: number): string {
+  return `${(amountCents / 100).toFixed(2)} EUR`;
 }

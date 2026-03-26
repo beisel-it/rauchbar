@@ -40,3 +40,9 @@ Siehe `docs/architecture/worker-runtime-contract.md` fuer den deployment-relevan
 - Der Worker baut fuer den MVP einen provider-faehigen E-Mail-Command fuer den Wochen-Digest.
 - Versand-Seitenwirkungen liegen ausserhalb des Workers und ausserhalb des Digest-Builders.
 - Nur Deals mit dem Channel `digest` landen im woechentlichen E-Mail-Digest.
+
+## MVP Hot Deals
+
+- Der Worker baut fuer den MVP provider-faehige Commands fuer `email-hot-deal` und `whatsapp-hot-deal`.
+- Queue-Time-Gating laeuft ueber `canQueueNotification(...)`, damit Deal-Channel, Review-/Publikationsstatus, Mitgliederfenster und Empfaenger-Praeferenzen vor dem Versand geprueft werden.
+- Pro Deal und Empfaenger entsteht hoechstens ein Dispatch pro Hot-Deal-Kanal.
