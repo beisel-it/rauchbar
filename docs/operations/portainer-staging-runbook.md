@@ -55,7 +55,6 @@ Der bestehende lokale Maschinenpfad nutzt in `docker-compose.deploy.yml` einen r
 6. Deploy auslösen.
 
 Vor dem eigentlichen Stack-Deploy müssen die referenzierten Images bereits in GHCR vorhanden sein. Dafür ist `.github/workflows/portainer-image-publish.yml` der vorgesehene Publish-Pfad.
-
 Solange `ALLOW_REAL_EMAIL_SEND=false` und `ALLOW_REAL_WHATSAPP_SEND=false` gesetzt bleiben, dürfen `EMAIL_PROVIDER_API_KEY` und `WHATSAPP_PROVIDER_API_KEY` leer bleiben. Sie sind für den aktuellen Aktivierungs- und Deploy-Pfad nicht mehr blockierend.
 
 ## Verifikation

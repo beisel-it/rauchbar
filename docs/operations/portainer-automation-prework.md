@@ -63,9 +63,9 @@ Diese Werte oder Zugänge müssen außerhalb des Repos bereitgestellt werden:
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
 - `SESSION_SECRET`
-- `EMAIL_PROVIDER_API_KEY`
-- `WHATSAPP_PROVIDER_API_KEY`
 - optional: `SENTRY_DSN`
+- optional: `EMAIL_PROVIDER_API_KEY`
+- optional: `WHATSAPP_PROVIDER_API_KEY`
 
 ### Externe Betriebsinputs
 

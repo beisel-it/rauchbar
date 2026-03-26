@@ -61,8 +61,8 @@ Diese Matrix beschreibt die deploybaren Konfigurationsartefakte fuer Rauchbar. I
 | `ALLOW_REAL_WHATSAPP_SEND` | notifications | `false` | `false` | `false` | `true` | harte Safety-Grenze |
 | `SESSION_SECRET` | site, admin | local secret | preview secret | generated in env group | generated in env group | nie committen |
 | `REDIS_URL` | all app services | local redis URL | preview Redis URL | staging Redis URL | prod Redis URL | private-network connection string |
-| `EMAIL_PROVIDER_API_KEY` | worker/notifications | local sandbox | preview sandbox | staging sandbox | prod secret | `sync: false` |
-| `WHATSAPP_PROVIDER_API_KEY` | worker/notifications | local sandbox | preview sandbox | staging sandbox | prod secret | `sync: false` |
+| `EMAIL_PROVIDER_API_KEY` | worker/notifications | optional | optional | optional solange reale Sends aus sind | prod secret | nur nötig für aktive Mail-Provider-Tests |
+| `WHATSAPP_PROVIDER_API_KEY` | worker/notifications | optional | optional | optional solange reale Sends aus sind | prod secret | nur nötig für aktive WhatsApp-Provider-Tests |
 | `SENTRY_DSN` | all | optional | preview DSN | staging DSN | prod DSN | `sync: false` |
 
 ## Nicht im Repo hinterlegte Werte
