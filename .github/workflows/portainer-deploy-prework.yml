@@ -20,6 +20,7 @@ jobs:
       PORTAINER_ACCESS_TOKEN: ${{ secrets.PORTAINER_ACCESS_TOKEN }}
       ACME_EMAIL: ${{ vars.ACME_EMAIL }}
       PUBLIC_BIND_IPV4: ${{ vars.PUBLIC_BIND_IPV4 }}
+      GHCR_NAMESPACE: ${{ vars.GHCR_NAMESPACE }}
       SITE_HOST: ${{ vars.SITE_HOST }}
       ADMIN_HOST: ${{ vars.ADMIN_HOST }}
       SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
@@ -40,6 +41,9 @@ jobs:
       EMAIL_PROVIDER_API_KEY: ${{ secrets.EMAIL_PROVIDER_API_KEY }}
       WHATSAPP_PROVIDER_API_KEY: ${{ secrets.WHATSAPP_PROVIDER_API_KEY }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,6 +51,9 @@ jobs:
 
       - name: Make helper scripts executable
         run: chmod +x ops/portainer/*.sh
+
+      - name: Derive image tag from target ref
+        run: echo "IMAGE_TAG=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Check Portainer automation inputs
         run: ops/portainer/check-automation-inputs.sh
@@ -56,6 +63,16 @@ jobs:
 
       - name: Render stack environment file
         run: ops/portainer/render-stack-env.sh --output .tmp/stack.env
+
+      - name: Log in to GHCR
+        run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Verify published images exist for target tag
+        run: |
+          docker manifest inspect "${GHCR_NAMESPACE}/rauchbar-caddy:${IMAGE_TAG}" >/dev/null
+          docker manifest inspect "${GHCR_NAMESPACE}/rauchbar-site:${IMAGE_TAG}" >/dev/null
+          docker manifest inspect "${GHCR_NAMESPACE}/rauchbar-admin:${IMAGE_TAG}" >/dev/null
+          docker manifest inspect "${GHCR_NAMESPACE}/rauchbar-worker:${IMAGE_TAG}" >/dev/null
 
       - name: Validate compose configuration with rendered environment
         run: docker compose --env-file .tmp/stack.env -f docker-compose.portainer.yml config
@@ -76,6 +93,7 @@ jobs:
             echo "## Portainer deploy prework complete"
             echo
             echo "The repository-side Portainer stack bundle is valid."
+            echo "Published GHCR images for the target commit were found."
             echo "Actual deployment still requires a Portainer-side stack create/update action using:"
             echo "- PORTAINER_BASE_URL"
             echo "- PORTAINER_ENDPOINT_ID"

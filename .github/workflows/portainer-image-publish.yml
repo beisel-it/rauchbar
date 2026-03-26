@@ -1,0 +1,75 @@
+name: Portainer Image Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'clawteam/**'
+    paths:
+      - 'apps/site/**'
+      - 'apps/admin/**'
+      - 'apps/worker/**'
+      - 'ops/caddy/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.base.json'
+
+concurrency:
+  group: portainer-image-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Build and publish Portainer images
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_name: rauchbar-caddy
+            context: ops/caddy
+            dockerfile: ops/caddy/Dockerfile.portainer
+          - image_name: rauchbar-site
+            context: .
+            dockerfile: apps/site/Dockerfile
+          - image_name: rauchbar-admin
+            context: .
+            dockerfile: apps/admin/Dockerfile
+          - image_name: rauchbar-worker
+            context: .
+            dockerfile: apps/worker/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=ref,event=branch
+            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
