@@ -54,8 +54,12 @@ jobs:
       - name: Validate compose configuration with example environment
         run: docker compose --env-file ops/portainer/stack.env.example -f docker-compose.portainer.yml config
 
-      - name: Build Portainer-specific Caddy image
-        run: docker build -f ops/caddy/Dockerfile.portainer ops/caddy
+      - name: Build Portainer deployment images
+        run: |
+          docker compose \
+            --env-file ops/portainer/stack.env.example \
+            -f docker-compose.portainer.yml \
+            build caddy site admin worker
 
       - name: Upload Portainer stack bundle
         uses: actions/upload-artifact@v4
