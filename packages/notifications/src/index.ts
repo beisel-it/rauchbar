@@ -77,6 +77,52 @@ export type NotificationDispatchRecord = DealDispatch & {
   providerStatus?: string;
 };
 
+export type EmailAddress = {
+  email: string;
+  name?: string;
+};
+
+export type EmailDeliveryCommand<TPayload> = {
+  channel: 'email';
+  template: string;
+  subject: string;
+  previewText?: string;
+  recipient: EmailAddress;
+  payload: TPayload;
+  metadata?: Record<string, string>;
+};
+
+export type WeeklyDigestRecipient = EmailAddress & {
+  memberId: string;
+  locale: 'de-DE';
+  timezone: string;
+};
+
+export type WeeklyDigestDealItem = {
+  dealId: string;
+  title: string;
+  merchantName: string;
+  currentPriceCents: number;
+  previousPriceCents?: number;
+  publishedAt?: string;
+  sourceUrl: string;
+};
+
+export type WeeklyDigestEmailPayload = {
+  digestId: string;
+  recipient: WeeklyDigestRecipient;
+  weekOf: string;
+  generatedAt: string;
+  introLine: string;
+  deals: WeeklyDigestDealItem[];
+  totalDeals: number;
+  unsubscribeUrl: string;
+};
+
+export type WeeklyDigestEmailCommand = EmailDeliveryCommand<WeeklyDigestEmailPayload> & {
+  template: 'weekly-digest';
+};
+
 export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationChannelContract> = {
   digest: {
     channel: 'digest',
