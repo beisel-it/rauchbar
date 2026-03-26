@@ -65,11 +65,77 @@ button:disabled {
   backdrop-filter: blur(14px);
 }
 
+.panel-contrast {
+  background:
+    linear-gradient(150deg, rgba(19, 17, 13, 0.96), rgba(65, 37, 10, 0.92)),
+    var(--color-ink);
+  color: #fff7ef;
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.45fr 0.95fr;
   gap: 24px;
   padding: 28px;
+}
+
+.notify-shell {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
+.notify-hero {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.75fr);
+  padding: 28px;
+}
+
+.notify-copy,
+.notify-side {
+  min-width: 0;
+}
+
+.notify-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.notify-form {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.notify-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.notify-form input {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  min-height: 52px;
+  padding: 0 16px;
+}
+
+.notify-side {
+  border-radius: calc(var(--radius-panel) - 6px);
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.notify-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .hero-copy h1,
@@ -592,6 +658,7 @@ button:disabled {
 }
 
 @media (max-width: 960px) {
+  .notify-hero,
   .hero,
   .metrics,
   .archive-state-grid,

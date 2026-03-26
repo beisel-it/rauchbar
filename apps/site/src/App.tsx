@@ -76,6 +76,14 @@ const nextStep = (step: SignupStepId): SignupStepId =>
 const previousStep = (step: SignupStepId): SignupStepId =>
   signupSteps[Math.max(getStepIndex(step) - 1, 0)]!.id;
 
+const getPathname = () => {
+  if (typeof window === 'undefined') {
+    return '/';
+  }
+
+  return window.location.pathname || '/';
+};
+
 const buildSignupPayload = (draft: SignupDraft) => ({
   email: draft.email,
   consentAccepted: draft.consentAccepted,
@@ -95,6 +103,16 @@ const buildSignupPayload = (draft: SignupDraft) => ({
 });
 
 export function App() {
+  const pathname = getPathname();
+
+  if (pathname === '/notify') {
+    return <NotifyPage />;
+  }
+
+  return <HomePage />;
+}
+
+function HomePage() {
   const [signupState, setSignupState] = useState<SignupDraft>(initialSignupDraft);
   const [currentStep, setCurrentStep] = useState<SignupStepId>('email');
   const [signupErrors, setSignupErrors] = useState<SignupErrors>({});
@@ -470,7 +488,7 @@ export function App() {
             )}
 
             {currentStep === 'complete' && (
-              <div className="signup-stage completion-stage">
+              <div className="signup-stage">
                 <div className="info-callout info-callout-success">
                   <strong>Onboarding abgeschlossen</strong>
                   <p>
@@ -586,6 +604,78 @@ export function App() {
             ))}
           </div>
         </article>
+      </section>
+    </main>
+  );
+}
+
+function NotifyPage() {
+  const [email, setEmail] = useState('');
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+  return (
+    <main className="shell notify-shell">
+      <section className="notify-hero panel">
+        <div className="notify-copy">
+          <p className="eyebrow">Notify / Keep Me Informed</p>
+          <h1>Rauchbar oeffnet den fruehen Zugang in kleinen Schritten.</h1>
+          <p className="lede">
+            Die vollstaendige Homepage und der Signup-Flow werden gerade auf MVP-Niveau zusammengezogen. Bis dahin
+            kannst du hier dein Interesse vormerken und wir melden uns, sobald die ersten Mitgliederplaetze oeffnen.
+          </p>
+          <div className="notify-pills">
+            <span className="badge badge-public">woechentlicher Digest</span>
+            <span className="badge badge-members">Mitglieder zuerst</span>
+            <span className="badge badge-pending">Hot-Deal Alerts folgen</span>
+          </div>
+          <form
+            className="notify-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (email.trim()) {
+                setIsConfirmed(true);
+              }
+            }}
+          >
+            <label>
+              <span>E-Mail fuer die Warteliste</span>
+              <input
+                type="email"
+                placeholder="aficionado@rauchbar.de"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setIsConfirmed(false);
+                }}
+              />
+            </label>
+            <button type="submit" className="button button-primary">
+              Keep me informed
+            </button>
+          </form>
+          <div className={isConfirmed ? 'info-callout info-callout-success' : 'info-callout'}>
+            <strong>{isConfirmed ? 'Vorgemerkt fuer den MVP-Start' : 'Temporarer Einstieg fuer den Soft Launch'}</strong>
+            <p>
+              {isConfirmed
+                ? 'Deine Adresse ist lokal vorgemerkt. Der produktive Mitglieder- und Signup-Start folgt mit dem naechsten Site-Update.'
+                : 'Diese Zwischenstation ersetzt noch nicht den finalen Signup. Sie gibt uns aber einen klaren Einstiegspunkt fuer Pre-Launch-Traffic.'}
+            </p>
+          </div>
+        </div>
+
+        <aside className="notify-side panel panel-contrast">
+          <p className="hero-card-label">Was als Naechstes kommt</p>
+          <ol className="contract-list">
+            <li>oeffentliche Produktseite mit klarem Mitgliedervorteil</li>
+            <li>leichtes Signup fuer E-Mail, Praeferenzen und Alert-Kanaele</li>
+            <li>verzoegertes Archiv fuer `public-visible` Deals</li>
+          </ol>
+          <div className="notify-links">
+            <a href="/" className="button button-secondary">
+              aktuelle Site ansehen
+            </a>
+          </div>
+        </aside>
       </section>
     </main>
   );
