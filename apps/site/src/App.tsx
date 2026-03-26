@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { brandTokens } from '@rauchbar/design-system';
 import {
   initialSignupDraft,
@@ -105,14 +105,22 @@ const buildSignupPayload = (draft: SignupDraft) => ({
 export function App() {
   const pathname = getPathname();
 
-  if (pathname === '/notify') {
+  if (pathname === '/' || pathname === '/notify') {
     return <NotifyPage />;
   }
 
-  return <HomePage />;
+  if (pathname === '/signup') {
+    return <HomePage initialSection="signup" />;
+  }
+
+  if (pathname === '/home') {
+    return <HomePage />;
+  }
+
+  return <NotifyPage />;
 }
 
-function HomePage() {
+function HomePage(props: { initialSection?: 'signup' }) {
   const [signupState, setSignupState] = useState<SignupDraft>(initialSignupDraft);
   const [currentStep, setCurrentStep] = useState<SignupStepId>('email');
   const [signupErrors, setSignupErrors] = useState<SignupErrors>({});
@@ -149,6 +157,15 @@ function HomePage() {
 
   const signupPayload = useMemo(() => buildSignupPayload(signupState), [signupState]);
   const currentStepIndex = getStepIndex(currentStep);
+
+  useEffect(() => {
+    if (props.initialSection !== 'signup') {
+      return;
+    }
+
+    const target = document.getElementById('signup');
+    target?.scrollIntoView({ block: 'start' });
+  }, [props.initialSection]);
 
   const validateEmailStep = () => {
     const nextErrors: SignupErrors = {};
@@ -671,8 +688,11 @@ function NotifyPage() {
             <li>verzoegertes Archiv fuer `public-visible` Deals</li>
           </ol>
           <div className="notify-links">
-            <a href="/" className="button button-secondary">
-              aktuelle Site ansehen
+            <a href="/home" className="button button-secondary">
+              aktuelle Startseite ansehen
+            </a>
+            <a href="/signup" className="button button-secondary">
+              Signup-Scope ansehen
             </a>
           </div>
         </aside>
