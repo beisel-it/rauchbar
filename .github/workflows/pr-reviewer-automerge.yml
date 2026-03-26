@@ -1,0 +1,36 @@
+name: PR Reviewer Auto-Merge
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+      - synchronize
+      - reopened
+      - ready_for_review
+
+concurrency:
+  group: pr-reviewer-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  enable-automerge:
+    name: Enable Auto-Merge After pr-reviewer Signal
+    if: >
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.draft == false &&
+      contains(github.event.pull_request.labels.*.name, 'pr-reviewer-approved')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Enable GitHub auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr merge "$PR_NUMBER" --auto --squash --delete-branch=false
+
+      - name: Auto-merge guidance
+        run: |
+          echo "::notice::Auto-merge requested because the PR carries the pr-reviewer-approved label."
+          echo "::notice::Repository Settings > General > Pull Requests > Allow auto-merge must be enabled before this step can succeed."
