@@ -1,19 +1,16 @@
-import type {
-  Deal,
-  DealChannel,
-  DealDispatch,
-  DealPublicationStatus,
-  DealReviewStatus,
-  NotificationDecision,
-  NotificationDeliveryStatus,
-  NotificationPreference,
-} from '@rauchbar/deals-core';
+import type { DealChannel, PublicationStatus, PublishedDeal, ReviewStatus } from '@rauchbar/deals-core';
 
-export type NotificationTransport = 'email' | 'whatsapp';
+export type NotificationTransport = 'email' | 'whatsapp' | 'site';
 
-export type NotificationKind = 'digest' | 'hot-deal';
+export type NotificationKind = 'digest' | 'hot-deal' | 'publication';
 
-export type NotificationAudience = 'member';
+export type NotificationAudience = 'member' | 'public';
+
+export type NotificationCadence = 'scheduled-batch' | 'immediate' | 'scheduled-release';
+
+export type NotificationEligibility = 'eligible' | 'suppressed' | 'blocked-review' | 'blocked-policy';
+
+export type NotificationDeliveryStatus = 'queued' | 'sent' | 'delivered' | 'failed' | 'suppressed';
 
 export type EmailNotificationChannel = Extract<DealChannel, 'digest' | 'email-hot-deal'>;
 
@@ -24,9 +21,9 @@ export type NotificationChannelContract = {
   transport: NotificationTransport;
   kind: NotificationKind;
   audience: NotificationAudience;
-  cadence: 'scheduled-batch' | 'immediate';
-  allowedReviewStatuses: DealReviewStatus[];
-  allowedPublicationStatuses: DealPublicationStatus[];
+  cadence: NotificationCadence;
+  allowedReviewStatuses: ReviewStatus[];
+  allowedPublicationStatuses: PublicationStatus[];
   requiresMemberWindow: boolean;
   requiresDigestPreference: boolean;
   requiresHotDealPreference: boolean;
@@ -34,12 +31,24 @@ export type NotificationChannelContract = {
   maxDealsPerDispatch: number;
 };
 
+export type NotificationPreferences = {
+  digestEnabled: boolean;
+  hotDealEmailEnabled: boolean;
+  hotDealWhatsappEnabled: boolean;
+};
+
 export type NotificationRecipient = {
   memberId: string;
   email?: string;
   whatsappE164?: string;
   whatsappOptedInAt?: string;
-  preferences: NotificationPreference;
+  preferences: NotificationPreferences;
+};
+
+export type NotificationDecision = {
+  channel: DealChannel;
+  eligibility: NotificationEligibility;
+  reason?: string;
 };
 
 export type DigestDealItem = {
@@ -63,7 +72,7 @@ export type EmailDigestNotification = {
 export type HotDealNotification = {
   channel: EmailNotificationChannel | WhatsappNotificationChannel;
   recipient: NotificationRecipient;
-  deal: Deal;
+  deal: PublishedDeal;
   dispatchedAt: string;
 };
 
@@ -72,9 +81,59 @@ export type NotificationQueueDecision = {
   reasons: string[];
 };
 
-export type NotificationDispatchRecord = DealDispatch & {
+export type NotificationDispatchRecord = {
+  id: string;
+  dealId: string;
+  channel: DealChannel;
+  deliveryStatus: NotificationDeliveryStatus;
   providerMessageId?: string;
   providerStatus?: string;
+};
+
+export type EmailAddress = {
+  email: string;
+  name?: string;
+};
+
+export type EmailDeliveryCommand<TPayload> = {
+  channel: 'email';
+  template: string;
+  subject: string;
+  previewText?: string;
+  recipient: EmailAddress;
+  payload: TPayload;
+  metadata?: Record<string, string>;
+};
+
+export type WeeklyDigestRecipient = EmailAddress & {
+  memberId: string;
+  locale: 'de-DE';
+  timezone: string;
+};
+
+export type WeeklyDigestDealItem = {
+  dealId: string;
+  title: string;
+  merchantName: string;
+  currentPriceCents: number;
+  previousPriceCents?: number;
+  publishedAt?: string;
+  sourceUrl: string;
+};
+
+export type WeeklyDigestEmailPayload = {
+  digestId: string;
+  recipient: WeeklyDigestRecipient;
+  weekOf: string;
+  generatedAt: string;
+  introLine: string;
+  deals: WeeklyDigestDealItem[];
+  totalDeals: number;
+  unsubscribeUrl: string;
+};
+
+export type WeeklyDigestEmailCommand = EmailDeliveryCommand<WeeklyDigestEmailPayload> & {
+  template: 'weekly-digest';
 };
 
 export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationChannelContract> = {
@@ -85,7 +144,7 @@ export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationCha
     audience: 'member',
     cadence: 'scheduled-batch',
     allowedReviewStatuses: ['approved'],
-    allowedPublicationStatuses: ['member-visible', 'public-scheduled', 'public-visible'],
+    allowedPublicationStatuses: ['approved', 'scheduled', 'published'],
     requiresMemberWindow: false,
     requiresDigestPreference: true,
     requiresHotDealPreference: false,
@@ -99,7 +158,7 @@ export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationCha
     audience: 'member',
     cadence: 'immediate',
     allowedReviewStatuses: ['approved'],
-    allowedPublicationStatuses: ['member-visible', 'public-scheduled'],
+    allowedPublicationStatuses: ['approved', 'scheduled'],
     requiresMemberWindow: true,
     requiresDigestPreference: false,
     requiresHotDealPreference: true,
@@ -113,21 +172,35 @@ export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationCha
     audience: 'member',
     cadence: 'immediate',
     allowedReviewStatuses: ['approved'],
-    allowedPublicationStatuses: ['member-visible', 'public-scheduled'],
+    allowedPublicationStatuses: ['approved', 'scheduled'],
     requiresMemberWindow: true,
     requiresDigestPreference: false,
     requiresHotDealPreference: true,
     supportsRichContent: false,
     maxDealsPerDispatch: 1,
   },
+  'public-site': {
+    channel: 'public-site',
+    transport: 'site',
+    kind: 'publication',
+    audience: 'public',
+    cadence: 'scheduled-release',
+    allowedReviewStatuses: ['approved'],
+    allowedPublicationStatuses: ['scheduled', 'published'],
+    requiresMemberWindow: false,
+    requiresDigestPreference: false,
+    requiresHotDealPreference: false,
+    supportsRichContent: true,
+    maxDealsPerDispatch: 1,
+  },
 };
 
-export function isDealInMemberWindow(deal: Deal, at: string): boolean {
-  if (!deal.visibility.membersOnlyUntil) {
+export function isDealInMemberWindow(deal: PublishedDeal, at: string): boolean {
+  if (!deal.lifecycle.membersVisibleUntil) {
     return false;
   }
 
-  return deal.visibility.membersOnlyUntil > at;
+  return deal.lifecycle.membersVisibleUntil > at;
 }
 
 export function getNotificationDecision(
@@ -139,26 +212,27 @@ export function getNotificationDecision(
 
 export function canQueueNotification(params: {
   channel: DealChannel;
-  deal: Deal;
+  deal: PublishedDeal;
   decisions: NotificationDecision[];
-  recipient: NotificationRecipient;
+  recipient?: NotificationRecipient;
   at: string;
 }): NotificationQueueDecision {
   const { channel, deal, decisions, recipient, at } = params;
   const contract = NOTIFICATION_CHANNEL_CONTRACTS[channel];
   const decision = getNotificationDecision(decisions, channel);
   const reasons: string[] = [];
+  const reviewStatus = deal.review?.status ?? 'pending';
 
   if (!deal.channels.includes(channel)) {
     reasons.push('deal-channel-disabled');
   }
 
-  if (!contract.allowedReviewStatuses.includes(deal.reviewStatus)) {
-    reasons.push(`review-status:${deal.reviewStatus}`);
+  if (!contract.allowedReviewStatuses.includes(reviewStatus)) {
+    reasons.push(`review-status:${reviewStatus}`);
   }
 
-  if (!contract.allowedPublicationStatuses.includes(deal.publicationStatus)) {
-    reasons.push(`publication-status:${deal.publicationStatus}`);
+  if (!contract.allowedPublicationStatuses.includes(deal.status)) {
+    reasons.push(`publication-status:${deal.status}`);
   }
 
   if (!decision) {
@@ -171,29 +245,29 @@ export function canQueueNotification(params: {
     reasons.push('member-window-closed');
   }
 
-  if (contract.requiresDigestPreference && !recipient.preferences.digestEnabled) {
+  if (contract.requiresDigestPreference && !recipient?.preferences.digestEnabled) {
     reasons.push('digest-preference-disabled');
   }
 
-  if (channel === 'email-hot-deal' && !recipient.preferences.hotDealEmailEnabled) {
+  if (channel === 'email-hot-deal' && !recipient?.preferences.hotDealEmailEnabled) {
     reasons.push('hot-deal-email-preference-disabled');
   }
 
   if (channel === 'whatsapp-hot-deal') {
-    if (!recipient.preferences.hotDealWhatsappEnabled) {
+    if (!recipient?.preferences.hotDealWhatsappEnabled) {
       reasons.push('hot-deal-whatsapp-preference-disabled');
     }
 
-    if (!recipient.whatsappE164) {
+    if (!recipient?.whatsappE164) {
       reasons.push('whatsapp-number-missing');
     }
 
-    if (!recipient.whatsappOptedInAt) {
+    if (!recipient?.whatsappOptedInAt) {
       reasons.push('whatsapp-opt-in-missing');
     }
   }
 
-  if (channel !== 'whatsapp-hot-deal' && !recipient.email) {
+  if ((channel === 'digest' || channel === 'email-hot-deal') && !recipient?.email) {
     reasons.push('email-missing');
   }
 

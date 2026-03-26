@@ -49,6 +49,9 @@ importers:
       '@rauchbar/deals-core':
         specifier: workspace:*
         version: link:../../packages/deals-core
+      '@rauchbar/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
     devDependencies:
       '@types/node':
         specifier: ^24.5.2
