@@ -38,98 +38,186 @@
     <main class="page-shell">
       <section class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">Zigarren-Deals fuer deutsche Shops</p>
-          <h1>Gute Angebote frueher sehen, statt sie zu verpassen.</h1>
+          <p class="eyebrow">Mitglieder zuerst. Oeffentlich 24 Stunden spaeter.</p>
+          <h1>Rauchbar trennt Live-Deals fuer Mitglieder sauber vom oeffentlichen Archiv.</h1>
           <p class="lead">
-            Kuratierte Deals, persoenliche Praeferenzen und Hot-Deal-Alerts auf
-            Wunsch. Mitglieder sehen Angebote vor der oeffentlichen Freigabe.
+            Die MVP-Site zeigt oeffentlich nur `public-visible`, waehrend frische
+            Freigaben im Mitgliederfenster bleiben. Signup, Publishing-Flow und
+            Deal-Sicht orientieren sich an einem gemeinsamen Visibility-Vertrag.
           </p>
           <ul class="pill-row">
-            <li>24h Mitglieder-Vorsprung</li>
-            <li>Woechentlicher Digest</li>
-            <li>E-Mail oder WhatsApp</li>
+            <li>24h Mitgliederfenster</li>
+            <li>Shared deal contract</li>
+            <li>Digest und Hot-Deal Kanaele</li>
           </ul>
           <div class="cta-row" id="signup">
             <a class="button button-primary" href="#signup">Mitglied werden</a>
-            <a class="button button-secondary" href="#archive">Verzoegerte Deals ansehen</a>
+            <a class="button button-secondary" href="#publishing-flow">Publishing-Flow ansehen</a>
           </div>
         </div>
         <aside class="hero-proof panel panel-contrast" data-metrics-panel>
-          <p class="panel-label">Proof of cadence</p>
-          <h2>Letzte Woche</h2>
-          <dl class="metrics-list">
+          <p class="panel-label">Visibility contract</p>
+          <h2>Deal-Sichtbarkeit</h2>
+          <dl class="metrics-list metrics-list-single">
             <div>
-              <dt>Deals entdeckt</dt>
-              <dd>41</dd>
+              <dt>`member-visible`</dt>
+              <dd>intern oder im Mitgliederbereich</dd>
             </div>
             <div>
-              <dt>Shops beobachtet</dt>
-              <dd>9</dd>
+              <dt>`public-scheduled`</dt>
+              <dd>oeffentliche Freigabe geplant</dd>
             </div>
             <div>
-              <dt>Hot-Deal-Treffer</dt>
-              <dd>7</dd>
+              <dt>`public-visible`</dt>
+              <dd>Deal darf auf Homepage und Archiv</dd>
             </div>
           </dl>
         </aside>
       </section>
 
       <section class="trust-strip panel panel-inline">
-        <span>Beobachtet deutsche Shops</span>
-        <span>Taegliches Monitoring</span>
-        <span>Keine Preisjagd per Hand</span>
+        <span>24h Mitgliederfenster vor jeder oeffentlichen Freigabe</span>
+        <span>3 Sichtbarkeitszustaende mit Site-Relevanz</span>
+        <span>1 gemeinsame Vertragsquelle fuer Site, Worker, Admin und Notifications</span>
       </section>
 
-      <section id="how-it-works" class="panel">
+      <section id="signup" class="panel two-column">
+        <article>
+          <div class="section-heading">
+            <p class="eyebrow">Signup + Preferences</p>
+            <h2>Anmeldung und Praeferenzen in einem Schritt.</h2>
+            <p>
+              Die Praeferenzstrecke legt die Basis fuer Wochen-Digest und
+              Hot-Deal-Alerts, ohne eine zweite Onboarding-Seite zu brauchen.
+            </p>
+          </div>
+          <div class="step-card signup-card">
+            <div class="stack-list">
+              <div class="field-row">
+                <span class="field-title">E-Mail</span>
+                <span class="field-value">aficionado@rauchbar.de</span>
+              </div>
+              <div class="field-row">
+                <span class="field-title">Formate</span>
+                <div class="pill-row">
+                  <li>Robusto</li>
+                  <li>Toro</li>
+                </div>
+              </div>
+              <div class="field-row">
+                <span class="field-title">Marken</span>
+                <div class="pill-row">
+                  <li>Partagas</li>
+                  <li>Cohiba</li>
+                  <li>Romeo y Julieta</li>
+                </div>
+              </div>
+              <div class="field-row">
+                <span class="field-title">Preisfenster</span>
+                <span class="field-value">15 bis 30 EUR</span>
+              </div>
+              <div class="field-row">
+                <span class="field-title">Kanaele</span>
+                <ul class="stack-list">
+                  <li><span class="badge badge-success">Digest per E-Mail</span> aktiv</li>
+                  <li><span class="badge badge-success">Hot-Deal E-Mail</span> aktiv</li>
+                  <li><span class="badge">Hot-Deal WhatsApp</span> optional</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+        <aside class="panel panel-contrast">
+          <div class="section-heading">
+            <p class="eyebrow">Payload preview</p>
+            <h2>Was der Site-Flow weitergibt.</h2>
+          </div>
+          <pre class="code-block">{
+  "email": "aficionado@rauchbar.de",
+  "formats": ["Robusto", "Toro"],
+  "brands": ["Partagas", "Cohiba", "Romeo y Julieta"],
+  "priceBand": "15 bis 30 EUR",
+  "notifications": {
+    "digestEnabled": true,
+    "hotDealEmailEnabled": true,
+    "hotDealWhatsappEnabled": false
+  }
+}</pre>
+        </aside>
+      </section>
+
+      <section id="publishing-flow" class="panel">
         <div class="section-heading">
-          <p class="eyebrow">So funktioniert's</p>
-          <h2>Ein kurzer Weg von Interesse zu relevanten Treffern.</h2>
+          <p class="eyebrow">Members-first publishing</p>
+          <h2>Site-Verhalten entlang des Publication-Status.</h2>
+          <p>
+            Die offene Homepage bekommt nur `public-visible`. Der Mitgliederbereich
+            darf `member-visible` und `public-scheduled` sehen, solange das
+            Zeitfenster aktiv ist.
+          </p>
         </div>
         <div class="steps-grid">
           <article class="step-card">
             <span class="step-number">1</span>
-            <h3>Praeferenzen waehlen</h3>
-            <p>Marken, Formate, Preisrahmen und bevorzugte Shops festlegen.</p>
+            <h3>Review + Freigabe</h3>
+            <p>Worker und Admin landen auf `approved`. Die Site zeigt noch nichts, solange der Deal intern bleibt.</p>
           </article>
           <article class="step-card">
             <span class="step-number">2</span>
-            <h3>Deals frueher erhalten</h3>
-            <p>Mitglieder sehen Deals vor der oeffentlichen 24h-Freigabe.</p>
+            <h3>Mitgliederfenster</h3>
+            <p>`member-visible` und `public-scheduled` sind im geschlossenen Bereich sichtbar und koennen Alerts triggern.</p>
           </article>
           <article class="step-card">
             <span class="step-number">3</span>
-            <h3>Nur relevante Alerts bekommen</h3>
-            <p>Hot-Deal-Alerts laufen optional und orientieren sich an deinen Regeln.</p>
+            <h3>Archiv-Freigabe</h3>
+            <p>Erst `public-visible` oeffnet Homepage und Archiv. Die 24h-Verzoegerung kommt aus den Visibility-Timestamps.</p>
           </article>
         </div>
       </section>
 
-      <section id="archive" class="panel">
+      <section id="archive" class="panel two-column">
+        <article>
         <div class="section-heading">
-          <p class="eyebrow">Verzoegerte Deal-Vorschau</p>
-          <h2>Diese Deals sind jetzt oeffentlich. Mitglieder sahen sie frueher.</h2>
+          <p class="eyebrow">Mitgliederflaeche</p>
+          <h2>Frische Deals vor der oeffentlichen Freigabe.</h2>
+          <p>
+            Diese Liste zeigt bewusst auch `public-scheduled`, weil die Deal-Oeffnung
+            bereits geplant ist, aber noch nicht auf der offenen Site auftauchen darf.
+          </p>
         </div>
         <div class="archive-grid" data-archive-grid>
           <article class="deal-card" data-card>
-            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
-            <h3>Davidoff Winston Churchill Robusto</h3>
-            <p class="deal-meta">Cigarworld · Robusto</p>
-            <p class="deal-price">18,90 EUR <span>statt 23,50 EUR</span></p>
-            <p class="deal-foot">Oeffentlich seit heute, 09:20</p>
+            <span class="badge badge-accent">public-scheduled</span>
+            <h3>Cohiba Reserva mit 18% Rabatt</h3>
+            <p class="deal-meta">Cigarworld · Mitgliederbereich</p>
+            <p class="deal-price">28,90 EUR <span>oeffentliche Freigabe in 19 Stunden</span></p>
+            <p class="deal-foot">Kanaele: E-Mail Hot-Deal, WhatsApp Hot-Deal</p>
           </article>
           <article class="deal-card" data-card>
-            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
-            <h3>Arturo Fuente Gran Reserva</h3>
-            <p class="deal-meta">StarkeZigarren · Toro</p>
-            <p class="deal-price">12,50 EUR <span>statt 15,20 EUR</span></p>
-            <p class="deal-foot">Oeffentlich seit heute, 08:10</p>
+            <span class="badge badge-accent">member-visible</span>
+            <h3>Partagas Serie D No. 4 Sampler</h3>
+            <p class="deal-meta">Cigarworld · Mitgliederbereich</p>
+            <p class="deal-price">17,90 EUR <span>noch 22 Stunden exklusiv</span></p>
+            <p class="deal-foot">Kanaele: Wochen-Digest</p>
           </article>
+        </div>
+        </article>
+        <article>
+        <div class="section-heading">
+          <p class="eyebrow">Oeffentliches Archiv</p>
+          <h2>Nur `public-visible` erscheint auf der offenen Site.</h2>
+          <p>
+            Das Archiv bleibt bewusst schlanker und liest nur freigegebene Deals,
+            deren Mitgliederfenster bereits abgelaufen ist.
+          </p>
+        </div>
+        <div class="archive-grid archive-grid-single">
           <article class="deal-card" data-card>
-            <span class="badge badge-accent">Mitglieder sahen dieses Angebot frueher</span>
-            <h3>Padron 2000 Maduro</h3>
-            <p class="deal-meta">Zigarrenversand · Maduro</p>
-            <p class="deal-price">14,90 EUR <span>statt 17,90 EUR</span></p>
-            <p class="deal-foot">Oeffentlich seit gestern, 18:40</p>
+            <span class="badge badge-success">public-visible</span>
+            <h3>Romeo y Julieta Wide Churchill Bundle</h3>
+            <p class="deal-meta">Cigarworld · Archiv</p>
+            <p class="deal-price">23,90 EUR <span>seit 8 Stunden oeffentlich sichtbar</span></p>
+            <p class="deal-foot">Kanaele: Digest, E-Mail Hot-Deal</p>
           </article>
         </div>
         <div class="archive-empty hidden" data-archive-empty>
@@ -140,30 +228,31 @@
           </p>
         </div>
         <a class="button button-secondary" href="#archive">Alle verzoegerten Deals ansehen</a>
+        </article>
       </section>
 
       <section class="panel two-column">
         <div>
-          <p class="eyebrow">Personalisierung</p>
-          <h2>Mehr Relevanz, ohne schweren Setup-Prozess.</h2>
+          <p class="eyebrow">Alert-Routing</p>
+          <h2>Ein Preference-Flow speist Digest und Hot-Deal-Kanaele.</h2>
           <p class="lead">
-            Mitglieder koennen Marken, Formate, Preiszonen und Shops in wenigen
-            Schritten steuern.
+            Die MVP-Site bleibt leicht, traegt aber bereits die Routing-Information
+            fuer Wochen-Digest, E-Mail-Hot-Deals und optionale WhatsApp-Alerts.
           </p>
           <ul class="pill-row">
-            <li>Davidoff</li>
-            <li>Robusto</li>
-            <li>unter 20 EUR</li>
-            <li>Cigarworld</li>
+            <li>Digest per E-Mail</li>
+            <li>E-Mail Hot-Deals</li>
+            <li>WhatsApp optional</li>
+            <li>Deal-Vertrag aus shared package</li>
           </ul>
         </div>
         <div class="panel panel-contrast">
-          <p class="panel-label">UX note</p>
+          <p class="panel-label">MVP note</p>
           <p>
-            Die Vorschau zeigt Nutzen statt Formulare. Konkrete Eingaben passieren
-            erst im Signup-Flow.
+            Die aktualisierte Screenshot-Baseline zeigt nicht nur Marketing, sondern
+            den echten Publication- und Notification-Rahmen der aktuellen MVP-Flaeche.
           </p>
-          <a class="button button-primary" href="#signup">Praeferenzen anlegen</a>
+          <a class="button button-primary" href="#signup">Signup-Flow ansehen</a>
         </div>
       </section>
 
