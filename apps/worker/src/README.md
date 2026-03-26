@@ -24,7 +24,16 @@ Der erste produktive Webshop-Scraper liegt in `src/scrapers/cigarworld-webshop.t
 - laeuft queue-freundlich ueber `planJobs(...)` und `runJob(...)`, sodass einzelne Source-Jobs horizontal auf mehrere Worker verteilt werden koennen
 
 Fixture-basierte Parser-Tests liegen unter `src/scrapers/*.test.ts` und `src/__fixtures__/`.
-Die aktuelle Abdeckung umfasst Parser-Assertions fuer Cigarworld-Angebotskarten, einen zweiten Fixture-Slice fuer `Neuheiten`, sowie einen End-to-End-Test vom queuebaren `ScrapeJob` bis zu den normalisierten Deals.
+Die aktuelle Abdeckung umfasst Parser-Assertions fuer Cigarworld-Angebotskarten, einen zweiten Fixture-Slice fuer `Neuheiten`, einen ersten `newsletter-mail`-Slice fuer Cigarworld HTML-Mailings, sowie einen End-to-End-Test vom queuebaren `ScrapeJob` bis zu den normalisierten Deals.
+
+## Cigarworld Newsletter Mail
+
+Der erste produktive Newsletter-Scraper liegt in `src/scrapers/cigarworld-newsletter-mail.ts`.
+
+- erwartet HTML-Mail-Payloads fuer den Source `mailbox://cigarworld/newsletter/weekly`
+- klassifiziert den Job-Ursprung als `newsletter-mail`
+- extrahiert Mail-Angebotskarten in dieselben Shared-Observation-Contracts wie die Webshop-Scraper
+- normalisiert anschliessend source-scoped in `NormalizedDealPayload`, damit Mail-Jobs queue-faehig und horizontal skalierbar bleiben
 
 Siehe `docs/architecture/worker-ingestion-blueprint.md` fuer die implementierbare Pipeline-Grenze zwischen Source-Adaptern, `@rauchbar/deals-core`, Monitoring und Hot-Deal-Handoff.
 Siehe `docs/architecture/worker-runtime-contract.md` fuer den deployment-relevanten Start-, Health- und Logging-Vertrag.

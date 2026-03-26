@@ -17,6 +17,7 @@ export * from './scrapers/registry.ts';
 export * from './scrapers/types.ts';
 export * from './scrapers/catalog.ts';
 export * from './scrapers/cigarworld-webshop.ts';
+export * from './scrapers/cigarworld-newsletter-mail.ts';
 
 const HOT_DEAL_EMAIL_CHANNEL = 'email-hot-deal';
 const HOT_DEAL_WHATSAPP_CHANNEL: WhatsappNotificationChannel = 'whatsapp-hot-deal';

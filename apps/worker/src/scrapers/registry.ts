@@ -4,6 +4,7 @@ import type {
   SourceReference,
 } from '@rauchbar/deals-core';
 
+import { cigarworldNewsletterMailScraper } from './cigarworld-newsletter-mail.ts';
 import { cigarworldWebshopScraper } from './cigarworld-webshop.ts';
 import type {
   RegisteredScraper,
@@ -121,4 +122,7 @@ export class ScraperRegistry {
   }
 }
 
-export const scraperRegistry = new ScraperRegistry([cigarworldWebshopScraper]);
+export const scraperRegistry = new ScraperRegistry([
+  cigarworldWebshopScraper,
+  cigarworldNewsletterMailScraper,
+]);
