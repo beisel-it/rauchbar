@@ -88,7 +88,7 @@ const buildDeal = (params: {
     observedAt: isoHoursAgo(1),
     discoveredAt: isoHoursAgo(30),
   },
-  summary: `${params.title} als Demo-Deal fuer die Site-Vorschau.`,
+  summary: `${params.title} als Demo-Deal für die Site-Vorschau.`,
   normalizationStatus: 'normalized',
   reviewStatus: 'approved',
   lifecycleStatus:
@@ -176,17 +176,17 @@ export const preferenceOptions = {
   sensitivities: [
     {
       value: 'nur-grosse-treffer' as const,
-      label: 'Nur grosse Treffer',
-      description: 'Weniger Alerts, dafuer nur bei starken Preisrutschen oder seltenen Releases.'
+      label: 'Nur große Treffer',
+      description: 'Weniger Alerts, dafür nur bei starken Preisrutschen oder seltenen Releases.'
     },
     {
       value: 'ausgewogen' as const,
       label: 'Ausgewogen',
-      description: 'Empfohlener MVP-Standard fuer relevante Hot-Deals und den Wochen-Digest.'
+      description: 'Empfohlener MVP-Standard für relevante Hot-Deals und den Wochen-Digest.'
     },
     {
       value: 'moeglichst-viel' as const,
-      label: 'Moeglichst viel',
+      label: 'Möglichst viel',
       description: 'Mehr Signale, wenn du aktiv deal-jagen und lieber selbst filtern willst.'
     }
   ]
