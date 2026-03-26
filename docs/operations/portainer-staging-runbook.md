@@ -20,12 +20,13 @@ Dieses Runbook beschreibt den zweiten Staging-Pfad für Rauchbar: Deployment üb
 - `ops/caddy/Caddyfile`
 - `ops/portainer/stack.env.example`
 - `.github/workflows/portainer-stack-ci.yml`
+- `.github/workflows/portainer-image-publish.yml`
 - `.github/workflows/portainer-deploy-prework.yml`
 - `docs/operations/portainer-automation-prework.md`
 
 ## Warum eigener Portainer-Compose-Pfad
 
-Der bestehende lokale Maschinenpfad nutzt in `docker-compose.deploy.yml` einen relativen Bind-Mount für `ops/caddy/Caddyfile`. Für Portainer-Git-Deployments ist das unattraktiv, weil relative Path Volumes nur in Portainer Business Edition als eigene Funktion verfügbar sind und Git-basierte relative Bind-Mounts auf Updates empfindlich reagieren können. Der Portainer-Pfad baut deshalb für Caddy ein kleines Image, das die Caddy-Konfiguration direkt mitliefert.
+Der bestehende lokale Maschinenpfad nutzt in `docker-compose.deploy.yml` einen relativen Bind-Mount für `ops/caddy/Caddyfile`. Für Portainer-Git-Deployments ist das unattraktiv, weil relative Path Volumes nur in Portainer Business Edition als eigene Funktion verfügbar sind und Git-basierte relative Bind-Mounts auf Updates empfindlich reagieren können. Zusätzlich ist Portainers Git-Stack-Pfad für repo-basierte Compose-Builds nicht zuverlässig genug. Der Portainer-Pfad nutzt deshalb vorgebaute Images aus GHCR statt `build:`-Direktiven.
 
 ## Vorbedingungen
 
@@ -53,6 +54,10 @@ Der bestehende lokale Maschinenpfad nutzt in `docker-compose.deploy.yml` einen r
 5. Unter Environment Variables die Werte aus `ops/portainer/stack.env.example` laden oder manuell setzen.
 6. Deploy auslösen.
 
+Vor dem eigentlichen Stack-Deploy müssen die referenzierten Images bereits in GHCR vorhanden sein. Dafür ist `.github/workflows/portainer-image-publish.yml` der vorgesehene Publish-Pfad.
+
+Solange `ALLOW_REAL_EMAIL_SEND=false` und `ALLOW_REAL_WHATSAPP_SEND=false` gesetzt bleiben, dürfen `EMAIL_PROVIDER_API_KEY` und `WHATSAPP_PROVIDER_API_KEY` leer bleiben. Sie sind für den aktuellen Aktivierungs- und Deploy-Pfad nicht mehr blockierend.
+
 ## Verifikation
 
 Nach erfolgreichem Deploy müssen folgende Checks grün sein:
@@ -71,9 +76,10 @@ docker exec "$(docker ps --filter name=worker --format '{{.ID}}' | head -n1)" \
 ## Update-Pfad
 
 1. Gewünschten Repo-Commit oder Branch aktualisieren.
-2. In Portainer den Stack aus Git neu deployen.
-3. Wenn Build-Kontext oder Konfiguration geändert wurden, einen vollständigen Redeploy erzwingen, damit alle Container neu gebaut bzw. neu erstellt werden.
-4. Danach alle Health-Endpunkte erneut prüfen.
+2. Sicherstellen, dass für diesen Commit passende GHCR-Images existieren.
+3. In Portainer den Stack aus Git neu deployen.
+4. Wenn Image-Tag oder Konfiguration geändert wurden, einen vollständigen Redeploy erzwingen, damit alle Container neu gezogen bzw. neu erstellt werden.
+5. Danach alle Health-Endpunkte erneut prüfen.
 
 ## Exposure-Regeln
 
@@ -93,4 +99,5 @@ docker exec "$(docker ps --filter name=worker --format '{{.ID}}' | head -n1)" \
 - fehlende oder falsche DNS-`A`-Records verhindern HTTP-01 und damit TLS
 - geschlossene Ports `80`/`443` verhindern Caddy-Exposure und Let's Encrypt
 - fehlender Git-Zugriff im Portainer-Endpoint verhindert Stack-Deployment
+- fehlende GHCR-Images für den gewünschten `IMAGE_TAG` verhindern die Stack-Aktivierung
 - fehlende reale Admin-MVP-Runtime führt weiterhin nur zum Placeholder-Admin, auch wenn das Deployment technisch erfolgreich ist
