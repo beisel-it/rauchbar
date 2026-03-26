@@ -105,6 +105,18 @@ export type EmailDeliveryCommand<TPayload> = {
   metadata?: Record<string, string>;
 };
 
+export type WhatsappAddress = {
+  e164: string;
+};
+
+export type WhatsappDeliveryCommand<TPayload> = {
+  channel: 'whatsapp';
+  template: string;
+  recipient: WhatsappAddress;
+  payload: TPayload;
+  metadata?: Record<string, string>;
+};
+
 export type WeeklyDigestRecipient = EmailAddress & {
   memberId: string;
   locale: 'de-DE';
@@ -134,6 +146,50 @@ export type WeeklyDigestEmailPayload = {
 
 export type WeeklyDigestEmailCommand = EmailDeliveryCommand<WeeklyDigestEmailPayload> & {
   template: 'weekly-digest';
+};
+
+export type HotDealRecipient = {
+  memberId: string;
+  locale: 'de-DE';
+  email?: string;
+  whatsappE164?: string;
+  whatsappOptedInAt?: string;
+  preferences: NotificationPreferences;
+};
+
+export type HotDealDealItem = {
+  dealId: string;
+  title: string;
+  merchantName: string;
+  currentPriceCents: number;
+  previousPriceCents?: number;
+  savingsPercent?: number;
+  score: number;
+  sourceUrl: string;
+};
+
+export type HotDealEmailPayload = {
+  alertId: string;
+  recipient: HotDealRecipient;
+  dispatchedAt: string;
+  deal: HotDealDealItem;
+  unsubscribeUrl: string;
+};
+
+export type HotDealEmailCommand = EmailDeliveryCommand<HotDealEmailPayload> & {
+  template: 'hot-deal-email';
+};
+
+export type HotDealWhatsappPayload = {
+  alertId: string;
+  recipient: Pick<HotDealRecipient, 'memberId' | 'locale' | 'whatsappE164'>;
+  dispatchedAt: string;
+  deal: HotDealDealItem;
+  optInRecordedAt: string;
+};
+
+export type HotDealWhatsappCommand = WhatsappDeliveryCommand<HotDealWhatsappPayload> & {
+  template: 'hot-deal-whatsapp';
 };
 
 export const NOTIFICATION_CHANNEL_CONTRACTS: Record<DealChannel, NotificationChannelContract> = {
