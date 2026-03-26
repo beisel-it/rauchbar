@@ -24,9 +24,15 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Check out trusted base repository context
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
       - name: Enable GitHub auto-merge
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: gh pr merge "$PR_NUMBER" --auto --squash --delete-branch=false
 
