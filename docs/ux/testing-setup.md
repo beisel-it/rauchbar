@@ -19,6 +19,12 @@ Start the preview server:
 pnpm ux:preview
 ```
 
+If `pnpm` is not on your PATH, use:
+
+```bash
+corepack pnpm ux:preview
+```
+
 Default URL:
 
 ```text
@@ -75,6 +81,12 @@ For GitHub-ready product images:
 pnpm ux:preview:capture
 ```
 
+Fallback:
+
+```bash
+corepack pnpm ux:preview:capture
+```
+
 Outputs:
 
 - `artifacts/readme-screenshots/homepage-default.png`
@@ -84,6 +96,39 @@ Outputs:
 - `artifacts/readme-screenshots/homepage-empty-archive.png`
 
 The concrete screenshot rationale and ordering live in `docs/ux/readme-screenshot-plan.md`.
+
+## Documentation Refresh
+
+For a full documentation asset refresh:
+
+```bash
+pnpm ux:docs:refresh
+```
+
+Fallback:
+
+```bash
+corepack pnpm ux:docs:refresh
+```
+
+This command:
+
+- regenerates README screenshots
+- writes `artifacts/readme-screenshots/manifest.json`
+- writes `docs/ux/generated/readme-screenshot-catalog.md`
+- stamps the outputs with package version and current git revision
+
+If screenshots are already current and only the generated references need updating:
+
+```bash
+pnpm ux:docs:manifest
+```
+
+Fallback:
+
+```bash
+corepack pnpm ux:docs:manifest
+```
 
 ## Screenshot Guidance
 

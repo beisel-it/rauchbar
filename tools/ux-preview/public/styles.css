@@ -228,11 +228,17 @@ h3 {
 }
 
 .pill-row,
-.badge-row,
-.stack-list {
+.badge-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-list {
+  display: grid;
+  gap: 12px;
   padding: 0;
   list-style: none;
 }
@@ -369,13 +375,26 @@ h3 {
 
 .queue-row {
   display: grid;
-  grid-template-columns: 2.3fr 1.1fr 1fr 1fr;
+  grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
   align-items: center;
   padding: 12px 14px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(214, 195, 170, 0.8);
+}
+
+.queue-row > span,
+.stack-list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.stack-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .queue-header {
@@ -391,9 +410,9 @@ h3 {
 }
 
 .lifecycle-flow {
-  grid-template-columns: repeat(13, auto);
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  overflow-x: auto;
 }
 
 .flow-arrow {
@@ -407,6 +426,7 @@ h3 {
   min-height: 32px;
   padding: 0 12px;
   background: rgba(35, 23, 15, 0.08);
+  white-space: normal;
 }
 
 .badge-accent {

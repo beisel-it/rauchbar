@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { previewBaseUrl, screenshotCaptures } from "./capture-config.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,34 +25,6 @@ if (!chromiumBin) {
   console.error("No Chromium binary found for screenshot capture.");
   process.exit(1);
 }
-
-const captures = [
-  {
-    file: "homepage-default.png",
-    url: "http://127.0.0.1:4173/?screenshot=1",
-    size: "1440,2200",
-  },
-  {
-    file: "member-home.png",
-    url: "http://127.0.0.1:4173/member-home.html?screenshot=1",
-    size: "1440,1800",
-  },
-  {
-    file: "admin-ops-board.png",
-    url: "http://127.0.0.1:4173/ops-board.html?screenshot=1",
-    size: "1440,1900",
-  },
-  {
-    file: "lifecycle-state-lab.png",
-    url: "http://127.0.0.1:4173/state-lab.html?screenshot=1",
-    size: "1440,1600",
-  },
-  {
-    file: "homepage-empty-archive.png",
-    url: "http://127.0.0.1:4173/?state=empty&screenshot=1",
-    size: "1440,2200",
-  },
-];
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -123,8 +96,11 @@ try {
   await ensureOutputDir();
   await wait(1200);
 
-  for (const capture of captures) {
-    const filePath = await runChromiumCapture(capture);
+  for (const capture of screenshotCaptures) {
+    const filePath = await runChromiumCapture({
+      ...capture,
+      url: `${previewBaseUrl}${capture.route}`,
+    });
     console.log(`Captured ${path.relative(rootDir, filePath)}`);
   }
 } finally {
