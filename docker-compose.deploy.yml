@@ -3,8 +3,8 @@ services:
     image: caddy:2.10-alpine
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "${PUBLIC_BIND_IPV4}:80:80"
+      - "${PUBLIC_BIND_IPV4}:443:443"
     volumes:
       - ./ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
