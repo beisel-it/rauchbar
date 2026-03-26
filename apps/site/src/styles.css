@@ -138,6 +138,12 @@ button:disabled {
   gap: 12px;
 }
 
+.panel-contrast .eyebrow,
+.panel-contrast .section-heading p,
+.panel-contrast .hero-card-label {
+  color: rgba(255, 247, 239, 0.8);
+}
+
 .hero-copy h1,
 .section-heading h2,
 .flow-step h3,
@@ -322,11 +328,12 @@ button:disabled {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.summary-card pre {
-  background: rgba(19, 17, 13, 0.92);
-  border-radius: 22px;
-  color: #f8f2e8;
-  font-size: 0.88rem;
+.signup-preview {
+  display: grid;
+  gap: 12px;
+}
+
+.signup-preview .info-callout {
   margin: 0;
   padding: 18px;
   white-space: pre-wrap;

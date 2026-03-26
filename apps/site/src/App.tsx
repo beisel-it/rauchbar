@@ -193,77 +193,85 @@ function HomePage() {
     <main className="shell">
       <section className="hero panel">
         <div className="hero-copy">
-          <p className="eyebrow">Mitglieder zuerst. Oeffentlich 24 Stunden spaeter.</p>
-          <h1>Rauchbar trennt Live-Deals fuer Mitglieder sauber vom oeffentlichen Archiv.</h1>
+          <p className="eyebrow">Zigarren-Deals fuer deutsche Shops</p>
+          <h1>Gute Angebote frueher sehen, statt sie zwischen Shop-Newslettern zu verpassen.</h1>
           <p className="lede">
-            Die Site liest den gemeinsamen Deal-Vertrag direkt aus `@rauchbar/deals-core` und zeigt nur Deals im
-            Status `public-visible` auf der offenen Flaeche. Frische Freigaben bleiben innerhalb des Mitgliederfensters.
+            Rauchbar beobachtet deutsche Shops, kuratiert relevante Zigarren-Deals und gibt Mitgliedern 24 Stunden
+            Vorsprung vor dem oeffentlichen Archiv. Wochen-Digest ist Standard, Hot-Deal-Alerts bleiben optional.
           </p>
           <div className="hero-actions">
             <a href="#signup" className="button button-primary">
               Mitglied werden
             </a>
-            <a href="#publishing-flow" className="button button-secondary">
-              Publishing-Flow ansehen
+            <a href="#archive-preview" className="button button-secondary">
+              Verzoegerte Deals ansehen
             </a>
           </div>
         </div>
         <div className="hero-card">
-          <span className="hero-card-label">Visibility Contract</span>
+          <span className="hero-card-label">Mitgliederwert</span>
           <ol className="contract-list">
-            <li>`member-visible`: intern oder im Mitgliederbereich sichtbar</li>
-            <li>`public-scheduled`: Oeffnung ist fixiert, aber noch nicht im Archiv</li>
-            <li>`public-visible`: Deal darf auf die Homepage und ins Archiv</li>
+            <li>deutsche Shop-Deals an einem Ort statt verteiltem Monitoring</li>
+            <li>frueherer Zugang vor der oeffentlichen Freigabe im Archiv</li>
+            <li>relevante Hinweise nach Marken, Formaten und Preisrahmen</li>
           </ol>
         </div>
       </section>
 
       <section className="metrics">
         <article className="metric panel">
-          <strong>24h</strong>
-          <span>Mitgliederfenster vor jeder oeffentlichen Freigabe</span>
+          <strong>9 Shops</strong>
+          <span>deutsche Haendler im MVP-Fokus fuer kuratierte Deal-Signale</span>
         </article>
         <article className="metric panel">
-          <strong>4 Schritte</strong>
-          <span>E-Mail, Praeferenzen, Alerts und Abschluss im MVP-Flow</span>
+          <strong>taeglich</strong>
+          <span>Monitoring statt manueller Preisjagd durch mehrere Webshops</span>
         </article>
         <article className="metric panel">
-          <strong>1 Digest</strong>
-          <span>E-Mail-Digest ist der verpflichtende Kernkanal, Hot-Deals bleiben optional</span>
+          <strong>24h Vorsprung</strong>
+          <span>Mitglieder sehen frische Freigaben vor dem oeffentlichen Archiv</span>
         </article>
       </section>
 
-      <section className="panel archive-explainer">
+      <section id="publishing-flow" className="panel archive-explainer">
         <div className="section-heading">
-          <p className="eyebrow">Delayed Archive States</p>
-          <h2>Die Homepage zeigt nur den verzoegerten Ausschnitt des Dealstroms.</h2>
+          <p className="eyebrow">So funktioniert's</p>
+          <h2>Mitglied werden, Relevanz festlegen, bessere Deals frueher bekommen.</h2>
           <p>
-            Mitglieder sehen neue Freigaben zuerst. Die oeffentliche Homepage dokumentiert denselben Deal erst nach dem
-            Vorsprung und macht die Zustandswechsel explizit lesbar.
+            Rauchbar bleibt fuer den MVP bewusst schlank: E-Mail rein, Praeferenzen setzen, Digest aktivieren und nur
+            bei Bedarf Hot-Deal-Alerts zuschalten.
           </p>
         </div>
         <div className="archive-state-grid">
-          {delayedArchiveStates.map((state) => (
-            <article key={state.title} className="archive-state-card">
-              <span className={state.badgeClass}>{state.badgeLabel}</span>
-              <h3>{state.title}</h3>
-              <p>{state.description}</p>
-            </article>
-          ))}
+          <article className="archive-state-card">
+            <span className="badge badge-members">1. Mitglied werden</span>
+            <h3>Mit E-Mail starten</h3>
+            <p>Der Einstieg bleibt leicht: Wochen-Digest aktivieren und den Zugang zum Mitgliederfenster sichern.</p>
+          </article>
+          <article className="archive-state-card">
+            <span className="badge badge-pending">2. Relevanz steuern</span>
+            <h3>Marken, Formate und Shops angeben</h3>
+            <p>So landen nur die Deals im Fokus, die zu deinem Geschmack und Preisrahmen passen.</p>
+          </article>
+          <article className="archive-state-card">
+            <span className="badge badge-public">3. Frueher informiert sein</span>
+            <h3>Digest standard, Alerts optional</h3>
+            <p>Mitglieder sehen passende Angebote frueher, waehrend das oeffentliche Archiv zeitversetzt bleibt.</p>
+          </article>
         </div>
         <div className="timeline-banner">
-          <strong>Mitglieder jetzt</strong>
-          <span>24h Vorsprung</span>
-          <span>Oeffentliches Archiv spaeter</span>
+          <strong>Mitglieder zuerst</strong>
+          <span>personalisierte Relevanz</span>
+          <span>oeffentliche Deals spaeter</span>
         </div>
       </section>
 
       <section id="signup" className="content-grid">
         <article className="panel">
           <SectionHeading
-            eyebrow="MVP Signup"
-            title="E-Mail und Deal-Praeferenzen in einem klaren Onboarding-Fluss"
-            text="Der MVP startet mit Pflichtfeldern fuer E-Mail und Digest-Zustimmung. Alles andere bleibt leicht editierbar und weitgehend skippable."
+            eyebrow="Praeferenzen ohne Reibung"
+            title="Der Einstieg sammelt nur das, was fuer bessere Empfehlungen wirklich hilft"
+            text="Digest-Zustimmung ist Pflicht, alles andere bleibt leicht, skippable und spaeter aenderbar. So bleibt der erste Schritt kurz, aber der Nutzen direkt sichtbar."
           />
 
           <div className="signup-progress" aria-label="Signup-Fortschritt">
@@ -506,8 +514,8 @@ function HomePage() {
                     </ul>
                   </div>
                   <div>
-                    <span className="field-label">Erfasster MVP-Payload</span>
-                    <pre>{JSON.stringify(signupPayload, null, 2)}</pre>
+                    <span className="field-label">Dein Mitglieds-Setup</span>
+                    <SignupPreview draft={signupState} />
                   </div>
                 </div>
               </div>
@@ -546,45 +554,45 @@ function HomePage() {
 
         <aside className="panel summary-card">
           <SectionHeading
-            eyebrow={isSubmitted ? 'Completion Summary' : 'Payload Preview'}
-            title={isSubmitted ? 'Gespeicherter MVP-Scope fuer Digest und Alerts' : 'Was der Signup-Flow aktuell erfassen wuerde'}
-            text="Die Zusammenfassung bleibt absichtlich nah am Produktvertrag: E-Mail, Consent, Deal-Praeferenzen und Kanalsteuerung."
+            eyebrow={isSubmitted ? 'Mitglieds-Setup' : 'Was du steuern kannst'}
+            title={isSubmitted ? 'Gespeicherter MVP-Scope fuer Digest und Alerts' : 'Rauchbar passt sich an deine Deal-Vorlieben an'}
+            text="Statt technischer Rohdaten zeigt die Homepage jetzt den echten Mehrwert: welche Marken, Shops, Preiszonen und Kanaele das Erlebnis fuer dich filtern."
           />
-          <pre>{JSON.stringify(signupPayload, null, 2)}</pre>
+          <SignupPreview draft={signupState} />
         </aside>
       </section>
 
-      <section id="publishing-flow" className="panel">
+      <section className="panel">
         <SectionHeading
-          eyebrow="Members-First Publishing"
-          title="Site-Verhalten entlang des Publication-Status"
-          text="Die offene Homepage bekommt nur `public-visible`. Der Mitgliederbereich darf `member-visible` und `public-scheduled` sehen, solange das Zeitfenster aktiv ist."
+          eyebrow="Digest und Alerts"
+          title="Der Digest ist gesetzt. Hot-Deals kommen nur, wenn sie fuer dich relevant sind."
+          text="Wochen-Digest bleibt der verlässliche Kern. Hot-Deal-Alerts per E-Mail oder WhatsApp springen nur bei stark passenden Treffern an."
         />
         <div className="flow-grid">
           <article className="flow-step">
             <span>01</span>
-            <h3>Review + Freigabe</h3>
-            <p>Worker und Admin landen auf `approved`. Die Site zeigt noch nichts, solange der Deal intern bleibt.</p>
+            <h3>Digest jede Woche</h3>
+            <p>Ein kuratierter Rueckblick auf die besten Treffer statt unzaehliger einzelner Shop-Mails.</p>
           </article>
           <article className="flow-step">
             <span>02</span>
-            <h3>Mitgliederfenster</h3>
-            <p>`member-visible` und `public-scheduled` werden im geschlossenen Bereich ausgespielt und koennen Alerts triggern.</p>
+            <h3>Alerts nur bei Bedarf</h3>
+            <p>Aktiviere Hot-Deal-E-Mail oder WhatsApp nur dann, wenn du schnelle Treffer wirklich willst.</p>
           </article>
           <article className="flow-step">
             <span>03</span>
-            <h3>Archiv-Freigabe</h3>
-            <p>Erst `public-visible` oeffnet Homepage und Archiv. Die 24h-Verzoegerung kommt aus den Visibility-Timestamps.</p>
+            <h3>Weniger Rauschen</h3>
+            <p>Marken, Formate, Shops und Preisrahmen halten den Signalwert hoch und die Inbox sauber.</p>
           </article>
         </div>
       </section>
 
-      <section className="deals-grid">
+      <section id="archive-preview" className="deals-grid">
         <article className="panel">
           <SectionHeading
             eyebrow="Mitglieder zuerst"
-            title="Was im Mitgliederfenster sichtbar ist, bevor die Homepage reagieren darf"
-            text="`member-visible` und `public-scheduled` gehoeren zum members-first Strom. Sie bleiben ausserhalb des oeffentlichen Archivs, bis die Verzoegerung abgelaufen ist."
+            title="Mitglieder sehen diese Angebote, bevor sie im offenen Archiv auftauchen"
+            text="Das Mitgliederfenster schafft echten Vorsprung. Neue Treffer erscheinen zuerst dort und wandern erst spaeter in die oeffentliche Ansicht."
           />
           <div className="deal-stack">
             {memberDeals.map((deal) => (
@@ -595,8 +603,8 @@ function HomePage() {
         <article className="panel">
           <SectionHeading
             eyebrow="Verzoegertes Archiv"
-            title="Nur bereits freigegebene Deals erscheinen oeffentlich"
-            text="Das Archiv bleibt frei von laufenden Mitgliederfenstern. Erst `public-visible` oeffnet die volle Karte fuer nicht eingeloggte Besucher."
+            title="Diese Deals sind jetzt oeffentlich, Mitglieder sahen sie frueher"
+            text="Das offene Archiv dokumentiert freigegebene Treffer mit Verzoegerung. So bleibt die oeffentliche Flaeche klar, waehrend Mitglieder frueher reagieren koennen."
           />
           <div className="deal-stack">
             {publicArchiveDeals.map((deal) => (
@@ -604,6 +612,32 @@ function HomePage() {
             ))}
           </div>
         </article>
+      </section>
+
+      <section className="content-grid">
+        <article className="panel">
+          <SectionHeading
+            eyebrow="FAQ"
+            title="Was Besucher vor dem Start wissen wollen"
+            text="Die wichtigsten Fragen zum MVP sind direkt auf der Homepage beantwortet, damit der Einstieg nicht an Unsicherheit scheitert."
+          />
+          <ul className="summary-list">
+            <li>Mitglieder sehen neue Deals 24 Stunden vor dem oeffentlichen Archiv.</li>
+            <li>WhatsApp ist optional. Der Wochen-Digest per E-Mail bleibt der Standard.</li>
+            <li>Praeferenzen fuer Marken, Formate, Preisrahmen und Shops lassen sich spaeter anpassen.</li>
+            <li>Nicht jeder Deal wird sofort oeffentlich sichtbar, weil das Archiv bewusst verzoegert ist.</li>
+          </ul>
+        </article>
+        <aside className="panel panel-contrast">
+          <SectionHeading
+            eyebrow="Mitglied werden"
+            title="Weniger suchen. Mehr passende Zigarren-Deals rechtzeitig sehen."
+            text="Wenn du deutsche Shop-Deals nicht mehr manuell verfolgen willst, ist Rauchbar der leichteste Start in kuratierten Deal-Zugang mit Mitglieder-Vorsprung."
+          />
+          <a href="#signup" className="button button-primary">
+            Jetzt Mitglied werden
+          </a>
+        </aside>
       </section>
     </main>
   );
@@ -688,6 +722,48 @@ function SectionHeading(props: { eyebrow: string; title: string; text: string })
       <h2>{props.title}</h2>
       <p>{props.text}</p>
     </header>
+  );
+}
+
+function SignupPreview(props: { draft: SignupDraft }) {
+  const { draft } = props;
+  const brands = draft.brands.length > 0 ? draft.brands.join(', ') : 'offen';
+  const formats = draft.formats.length > 0 ? draft.formats.join(', ') : 'offen';
+  const preferredShops = draft.preferredShops.length > 0 ? draft.preferredShops.join(', ') : 'keine Vorgabe';
+  const excludedShops = draft.excludedShops.length > 0 ? draft.excludedShops.join(', ') : 'keine Ausschluesse';
+  const channels = [
+    draft.notifications.digestEnabled ? 'E-Mail-Digest' : null,
+    draft.notifications.hotDealEmailEnabled ? 'Hot-Deal E-Mail' : null,
+    draft.notifications.hotDealWhatsappEnabled ? 'WhatsApp' : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  return (
+    <div className="signup-preview">
+      <div className="info-callout">
+        <strong>Marken und Formate</strong>
+        <p>
+          {brands}
+          {' | '}
+          {formats}
+        </p>
+      </div>
+      <div className="info-callout">
+        <strong>Preisrahmen und Shops</strong>
+        <p>
+          {draft.priceBand}
+          {' | '}
+          {preferredShops}
+          {' | '}
+          {excludedShops}
+        </p>
+      </div>
+      <div className="info-callout">
+        <strong>Kanaele</strong>
+        <p>{channels || 'keine zusaetzlichen Alerts aktiv'}</p>
+      </div>
+    </div>
   );
 }
 
