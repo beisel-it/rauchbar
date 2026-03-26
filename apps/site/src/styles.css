@@ -46,6 +46,11 @@ select {
   font: inherit;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .shell {
   max-width: 1240px;
   margin: 0 auto;
@@ -220,6 +225,62 @@ select {
   gap: 18px;
 }
 
+.signup-progress {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+.progress-step {
+  align-items: start;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(19, 17, 13, 0.08);
+  border-radius: 20px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto 1fr;
+  padding: 14px 16px;
+}
+
+.progress-step span {
+  align-items: center;
+  background: rgba(19, 17, 13, 0.08);
+  border-radius: 50%;
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.progress-step strong,
+.progress-step small {
+  display: block;
+}
+
+.progress-step small {
+  color: var(--color-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.progress-step-active {
+  background: rgba(174, 95, 44, 0.1);
+  border-color: rgba(174, 95, 44, 0.28);
+}
+
+.progress-step-active span {
+  background: var(--color-accent);
+  color: #fffaf3;
+}
+
+.signup-stage {
+  display: grid;
+  gap: 18px;
+}
+
 .signup-form label,
 .field-label {
   display: grid;
@@ -235,6 +296,17 @@ select {
   border-radius: 18px;
   min-height: 50px;
   padding: 0 16px;
+}
+
+.field-error {
+  color: #9d2f21;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.field-hint {
+  color: var(--color-muted);
+  font-size: 0.88rem;
 }
 
 .chip-row {
@@ -264,10 +336,104 @@ select {
   gap: 10px;
 }
 
+.toggle-row-locked {
+  background: rgba(47, 107, 72, 0.08);
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
 .toggle-row input {
   accent-color: var(--color-accent);
   min-height: auto;
   width: 18px;
+}
+
+.consent-row {
+  align-items: start;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto 1fr;
+}
+
+.consent-row input {
+  accent-color: var(--color-accent);
+  margin-top: 4px;
+  min-height: auto;
+  width: 18px;
+}
+
+.info-callout {
+  background: rgba(19, 17, 13, 0.06);
+  border: 1px solid rgba(19, 17, 13, 0.08);
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+
+.info-callout strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.info-callout p {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.info-callout-success {
+  background: rgba(47, 107, 72, 0.08);
+  border-color: rgba(47, 107, 72, 0.18);
+}
+
+.dual-choice-grid,
+.completion-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sensitivity-list {
+  display: grid;
+  gap: 12px;
+}
+
+.sensitivity-card {
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  text-align: left;
+}
+
+.sensitivity-card strong {
+  font-size: 1rem;
+}
+
+.sensitivity-card span {
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.sensitivity-card-active {
+  background: rgba(174, 95, 44, 0.1);
+  border-color: rgba(174, 95, 44, 0.36);
+}
+
+.signup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.summary-list {
+  display: grid;
+  gap: 10px;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 18px;
 }
 
 .panel:not(.hero) {
@@ -380,15 +546,22 @@ select {
 @media (max-width: 960px) {
   .hero,
   .metrics,
+  .signup-progress,
   .content-grid,
   .deals-grid,
   .flow-grid,
-  .deal-meta {
+  .deal-meta,
+  .dual-choice-grid,
+  .completion-grid {
     grid-template-columns: 1fr;
   }
 
   .hero-copy h1 {
     max-width: none;
+  }
+
+  .signup-actions {
+    flex-direction: column;
   }
 }
 

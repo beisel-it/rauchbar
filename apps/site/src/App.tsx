@@ -1,27 +1,48 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { brandTokens } from '@rauchbar/design-system';
 import {
-  defaultNotificationPreference,
+  initialSignupDraft,
   preferenceOptions,
   sampleDeals,
+  type SignupDraft,
   type SiteDeal,
   type SiteNotificationPreference,
 } from './mockData';
 
-type SignupState = {
-  email: string;
-  formats: string[];
-  brands: string[];
-  priceBand: string;
-  notifications: SiteNotificationPreference;
+type SignupStepId = 'email' | 'preferences' | 'channels' | 'complete';
+
+type SignupStep = {
+  id: SignupStepId;
+  label: string;
+  description: string;
 };
 
-const initialSignupState: SignupState = {
-  email: '',
-  formats: ['Robusto'],
-  brands: ['Partagas'],
-  priceBand: '15 bis 30 EUR',
-  notifications: defaultNotificationPreference,
+const signupSteps: SignupStep[] = [
+  {
+    id: 'email',
+    label: 'E-Mail',
+    description: 'Adresse und Zustimmung erfassen',
+  },
+  {
+    id: 'preferences',
+    label: 'Praeferenzen',
+    description: 'Marken, Formate, Shops und Preisrahmen',
+  },
+  {
+    id: 'channels',
+    label: 'Alerts',
+    description: 'Sensitivitaet und Versandkanaele',
+  },
+  {
+    id: 'complete',
+    label: 'Fertig',
+    description: 'Erwartungen und Zusammenfassung',
+  },
+];
+
+type SignupErrors = {
+  email?: string;
+  consentAccepted?: string;
 };
 
 const currency = new Intl.NumberFormat('de-DE', {
@@ -47,14 +68,85 @@ const formatPrice = (value: number) => currency.format(value / 100);
 
 const formatTimestamp = (value?: string) => (value ? dateTime.format(new Date(value)) : 'offen');
 
+const getStepIndex = (step: SignupStepId) => signupSteps.findIndex((entry) => entry.id === step);
+
+const nextStep = (step: SignupStepId): SignupStepId =>
+  signupSteps[Math.min(getStepIndex(step) + 1, signupSteps.length - 1)]!.id;
+
+const previousStep = (step: SignupStepId): SignupStepId =>
+  signupSteps[Math.max(getStepIndex(step) - 1, 0)]!.id;
+
+const buildSignupPayload = (draft: SignupDraft) => ({
+  email: draft.email,
+  consentAccepted: draft.consentAccepted,
+  preferences: {
+    favoriteBrands: draft.brands,
+    favoriteFormats: draft.formats,
+    preferredShops: draft.preferredShops,
+    excludedShops: draft.excludedShops,
+    priceBand: draft.priceBand,
+    alertSensitivity: draft.alertSensitivity,
+  },
+  notifications: {
+    digestEnabled: true,
+    hotDealEmailEnabled: draft.notifications.hotDealEmailEnabled,
+    hotDealWhatsappEnabled: draft.notifications.hotDealWhatsappEnabled,
+  },
+});
+
 export function App() {
-  const [signupState, setSignupState] = useState(initialSignupState);
+  const [signupState, setSignupState] = useState<SignupDraft>(initialSignupDraft);
+  const [currentStep, setCurrentStep] = useState<SignupStepId>('email');
+  const [signupErrors, setSignupErrors] = useState<SignupErrors>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const memberDeals = sampleDeals.filter(
     (deal) => deal.publicationStatus === 'member-visible' || deal.publicationStatus === 'public-scheduled',
   );
 
   const publicArchiveDeals = sampleDeals.filter((deal) => deal.publicationStatus === 'public-visible');
+
+  const signupPayload = useMemo(() => buildSignupPayload(signupState), [signupState]);
+  const currentStepIndex = getStepIndex(currentStep);
+
+  const validateEmailStep = () => {
+    const nextErrors: SignupErrors = {};
+
+    if (!signupState.email.trim()) {
+      nextErrors.email = 'Bitte hinterlege eine E-Mail fuer Digest und Einstellungen.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupState.email)) {
+      nextErrors.email = 'Bitte gib eine gueltige E-Mail-Adresse ein.';
+    }
+
+    if (!signupState.consentAccepted) {
+      nextErrors.consentAccepted = 'Fuer den MVP brauchen wir die Zustimmung zum Versand des Wochen-Digests.';
+    }
+
+    setSignupErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleContinue = () => {
+    if (currentStep === 'email' && !validateEmailStep()) {
+      return;
+    }
+
+    if (currentStep === 'channels') {
+      setCurrentStep('complete');
+      setIsSubmitted(true);
+      return;
+    }
+
+    setCurrentStep(nextStep(currentStep));
+  };
+
+  const handleBack = () => {
+    if (currentStep === 'email') {
+      return;
+    }
+
+    setCurrentStep(previousStep(currentStep));
+  };
 
   return (
     <main className="shell">
@@ -91,135 +183,308 @@ export function App() {
           <span>Mitgliederfenster vor jeder oeffentlichen Freigabe</span>
         </article>
         <article className="metric panel">
-          <strong>3</strong>
-          <span>Deal-Zustaende mit direkter Relevanz fuer die Site</span>
+          <strong>4 Schritte</strong>
+          <span>E-Mail, Praeferenzen, Alerts und Abschluss im MVP-Flow</span>
         </article>
         <article className="metric panel">
-          <strong>1</strong>
-          <span>Gemeinsame Vertragsquelle fuer Site, Worker, Admin und Notifications</span>
+          <strong>1 Digest</strong>
+          <span>E-Mail-Digest ist der verpflichtende Kernkanal, Hot-Deals bleiben optional</span>
         </article>
       </section>
 
       <section id="signup" className="content-grid">
         <article className="panel">
           <SectionHeading
-            eyebrow="Signup + Preferences"
-            title="Anmeldung und Praeferenzen in einem Schritt"
-            text="Die Praeferenzstrecke legt die Basis fuer Wochen-Digest und Hot-Deal-Alerts, ohne eine zweite Onboarding-Seite zu brauchen."
+            eyebrow="MVP Signup"
+            title="E-Mail und Deal-Praeferenzen in einem klaren Onboarding-Fluss"
+            text="Der MVP startet mit Pflichtfeldern fuer E-Mail und Digest-Zustimmung. Alles andere bleibt leicht editierbar und weitgehend skippable."
           />
-          <form className="signup-form">
-            <label>
-              <span>E-Mail</span>
-              <input
-                type="email"
-                placeholder="aficionado@rauchbar.de"
-                value={signupState.email}
-                onChange={(event) => setSignupState((current) => ({ ...current, email: event.target.value }))}
-              />
-            </label>
 
-            <div>
-              <span className="field-label">Formate</span>
-              <div className="chip-row">
-                {preferenceOptions.formats.map((format) => (
-                  <button
-                    key={format}
-                    type="button"
-                    className={signupState.formats.includes(format) ? 'chip chip-active' : 'chip'}
-                    onClick={() =>
-                      setSignupState((current) => ({ ...current, formats: toggleValue(current.formats, format) }))
-                    }
-                  >
-                    {format}
-                  </button>
-                ))}
+          <div className="signup-progress" aria-label="Signup-Fortschritt">
+            {signupSteps.map((step, index) => {
+              const isActive = step.id === currentStep;
+              const isReached = index <= currentStepIndex;
+              return (
+                <div key={step.id} className={isReached ? 'progress-step progress-step-active' : 'progress-step'}>
+                  <span>{index + 1}</span>
+                  <div>
+                    <strong>{step.label}</strong>
+                    <small>{step.description}</small>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <form className="signup-form" onSubmit={(event) => event.preventDefault()}>
+            {currentStep === 'email' && (
+              <div className="signup-stage">
+                <label>
+                  <span>E-Mail</span>
+                  <input
+                    type="email"
+                    placeholder="aficionado@rauchbar.de"
+                    value={signupState.email}
+                    onChange={(event) => {
+                      const email = event.target.value;
+                      setSignupState((current) => ({ ...current, email }));
+                      setSignupErrors((current) => ({ ...current, email: undefined }));
+                    }}
+                  />
+                  {signupErrors.email ? <small className="field-error">{signupErrors.email}</small> : null}
+                </label>
+
+                <label className="consent-row">
+                  <input
+                    type="checkbox"
+                    checked={signupState.consentAccepted}
+                    onChange={(event) => {
+                      const consentAccepted = event.target.checked;
+                      setSignupState((current) => ({ ...current, consentAccepted }));
+                      setSignupErrors((current) => ({ ...current, consentAccepted: undefined }));
+                    }}
+                  />
+                  <span>
+                    Ich moechte den Wochen-Digest per E-Mail erhalten und verstehe, dass ich die Einstellungen spaeter
+                    im Mitgliederbereich anpassen kann.
+                  </span>
+                </label>
+                {signupErrors.consentAccepted ? (
+                  <small className="field-error">{signupErrors.consentAccepted}</small>
+                ) : null}
+
+                <div className="info-callout">
+                  <strong>Pflicht im MVP</strong>
+                  <p>
+                    E-Mail plus Zustimmung sind die Mindestdaten fuer den kuratierten Wochen-Digest. Hot-Deal-Kanaele
+                    bleiben optional.
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <span className="field-label">Marken</span>
-              <div className="chip-row">
-                {preferenceOptions.brands.map((brand) => (
-                  <button
-                    key={brand}
-                    type="button"
-                    className={signupState.brands.includes(brand) ? 'chip chip-active' : 'chip'}
-                    onClick={() =>
-                      setSignupState((current) => ({ ...current, brands: toggleValue(current.brands, brand) }))
-                    }
+            {currentStep === 'preferences' && (
+              <div className="signup-stage">
+                <div>
+                  <span className="field-label">Lieblingsmarken</span>
+                  <div className="chip-row">
+                    {preferenceOptions.brands.map((brand) => (
+                      <button
+                        key={brand}
+                        type="button"
+                        className={signupState.brands.includes(brand) ? 'chip chip-active' : 'chip'}
+                        onClick={() =>
+                          setSignupState((current) => ({ ...current, brands: toggleValue(current.brands, brand) }))
+                        }
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="field-label">Bevorzugte Formate</span>
+                  <div className="chip-row">
+                    {preferenceOptions.formats.map((format) => (
+                      <button
+                        key={format}
+                        type="button"
+                        className={signupState.formats.includes(format) ? 'chip chip-active' : 'chip'}
+                        onClick={() =>
+                          setSignupState((current) => ({ ...current, formats: toggleValue(current.formats, format) }))
+                        }
+                      >
+                        {format}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="dual-choice-grid">
+                  <div>
+                    <span className="field-label">Bevorzugte Shops</span>
+                    <div className="chip-row">
+                      {preferenceOptions.shops.map((shop) => (
+                        <button
+                          key={shop}
+                          type="button"
+                          className={signupState.preferredShops.includes(shop) ? 'chip chip-active' : 'chip'}
+                          onClick={() =>
+                            setSignupState((current) => ({
+                              ...current,
+                              preferredShops: toggleValue(current.preferredShops, shop),
+                              excludedShops: current.excludedShops.filter((entry) => entry !== shop),
+                            }))
+                          }
+                        >
+                          {shop}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="field-label">Shops ausblenden</span>
+                    <div className="chip-row">
+                      {preferenceOptions.shops.map((shop) => (
+                        <button
+                          key={`exclude-${shop}`}
+                          type="button"
+                          className={signupState.excludedShops.includes(shop) ? 'chip chip-active' : 'chip'}
+                          onClick={() =>
+                            setSignupState((current) => ({
+                              ...current,
+                              excludedShops: toggleValue(current.excludedShops, shop),
+                              preferredShops: current.preferredShops.filter((entry) => entry !== shop),
+                            }))
+                          }
+                        >
+                          {shop}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <label>
+                  <span>Preisrahmen</span>
+                  <select
+                    value={signupState.priceBand}
+                    onChange={(event) => setSignupState((current) => ({ ...current, priceBand: event.target.value }))}
                   >
-                    {brand}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    {preferenceOptions.priceBands.map((priceBand) => (
+                      <option key={priceBand} value={priceBand}>
+                        {priceBand}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-            <label>
-              <span>Preisfenster</span>
-              <select
-                value={signupState.priceBand}
-                onChange={(event) => setSignupState((current) => ({ ...current, priceBand: event.target.value }))}
+                <small className="field-hint">Diese Angaben sind skippable und koennen spaeter inline geaendert werden.</small>
+              </div>
+            )}
+
+            {currentStep === 'channels' && (
+              <div className="signup-stage">
+                <div className="sensitivity-list">
+                  {preferenceOptions.sensitivities.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={
+                        signupState.alertSensitivity === option.value
+                          ? 'sensitivity-card sensitivity-card-active'
+                          : 'sensitivity-card'
+                      }
+                      onClick={() => setSignupState((current) => ({ ...current, alertSensitivity: option.value }))}
+                    >
+                      <strong>{option.label}</strong>
+                      <span>{option.description}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div>
+                  <span className="field-label">Kanaele</span>
+                  <label className="toggle-row toggle-row-locked">
+                    <input type="checkbox" checked readOnly />
+                    <span>Wochen-Digest per E-Mail ist fuer den MVP immer aktiv.</span>
+                  </label>
+                  <label className="toggle-row">
+                    <input
+                      type="checkbox"
+                      checked={signupState.notifications.hotDealEmailEnabled}
+                      onChange={(event) =>
+                        setSignupState((current) => ({
+                          ...current,
+                          notifications: { ...current.notifications, hotDealEmailEnabled: event.target.checked },
+                        }))
+                      }
+                    />
+                    <span>Hot Deals per E-Mail</span>
+                  </label>
+                  <label className="toggle-row">
+                    <input
+                      type="checkbox"
+                      checked={signupState.notifications.hotDealWhatsappEnabled}
+                      onChange={(event) =>
+                        setSignupState((current) => ({
+                          ...current,
+                          notifications: { ...current.notifications, hotDealWhatsappEnabled: event.target.checked },
+                        }))
+                      }
+                    />
+                    <span>Hot Deals per WhatsApp</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 'complete' && (
+              <div className="signup-stage completion-stage">
+                <div className="info-callout info-callout-success">
+                  <strong>Onboarding abgeschlossen</strong>
+                  <p>
+                    Dein Wochen-Digest ist vorbereitet. Hot-Deal-Alerts werden gemaess deinen Kanal- und Sensitivitaetsregeln ausgeloest.
+                  </p>
+                </div>
+
+                <div className="completion-grid">
+                  <div>
+                    <span className="field-label">Was als Naechstes passiert</span>
+                    <ul className="summary-list">
+                      <li>Die erste Digest-Ausspielung folgt im naechsten geplanten Wochenfenster.</li>
+                      <li>Hot-Deal-Alerts laufen nur fuer aktivierte Kanaele.</li>
+                      <li>Praeferenzen bleiben spaeter im Mitgliederbereich leicht editierbar.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="field-label">Erfasster MVP-Payload</span>
+                    <pre>{JSON.stringify(signupPayload, null, 2)}</pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="signup-actions">
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={handleBack}
+                disabled={currentStep === 'email'}
               >
-                {preferenceOptions.priceBands.map((priceBand) => (
-                  <option key={priceBand} value={priceBand}>
-                    {priceBand}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div>
-              <span className="field-label">Alerts</span>
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={signupState.notifications.digestEnabled}
-                  onChange={(event) =>
-                    setSignupState((current) => ({
-                      ...current,
-                      notifications: { ...current.notifications, digestEnabled: event.target.checked },
-                    }))
-                  }
-                />
-                <span>Wochen-Digest per E-Mail</span>
-              </label>
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={signupState.notifications.hotDealEmailEnabled}
-                  onChange={(event) =>
-                    setSignupState((current) => ({
-                      ...current,
-                      notifications: { ...current.notifications, hotDealEmailEnabled: event.target.checked },
-                    }))
-                  }
-                />
-                <span>Hot Deals per E-Mail</span>
-              </label>
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={signupState.notifications.hotDealWhatsappEnabled}
-                  onChange={(event) =>
-                    setSignupState((current) => ({
-                      ...current,
-                      notifications: { ...current.notifications, hotDealWhatsappEnabled: event.target.checked },
-                    }))
-                  }
-                />
-                <span>Hot Deals per WhatsApp</span>
-              </label>
+                Zurueck
+              </button>
+              {currentStep !== 'complete' ? (
+                <button type="button" className="button button-primary" onClick={handleContinue}>
+                  {currentStep === 'channels' ? 'Signup abschliessen' : 'Weiter'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="button button-primary"
+                  onClick={() => {
+                    setSignupState(initialSignupDraft);
+                    setSignupErrors({});
+                    setCurrentStep('email');
+                    setIsSubmitted(false);
+                  }}
+                >
+                  Flow neu starten
+                </button>
+              )}
             </div>
           </form>
         </article>
 
         <aside className="panel summary-card">
           <SectionHeading
-            eyebrow="Payload Preview"
-            title="Was der Site-Flow an Backend oder Shared Packages uebergibt"
-            text="Die UI bleibt leicht, aber die Nutzerdaten tragen bereits die Routing-Information fuer Digest und Hot-Deal-Kanaele."
+            eyebrow={isSubmitted ? 'Completion Summary' : 'Payload Preview'}
+            title={isSubmitted ? 'Gespeicherter MVP-Scope fuer Digest und Alerts' : 'Was der Signup-Flow aktuell erfassen wuerde'}
+            text="Die Zusammenfassung bleibt absichtlich nah am Produktvertrag: E-Mail, Consent, Deal-Praeferenzen und Kanalsteuerung."
           />
-          <pre>{JSON.stringify(signupState, null, 2)}</pre>
+          <pre>{JSON.stringify(signupPayload, null, 2)}</pre>
         </aside>
       </section>
 
