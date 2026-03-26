@@ -16,6 +16,16 @@ export type EmailNotificationChannel = Extract<DealChannel, 'digest' | 'email-ho
 
 export type WhatsappNotificationChannel = Extract<DealChannel, 'whatsapp-hot-deal'>;
 
+export type AdminDispatchChannel = Extract<DealChannel, 'digest' | 'email-hot-deal' | 'whatsapp-hot-deal'>;
+
+export type AdminDispatchRunStatus =
+  | 'planned'
+  | 'sending'
+  | 'sent'
+  | 'partial_failure'
+  | 'failed'
+  | 'paused';
+
 export type NotificationChannelContract = {
   channel: DealChannel;
   transport: NotificationTransport;
@@ -86,8 +96,40 @@ export type NotificationDispatchRecord = {
   dealId: string;
   channel: DealChannel;
   deliveryStatus: NotificationDeliveryStatus;
+  recipientMemberId?: string;
+  dispatchedAt?: string;
+  updatedAt?: string;
   providerMessageId?: string;
   providerStatus?: string;
+  failureReason?: string;
+};
+
+export type DispatchDeliveryCounts = Record<NotificationDeliveryStatus, number> & {
+  total: number;
+};
+
+export type AdminDispatchFailure = {
+  dispatchId: string;
+  dealId: string;
+  recipientMemberId?: string;
+  providerStatus?: string;
+  failureReason?: string;
+};
+
+export type AdminDispatchRunReadModel = {
+  runId: string;
+  channel: AdminDispatchChannel;
+  kind: Extract<NotificationKind, 'digest' | 'hot-deal'>;
+  status: AdminDispatchRunStatus;
+  startedAt?: string;
+  completedAt?: string;
+  pausedAt?: string;
+  dealCount: number;
+  recipientCount: number;
+  deliveryCounts: DispatchDeliveryCounts;
+  failureCount: number;
+  latestProviderStatuses: string[];
+  failures: AdminDispatchFailure[];
 };
 
 export type EmailAddress = {
@@ -337,15 +379,121 @@ export function createQueuedDispatch(params: {
   dispatchId: string;
   dealId: string;
   channel: DealChannel;
+  recipientMemberId?: string;
+  dispatchedAt?: string;
 }): NotificationDispatchRecord {
   return {
     id: params.dispatchId,
     dealId: params.dealId,
     channel: params.channel,
     deliveryStatus: 'queued',
+    recipientMemberId: params.recipientMemberId,
+    dispatchedAt: params.dispatchedAt,
   };
 }
 
 export function isTerminalDeliveryStatus(status: NotificationDeliveryStatus): boolean {
   return status === 'delivered' || status === 'failed' || status === 'suppressed';
+}
+
+export function buildDispatchDeliveryCounts(
+  dispatches: NotificationDispatchRecord[],
+): DispatchDeliveryCounts {
+  const counts: DispatchDeliveryCounts = {
+    queued: 0,
+    sent: 0,
+    delivered: 0,
+    failed: 0,
+    suppressed: 0,
+    total: dispatches.length,
+  };
+
+  for (const dispatch of dispatches) {
+    counts[dispatch.deliveryStatus] += 1;
+  }
+
+  return counts;
+}
+
+export function deriveAdminDispatchRunStatus(params: {
+  deliveryCounts: DispatchDeliveryCounts;
+  completedAt?: string;
+  pausedAt?: string;
+}): AdminDispatchRunStatus {
+  const { deliveryCounts, completedAt, pausedAt } = params;
+
+  if (pausedAt) {
+    return 'paused';
+  }
+
+  if (deliveryCounts.total === 0) {
+    return 'planned';
+  }
+
+  if (!completedAt) {
+    return 'sending';
+  }
+
+  if (deliveryCounts.failed === deliveryCounts.total) {
+    return 'failed';
+  }
+
+  if (deliveryCounts.failed > 0) {
+    return 'partial_failure';
+  }
+
+  return 'sent';
+}
+
+export function buildAdminDispatchRunReadModel(params: {
+  runId: string;
+  channel: AdminDispatchChannel;
+  dispatches: NotificationDispatchRecord[];
+  startedAt?: string;
+  completedAt?: string;
+  pausedAt?: string;
+  dealCount: number;
+  recipientCount: number;
+}): AdminDispatchRunReadModel {
+  const deliveryCounts = buildDispatchDeliveryCounts(params.dispatches);
+  const failures = params.dispatches
+    .filter((dispatch) => dispatch.deliveryStatus === 'failed')
+    .map((dispatch) => ({
+      dispatchId: dispatch.id,
+      dealId: dispatch.dealId,
+      recipientMemberId: dispatch.recipientMemberId,
+      providerStatus: dispatch.providerStatus,
+      failureReason: dispatch.failureReason,
+    }));
+  const latestProviderStatuses = Array.from(
+    new Set(
+      params.dispatches
+        .map((dispatch) => dispatch.providerStatus)
+        .filter((providerStatus): providerStatus is string => Boolean(providerStatus)),
+    ),
+  );
+
+  return {
+    runId: params.runId,
+    channel: params.channel,
+    kind: getAdminDispatchKind(params.channel),
+    status: deriveAdminDispatchRunStatus({
+      deliveryCounts,
+      completedAt: params.completedAt,
+      pausedAt: params.pausedAt,
+    }),
+    startedAt: params.startedAt,
+    completedAt: params.completedAt,
+    pausedAt: params.pausedAt,
+    dealCount: params.dealCount,
+    recipientCount: params.recipientCount,
+    deliveryCounts,
+    failureCount: failures.length,
+    latestProviderStatuses,
+    failures,
+  };
+}
+
+function getAdminDispatchKind(channel: AdminDispatchChannel): Extract<NotificationKind, 'digest' | 'hot-deal'> {
+  return channel === 'digest' ? 'digest' : 'hot-deal';
 }
