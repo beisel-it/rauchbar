@@ -18,7 +18,9 @@ That workflow listens to `pull_request_target` metadata events and enables GitHu
 
 The main CI workflow remains responsible only for install, lint, test, and build checks.
 
-The workflow does **not** check out PR code in the auto-merge step. It only uses pull-request metadata plus the GitHub CLI command:
+The workflow checks out the trusted base repository context before invoking GitHub CLI, but it still does **not** check out or execute PR head code. This is required because `gh pr merge` expects repository context unless `GH_REPO` is provided explicitly.
+
+The merge-enablement step uses pull-request metadata plus the GitHub CLI command:
 
 ```bash
 gh pr merge <pr-number> --auto --squash --delete-branch=false
