@@ -47,15 +47,10 @@ function inferAvailability(rawValue?: string): AvailabilityStatus {
     return 'unknown';
   }
 
-  const normalized = rawValue.toLowerCase();
-
-  if (normalized.includes('sofort') || normalized.includes('verfugbar') || normalized.includes('verfuegbar')) {
-    return 'in-stock';
-  }
-
-  if (normalized.includes('wenige') || normalized.includes('restbestand')) {
-    return 'low-stock';
-  }
+  const normalized = rawValue
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 
   if (
     normalized.includes('nicht verfugbar') ||
@@ -63,6 +58,14 @@ function inferAvailability(rawValue?: string): AvailabilityStatus {
     normalized.includes('ausverkauft')
   ) {
     return 'out-of-stock';
+  }
+
+  if (normalized.includes('wenige') || normalized.includes('restbestand')) {
+    return 'low-stock';
+  }
+
+  if (normalized.includes('sofort') || normalized.includes('verfugbar') || normalized.includes('verfuegbar')) {
+    return 'in-stock';
   }
 
   return 'unknown';
