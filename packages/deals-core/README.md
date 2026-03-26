@@ -11,7 +11,7 @@ Shared TypeScript contracts for the Rauchbar MVP deal pipeline.
 - normalized deal entities and lifecycle state
 - ingest run telemetry
 - admin review and publication shapes
-- subscriber preference, hot-deal, and digest matching payloads
+- subscriber preference, member profile, hot-deal, and digest matching payloads
 
 ## Lifecycle
 
@@ -32,6 +32,7 @@ The current MVP deal lifecycle is:
 
 - `MerchantReference`, `SourceReference`, `SourceOffer`, and `SourceAdapterOutput` cover shop ingestion.
 - `ProductCatalogEntry`, `NormalizedDealCandidate`, and `PublishedDeal` add the richer domain layer needed for curation and delayed publication.
+- `MemberSignupInput`, `MemberProfile`, `NotificationPreference`, and `MemberAdminStatus` define the shared member contract across signup, delivery, and admin runtime views.
 - `Subscription`, `SubscriberPreferences`, `HotDealRule`, `DigestRule`, `DealMatch`, `WorkerContracts`, and `AdminContracts` define the cross-app boundaries for member matching and operations.
 
 ## Current Assumptions
@@ -42,6 +43,12 @@ The current MVP deal lifecycle is:
 - Weekly digest is the only digest cadence in MVP.
 - Public publication remains delayed by `24` hours relative to member access.
 - Cross-stream identifiers are opaque strings for now. Storage-specific formats are intentionally left open.
+
+## Member Contract Notes
+
+- Site signup should emit `MemberSignupInput`, with required email, digest consent, optional preference detail, and explicit notification toggles.
+- Notifications should read `NotificationPreference`, `SubscriberChannelPreference`, and `MemberProfile.consents` instead of redefining recipient preference gates.
+- Admin surfaces should use `MemberAdminStatus` for digest state, alert-channel verification/failure state, and preference completeness messaging.
 
 ## Notes
 

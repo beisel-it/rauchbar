@@ -50,6 +50,13 @@ export type HotDealReasonCode = (typeof hotDealReasonCodes)[number];
 export type NotificationChannel = 'email' | 'whatsapp';
 export type AlertCadence = 'instant' | 'daily-digest' | 'weekly-digest';
 export type PriceSensitivity = 'balanced' | 'deal-hunter' | 'rare-finds';
+export type MemberAlertSensitivity = 'nur-grosse-treffer' | 'ausgewogen' | 'moeglichst-viel';
+export type MemberLocale = 'de-DE';
+export type MemberStatus = 'pending-confirmation' | 'active' | 'paused' | 'unsubscribed';
+export type MemberDigestStatus = 'scheduled' | 'sent' | 'delayed' | 'failed';
+export type MemberAlertChannelStatus = 'active' | 'muted' | 'pending_verification' | 'failed';
+export type PreferenceCompleteness = 'minimal' | 'partial' | 'tuned';
+export type ConsentKind = 'digest-email' | 'hot-deal-email' | 'hot-deal-whatsapp' | 'privacy-policy';
 
 export type CigarOrigin =
   | 'cuba'
@@ -300,6 +307,45 @@ export type SubscriberDealPreferences = {
   digestEnabled: boolean;
 };
 
+export type NotificationPreference = {
+  digestEnabled: boolean;
+  hotDealEmailEnabled: boolean;
+  hotDealWhatsappEnabled: boolean;
+};
+
+export type MemberSignupPreferences = {
+  favoriteBrands: string[];
+  favoriteFormats: string[];
+  preferredShops: string[];
+  excludedShops: string[];
+  priceBand?: string;
+  alertSensitivity: MemberAlertSensitivity;
+};
+
+export type MemberConsentRecord = {
+  kind: ConsentKind;
+  granted: boolean;
+  grantedAt?: ISODateString;
+  source: 'site-signup' | 'member-settings' | 'admin-import' | 'admin-update';
+  evidenceRef?: string;
+};
+
+export type MemberSignupDraft = {
+  email: string;
+  consentAccepted: boolean;
+  preferences: MemberSignupPreferences;
+  notifications: NotificationPreference;
+};
+
+export type MemberSignupInput = {
+  email: string;
+  locale: MemberLocale;
+  consents: MemberConsentRecord[];
+  preferences: MemberSignupPreferences;
+  notifications: NotificationPreference;
+  submittedAt: ISODateString;
+};
+
 export type SubscriberPreferences = {
   subscriberId: SubscriberId;
   favoriteBrands: Array<{
@@ -327,13 +373,52 @@ export type SubscriberChannelPreference = {
   verified: boolean;
 };
 
+export type MemberChannelStatus = {
+  channel: NotificationChannel;
+  status: MemberAlertChannelStatus;
+  verifiedAt?: ISODateString;
+  lastDeliveredAt?: ISODateString;
+  lastFailedAt?: ISODateString;
+  failureReason?: string;
+};
+
+export type MemberAdminStatus = {
+  memberStatus: MemberStatus;
+  digestStatus: MemberDigestStatus;
+  preferenceCompleteness: PreferenceCompleteness;
+  alertChannels: MemberChannelStatus[];
+  lastDigestSentAt?: ISODateString;
+  lastHotDealSentAt?: ISODateString;
+  adminNote?: string;
+};
+
+export type MemberProfile = {
+  id: SubscriberId;
+  email: string;
+  locale: MemberLocale;
+  status: MemberStatus;
+  consents: MemberConsentRecord[];
+  signup: {
+    submittedAt: ISODateString;
+    source: 'site-signup' | 'admin-import';
+  };
+  preferences: SubscriberPreferences;
+  notifications: NotificationPreference;
+  channels: SubscriberChannelPreference[];
+  adminStatus: MemberAdminStatus;
+  whatsappE164?: string;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+};
+
 export type Subscription = {
   id: string;
   email: string;
   whatsappE164?: string;
-  locale: 'de-DE';
-  status: 'pending-verification' | 'active' | 'paused' | 'unsubscribed';
+  locale: MemberLocale;
+  status: MemberStatus;
   preferences: SubscriberPreferences;
+  notifications: NotificationPreference;
   channels: SubscriberChannelPreference[];
   createdAt: ISODateString;
   updatedAt: ISODateString;
@@ -397,6 +482,10 @@ export type WorkerContracts = {
     rule: DigestRule;
     audience: Subscription[];
   };
+  ingestMemberSignup: {
+    input: MemberSignupInput;
+    output: MemberProfile;
+  };
 };
 
 export type AdminContracts = {
@@ -411,6 +500,7 @@ export type AdminContracts = {
     publicVisibleFrom: ISODateString;
   };
   manageMerchant: MerchantReference;
+  upsertMemberProfile: MemberProfile;
 };
 
 export const PUBLIC_ARCHIVE_DELAY_HOURS = 24;
