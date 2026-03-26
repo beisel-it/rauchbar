@@ -660,8 +660,6 @@ function HomePage(props: { initialSection?: 'signup' }) {
   );
 }
 
-<<<<<<< HEAD
-=======
 function NotifyPage() {
   const [email, setEmail] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -736,8 +734,6 @@ function NotifyPage() {
     </main>
   );
 }
-
->>>>>>> 600261d (Route default traffic to notify page)
 function SectionHeading(props: { eyebrow: string; title: string; text: string }) {
   return (
     <header className="section-heading">
