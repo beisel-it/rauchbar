@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@rauchbar/deals-core": "workspace:*"
+    "@rauchbar/deals-core": "workspace:*",
+    "@rauchbar/notifications": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
