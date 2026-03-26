@@ -2,15 +2,15 @@
 
 Stand: 2026-03-26
 
-Dieses Runbook beschreibt den kuerzesten Staging-Pfad fuer Rauchbar auf dem Host `65.21.2.149` mit Caddy als oeffentlichem Reverse Proxy und Docker Compose als Runtime-Manager.
+Dieses Runbook beschreibt den kürzesten Staging-Pfad für Rauchbar auf dem Host `65.21.2.149` mit Caddy als öffentlichem Reverse Proxy und Docker Compose als Runtime-Manager.
 
 ## Zielbild
 
 - `staging.rauchbar.genussgesellschaft-neckartal.de` zeigt auf `site`
 - `admin.rauchbar.genussgesellschaft-neckartal.de` zeigt auf `admin`
-- nur Caddy ist oeffentlich auf `80` und `443` erreichbar
+- nur Caddy ist öffentlich auf `80` und `443` erreichbar
 - `site`, `admin`, `worker`, `postgres` und `redis` laufen nur im internen Docker-Netz
-- TLS wird automatisch ueber Let's Encrypt / HTTP-01 von Caddy abgewickelt
+- TLS wird automatisch über Let's Encrypt / HTTP-01 von Caddy abgewickelt
 
 ## Repo-Artefakte
 
@@ -20,7 +20,7 @@ Dieses Runbook beschreibt den kuerzesten Staging-Pfad fuer Rauchbar auf dem Host
 
 ## Alternative
 
-Falls der Host ueber Portainer statt direkte Docker-Compose-CLI betrieben werden soll, liegt der parallele Pfad in `docker-compose.portainer.yml` und `docs/operations/portainer-staging-runbook.md`.
+Falls der Host über Portainer statt direkte Docker-Compose-CLI betrieben werden soll, liegt der parallele Pfad in `docker-compose.portainer.yml` und `docs/operations/portainer-staging-runbook.md`.
 
 ## Vorbedingungen
 
@@ -31,10 +31,10 @@ Falls der Host ueber Portainer statt direkte Docker-Compose-CLI betrieben werden
 2. Host:
    - Docker Engine und Compose Plugin installiert
    - eingehend `80/tcp` und `443/tcp` offen
-   - ausgehend `443/tcp` fuer Image Pulls und ACME erreichbar
+   - ausgehend `443/tcp` für Image Pulls und ACME erreichbar
 3. Zugriff:
    - SSH-Zugang zum Host
-   - Schreibrechte fuer das Deploy-Verzeichnis
+   - Schreibrechte für das Deploy-Verzeichnis
 
 ## Bootstrap
 
@@ -45,7 +45,7 @@ Falls der Host ueber Portainer statt direkte Docker-Compose-CLI betrieben werden
    - `SESSION_SECRET`
    - `EMAIL_PROVIDER_API_KEY`
    - `WHATSAPP_PROVIDER_API_KEY`
-3. Compose-Konfiguration pruefen:
+3. Compose-Konfiguration prüfen:
 
 ```bash
 docker compose --env-file .env.deploy -f docker-compose.deploy.yml config
@@ -59,13 +59,13 @@ docker compose --env-file .env.deploy -f docker-compose.deploy.yml up -d --build
 
 ## Verifikation
 
-Nach erfolgreichem Start muessen folgende Checks gruen sein:
+Nach erfolgreichem Start müssen folgende Checks grün sein:
 
 - `https://staging.rauchbar.genussgesellschaft-neckartal.de/health/live`
 - `https://staging.rauchbar.genussgesellschaft-neckartal.de/health/ready`
 - `https://admin.rauchbar.genussgesellschaft-neckartal.de/health/live`
 - `https://admin.rauchbar.genussgesellschaft-neckartal.de/health/ready`
-- intern fuer Worker:
+- intern für Worker:
 
 ```bash
 docker compose --env-file .env.deploy -f docker-compose.deploy.yml exec worker \
@@ -74,9 +74,9 @@ docker compose --env-file .env.deploy -f docker-compose.deploy.yml exec worker \
 
 ## Exposure-Regeln
 
-- keine direkten Port-Publishes fuer `site`, `admin`, `worker`, `postgres` oder `redis`
-- nur Caddy oeffnet `80` und `443`
-- `worker` bleibt intern und bekommt keine oeffentliche Route
+- keine direkten Port-Publishes für `site`, `admin`, `worker`, `postgres` oder `redis`
+- nur Caddy öffnet `80` und `443`
+- `worker` bleibt intern und bekommt keine öffentliche Route
 - `postgres` und `redis` bleiben ausschliesslich im internen Docker-Netz
 
 ## Rollback
@@ -88,7 +88,7 @@ docker compose --env-file .env.deploy -f docker-compose.deploy.yml exec worker \
 docker compose --env-file .env.deploy -f docker-compose.deploy.yml up -d --build
 ```
 
-3. Health-Endpunkte erneut pruefen.
+3. Health-Endpunkte erneut prüfen.
 
 ## Bekannte externe Blocker
 
