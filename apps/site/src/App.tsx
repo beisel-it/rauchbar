@@ -25,13 +25,13 @@ const signupSteps: SignupStep[] = [
   },
   {
     id: 'preferences',
-    label: 'Praeferenzen',
+    label: 'Präferenzen',
     description: 'Marken, Formate, Shops und Preisrahmen',
   },
   {
     id: 'channels',
     label: 'Alerts',
-    description: 'Sensitivitaet und Versandkanaele',
+    description: 'Sensitivität und Versandkanäle',
   },
   {
     id: 'complete',
@@ -56,9 +56,9 @@ const dateTime = new Intl.DateTimeFormat('de-DE', {
 });
 
 const publicationLabels: Record<SiteDeal['publicationStatus'], string> = {
-  'member-visible': 'nur fuer Mitglieder sichtbar',
-  'public-scheduled': 'oeffentliche Freigabe geplant',
-  'public-visible': 'oeffentlich sichtbar',
+  'member-visible': 'nur für Mitglieder sichtbar',
+  'public-scheduled': 'öffentliche Freigabe geplant',
+  'public-visible': 'öffentlich sichtbar',
 };
 
 const toggleValue = (values: string[], value: string) =>
@@ -125,25 +125,25 @@ function HomePage() {
   const publicArchiveDeals = sampleDeals.filter((deal) => deal.publicationStatus === 'public-visible');
   const delayedArchiveStates = [
     {
-      title: 'Nur fuer Mitglieder',
+      title: 'Nur für Mitglieder',
       badgeClass: 'badge badge-members',
       badgeLabel: 'member_visible',
       description:
-        'Freigegeben, aber oeffentlich noch unsichtbar. Die Homepage kommuniziert hier nur den Vorsprung, nicht die volle Dealkarte.',
+        'Freigegeben, aber öffentlich noch unsichtbar. Die Homepage kommuniziert hier nur den Vorsprung, nicht die volle Dealkarte.',
     },
     {
-      title: 'Oeffentlich geplant',
+      title: 'Öffentlich geplant',
       badgeClass: 'badge badge-pending',
       badgeLabel: 'public_scheduled',
       description:
-        'Mitglieder sehen den Deal bereits. Die oeffentliche Karte darf erst nach Ablauf des 24h-Fensters erscheinen.',
+        'Mitglieder sehen den Deal bereits. Die öffentliche Karte darf erst nach Ablauf des 24h-Fensters erscheinen.',
     },
     {
-      title: 'Im verzoegerten Archiv',
+      title: 'Im verzögerten Archiv',
       badgeClass: 'badge badge-public',
       badgeLabel: 'public_visible',
       description:
-        'Jetzt wird der gleiche Deal oeffentlich dokumentiert, inklusive Preis, Shop und verzoegertem Freigabezeitpunkt.',
+        'Jetzt wird der gleiche Deal öffentlich dokumentiert, inklusive Preis, Shop und verzögertem Freigabezeitpunkt.',
     },
   ];
 
@@ -154,13 +154,13 @@ function HomePage() {
     const nextErrors: SignupErrors = {};
 
     if (!signupState.email.trim()) {
-      nextErrors.email = 'Bitte hinterlege eine E-Mail fuer Digest und Einstellungen.';
+      nextErrors.email = 'Bitte hinterlege eine E-Mail für Digest und Einstellungen.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupState.email)) {
-      nextErrors.email = 'Bitte gib eine gueltige E-Mail-Adresse ein.';
+      nextErrors.email = 'Bitte gib eine gültige E-Mail-Adresse ein.';
     }
 
     if (!signupState.consentAccepted) {
-      nextErrors.consentAccepted = 'Fuer den MVP brauchen wir die Zustimmung zum Versand des Wochen-Digests.';
+      nextErrors.consentAccepted = 'Für den MVP brauchen wir die Zustimmung zum Versand des Wochen-Digests.';
     }
 
     setSignupErrors(nextErrors);
@@ -193,18 +193,18 @@ function HomePage() {
     <main className="shell">
       <section className="hero panel">
         <div className="hero-copy">
-          <p className="eyebrow">Zigarren-Deals fuer deutsche Shops</p>
-          <h1>Gute Angebote frueher sehen, statt sie zwischen Shop-Newslettern zu verpassen.</h1>
+          <p className="eyebrow">Zigarren-Deals für deutsche Shops</p>
+          <h1>Gute Angebote früher sehen, statt sie zwischen Shop-Newslettern zu verpassen.</h1>
           <p className="lede">
             Rauchbar beobachtet deutsche Shops, kuratiert relevante Zigarren-Deals und gibt Mitgliedern 24 Stunden
-            Vorsprung vor dem oeffentlichen Archiv. Wochen-Digest ist Standard, Hot-Deal-Alerts bleiben optional.
+            Vorsprung vor dem öffentlichen Archiv. Wochen-Digest ist Standard, Hot-Deal-Alerts bleiben optional.
           </p>
           <div className="hero-actions">
             <a href="#signup" className="button button-primary">
               Mitglied werden
             </a>
             <a href="#archive-preview" className="button button-secondary">
-              Verzoegerte Deals ansehen
+              Verzögerte Deals ansehen
             </a>
           </div>
         </div>
@@ -212,7 +212,7 @@ function HomePage() {
           <span className="hero-card-label">Mitgliederwert</span>
           <ol className="contract-list">
             <li>deutsche Shop-Deals an einem Ort statt verteiltem Monitoring</li>
-            <li>frueherer Zugang vor der oeffentlichen Freigabe im Archiv</li>
+            <li>früherer Zugang vor der öffentlichen Freigabe im Archiv</li>
             <li>relevante Hinweise nach Marken, Formaten und Preisrahmen</li>
           </ol>
         </div>
@@ -221,24 +221,24 @@ function HomePage() {
       <section className="metrics">
         <article className="metric panel">
           <strong>9 Shops</strong>
-          <span>deutsche Haendler im MVP-Fokus fuer kuratierte Deal-Signale</span>
+          <span>deutsche Händler im MVP-Fokus für kuratierte Deal-Signale</span>
         </article>
         <article className="metric panel">
-          <strong>taeglich</strong>
+          <strong>täglich</strong>
           <span>Monitoring statt manueller Preisjagd durch mehrere Webshops</span>
         </article>
         <article className="metric panel">
           <strong>24h Vorsprung</strong>
-          <span>Mitglieder sehen frische Freigaben vor dem oeffentlichen Archiv</span>
+          <span>Mitglieder sehen frische Freigaben vor dem öffentlichen Archiv</span>
         </article>
       </section>
 
       <section id="publishing-flow" className="panel archive-explainer">
         <div className="section-heading">
           <p className="eyebrow">So funktioniert's</p>
-          <h2>Mitglied werden, Relevanz festlegen, bessere Deals frueher bekommen.</h2>
+          <h2>Mitglied werden, Relevanz festlegen, bessere Deals früher bekommen.</h2>
           <p>
-            Rauchbar bleibt fuer den MVP bewusst schlank: E-Mail rein, Praeferenzen setzen, Digest aktivieren und nur
+            Rauchbar bleibt für den MVP bewusst schlank: E-Mail rein, Präferenzen setzen, Digest aktivieren und nur
             bei Bedarf Hot-Deal-Alerts zuschalten.
           </p>
         </div>
@@ -254,24 +254,24 @@ function HomePage() {
             <p>So landen nur die Deals im Fokus, die zu deinem Geschmack und Preisrahmen passen.</p>
           </article>
           <article className="archive-state-card">
-            <span className="badge badge-public">3. Frueher informiert sein</span>
+            <span className="badge badge-public">3. Früher informiert sein</span>
             <h3>Digest standard, Alerts optional</h3>
-            <p>Mitglieder sehen passende Angebote frueher, waehrend das oeffentliche Archiv zeitversetzt bleibt.</p>
+            <p>Mitglieder sehen passende Angebote früher, während das öffentliche Archiv zeitversetzt bleibt.</p>
           </article>
         </div>
         <div className="timeline-banner">
           <strong>Mitglieder zuerst</strong>
           <span>personalisierte Relevanz</span>
-          <span>oeffentliche Deals spaeter</span>
+          <span>öffentliche Deals später</span>
         </div>
       </section>
 
       <section id="signup" className="content-grid">
         <article className="panel">
           <SectionHeading
-            eyebrow="Praeferenzen ohne Reibung"
-            title="Der Einstieg sammelt nur das, was fuer bessere Empfehlungen wirklich hilft"
-            text="Digest-Zustimmung ist Pflicht, alles andere bleibt leicht, skippable und spaeter aenderbar. So bleibt der erste Schritt kurz, aber der Nutzen direkt sichtbar."
+            eyebrow="Präferenzen ohne Reibung"
+            title="Der Einstieg sammelt nur das, was für bessere Empfehlungen wirklich hilft"
+            text="Digest-Zustimmung ist Pflicht, alles andere bleibt leicht, skippable und später änderbar. So bleibt der erste Schritt kurz, aber der Nutzen direkt sichtbar."
           />
 
           <div className="signup-progress" aria-label="Signup-Fortschritt">
@@ -319,7 +319,7 @@ function HomePage() {
                     }}
                   />
                   <span>
-                    Ich moechte den Wochen-Digest per E-Mail erhalten und verstehe, dass ich die Einstellungen spaeter
+                    Ich möchte den Wochen-Digest per E-Mail erhalten und verstehe, dass ich die Einstellungen später
                     im Mitgliederbereich anpassen kann.
                   </span>
                 </label>
@@ -330,7 +330,7 @@ function HomePage() {
                 <div className="info-callout">
                   <strong>Pflicht im MVP</strong>
                   <p>
-                    E-Mail plus Zustimmung sind die Mindestdaten fuer den kuratierten Wochen-Digest. Hot-Deal-Kanaele
+                    E-Mail plus Zustimmung sind die Mindestdaten für den kuratierten Wochen-Digest. Hot-Deal-Kanäle
                     bleiben optional.
                   </p>
                 </div>
@@ -435,7 +435,7 @@ function HomePage() {
                   </select>
                 </label>
 
-                <small className="field-hint">Diese Angaben sind skippable und koennen spaeter inline geaendert werden.</small>
+                <small className="field-hint">Diese Angaben sind skippable und können später inline geändert werden.</small>
               </div>
             )}
 
@@ -460,10 +460,10 @@ function HomePage() {
                 </div>
 
                 <div>
-                  <span className="field-label">Kanaele</span>
+                  <span className="field-label">Kanäle</span>
                   <label className="toggle-row toggle-row-locked">
                     <input type="checkbox" checked readOnly />
-                    <span>Wochen-Digest per E-Mail ist fuer den MVP immer aktiv.</span>
+                    <span>Wochen-Digest per E-Mail ist für den MVP immer aktiv.</span>
                   </label>
                   <label className="toggle-row">
                     <input
@@ -500,17 +500,17 @@ function HomePage() {
                 <div className="info-callout info-callout-success">
                   <strong>Onboarding abgeschlossen</strong>
                   <p>
-                    Dein Wochen-Digest ist vorbereitet. Hot-Deal-Alerts werden gemaess deinen Kanal- und Sensitivitaetsregeln ausgeloest.
+                    Dein Wochen-Digest ist vorbereitet. Hot-Deal-Alerts werden gemäß deinen Kanal- und Sensitivitätsregeln ausgelöst.
                   </p>
                 </div>
 
                 <div className="completion-grid">
                   <div>
-                    <span className="field-label">Was als Naechstes passiert</span>
+                    <span className="field-label">Was als Nächstes passiert</span>
                     <ul className="summary-list">
-                      <li>Die erste Digest-Ausspielung folgt im naechsten geplanten Wochenfenster.</li>
-                      <li>Hot-Deal-Alerts laufen nur fuer aktivierte Kanaele.</li>
-                      <li>Praeferenzen bleiben spaeter im Mitgliederbereich leicht editierbar.</li>
+                      <li>Die erste Digest-Ausspielung folgt im nächsten geplanten Wochenfenster.</li>
+                      <li>Hot-Deal-Alerts laufen nur für aktivierte Kanäle.</li>
+                      <li>Präferenzen bleiben später im Mitgliederbereich leicht editierbar.</li>
                     </ul>
                   </div>
                   <div>
@@ -528,11 +528,11 @@ function HomePage() {
                 onClick={handleBack}
                 disabled={currentStep === 'email'}
               >
-                Zurueck
+                Zurück
               </button>
               {currentStep !== 'complete' ? (
                 <button type="button" className="button button-primary" onClick={handleContinue}>
-                  {currentStep === 'channels' ? 'Signup abschliessen' : 'Weiter'}
+                  {currentStep === 'channels' ? 'Signup abschließen' : 'Weiter'}
                 </button>
               ) : (
                 <button
@@ -555,8 +555,8 @@ function HomePage() {
         <aside className="panel summary-card">
           <SectionHeading
             eyebrow={isSubmitted ? 'Mitglieds-Setup' : 'Was du steuern kannst'}
-            title={isSubmitted ? 'Gespeicherter MVP-Scope fuer Digest und Alerts' : 'Rauchbar passt sich an deine Deal-Vorlieben an'}
-            text="Statt technischer Rohdaten zeigt die Homepage jetzt den echten Mehrwert: welche Marken, Shops, Preiszonen und Kanaele das Erlebnis fuer dich filtern."
+            title={isSubmitted ? 'Gespeicherter MVP-Scope für Digest und Alerts' : 'Rauchbar passt sich an deine Deal-Vorlieben an'}
+            text="Statt technischer Rohdaten zeigt die Homepage jetzt den echten Mehrwert: welche Marken, Shops, Preiszonen und Kanäle das Erlebnis für dich filtern."
           />
           <SignupPreview draft={signupState} />
         </aside>
@@ -565,14 +565,14 @@ function HomePage() {
       <section className="panel">
         <SectionHeading
           eyebrow="Digest und Alerts"
-          title="Der Digest ist gesetzt. Hot-Deals kommen nur, wenn sie fuer dich relevant sind."
+          title="Der Digest ist gesetzt. Hot-Deals kommen nur, wenn sie für dich relevant sind."
           text="Wochen-Digest bleibt der verlässliche Kern. Hot-Deal-Alerts per E-Mail oder WhatsApp springen nur bei stark passenden Treffern an."
         />
         <div className="flow-grid">
           <article className="flow-step">
             <span>01</span>
             <h3>Digest jede Woche</h3>
-            <p>Ein kuratierter Rueckblick auf die besten Treffer statt unzaehliger einzelner Shop-Mails.</p>
+            <p>Ein kuratierter Rückblick auf die besten Treffer statt unzähliger einzelner Shop-Mails.</p>
           </article>
           <article className="flow-step">
             <span>02</span>
@@ -592,7 +592,7 @@ function HomePage() {
           <SectionHeading
             eyebrow="Mitglieder zuerst"
             title="Mitglieder sehen diese Angebote, bevor sie im offenen Archiv auftauchen"
-            text="Das Mitgliederfenster schafft echten Vorsprung. Neue Treffer erscheinen zuerst dort und wandern erst spaeter in die oeffentliche Ansicht."
+            text="Das Mitgliederfenster schafft echten Vorsprung. Neue Treffer erscheinen zuerst dort und wandern erst später in die öffentliche Ansicht."
           />
           <div className="deal-stack">
             {memberDeals.map((deal) => (
@@ -602,9 +602,9 @@ function HomePage() {
         </article>
         <article className="panel">
           <SectionHeading
-            eyebrow="Verzoegertes Archiv"
-            title="Diese Deals sind jetzt oeffentlich, Mitglieder sahen sie frueher"
-            text="Das offene Archiv dokumentiert freigegebene Treffer mit Verzoegerung. So bleibt die oeffentliche Flaeche klar, waehrend Mitglieder frueher reagieren koennen."
+            eyebrow="Verzögertes Archiv"
+            title="Diese Deals sind jetzt öffentlich, Mitglieder sahen sie früher"
+            text="Das offene Archiv dokumentiert freigegebene Treffer mit Verzögerung. So bleibt die öffentliche Fläche klar, während Mitglieder früher reagieren können."
           />
           <div className="deal-stack">
             {publicArchiveDeals.map((deal) => (
@@ -622,10 +622,10 @@ function HomePage() {
             text="Die wichtigsten Fragen zum MVP sind direkt auf der Homepage beantwortet, damit der Einstieg nicht an Unsicherheit scheitert."
           />
           <ul className="summary-list">
-            <li>Mitglieder sehen neue Deals 24 Stunden vor dem oeffentlichen Archiv.</li>
+            <li>Mitglieder sehen neue Deals 24 Stunden vor dem öffentlichen Archiv.</li>
             <li>WhatsApp ist optional. Der Wochen-Digest per E-Mail bleibt der Standard.</li>
-            <li>Praeferenzen fuer Marken, Formate, Preisrahmen und Shops lassen sich spaeter anpassen.</li>
-            <li>Nicht jeder Deal wird sofort oeffentlich sichtbar, weil das Archiv bewusst verzoegert ist.</li>
+            <li>Präferenzen für Marken, Formate, Preisrahmen und Shops lassen sich später anpassen.</li>
+            <li>Nicht jeder Deal wird sofort öffentlich sichtbar, weil das Archiv bewusst verzögert ist.</li>
           </ul>
         </article>
         <aside className="panel panel-contrast">
@@ -652,13 +652,13 @@ function NotifyPage() {
       <section className="notify-hero panel">
         <div className="notify-copy">
           <p className="eyebrow">Notify / Keep Me Informed</p>
-          <h1>Rauchbar oeffnet den fruehen Zugang in kleinen Schritten.</h1>
+          <h1>Rauchbar öffnet den frühen Zugang in kleinen Schritten.</h1>
           <p className="lede">
-            Die vollstaendige Homepage und der Signup-Flow werden gerade auf MVP-Niveau zusammengezogen. Bis dahin
-            kannst du hier dein Interesse vormerken und wir melden uns, sobald die ersten Mitgliederplaetze oeffnen.
+            Die vollständige Homepage und der Signup-Flow werden gerade auf MVP-Niveau zusammengezogen. Bis dahin
+            kannst du hier dein Interesse vormerken und wir melden uns, sobald die ersten Mitgliederplätze öffnen.
           </p>
           <div className="notify-pills">
-            <span className="badge badge-public">woechentlicher Digest</span>
+            <span className="badge badge-public">wöchentlicher Digest</span>
             <span className="badge badge-members">Mitglieder zuerst</span>
             <span className="badge badge-pending">Hot-Deal Alerts folgen</span>
           </div>
@@ -672,7 +672,7 @@ function NotifyPage() {
             }}
           >
             <label>
-              <span>E-Mail fuer die Warteliste</span>
+              <span>E-Mail für die Warteliste</span>
               <input
                 type="email"
                 placeholder="aficionado@rauchbar.de"
@@ -688,21 +688,21 @@ function NotifyPage() {
             </button>
           </form>
           <div className={isConfirmed ? 'info-callout info-callout-success' : 'info-callout'}>
-            <strong>{isConfirmed ? 'Vorgemerkt fuer den MVP-Start' : 'Temporarer Einstieg fuer den Soft Launch'}</strong>
+            <strong>{isConfirmed ? 'Vorgemerkt für den MVP-Start' : 'Temporärer Einstieg für den Soft Launch'}</strong>
             <p>
               {isConfirmed
-                ? 'Deine Adresse ist lokal vorgemerkt. Der produktive Mitglieder- und Signup-Start folgt mit dem naechsten Site-Update.'
-                : 'Diese Zwischenstation ersetzt noch nicht den finalen Signup. Sie gibt uns aber einen klaren Einstiegspunkt fuer Pre-Launch-Traffic.'}
+                ? 'Deine Adresse ist lokal vorgemerkt. Der produktive Mitglieder- und Signup-Start folgt mit dem nächsten Site-Update.'
+                : 'Diese Zwischenstation ersetzt noch nicht den finalen Signup. Sie gibt uns aber einen klaren Einstiegspunkt für Pre-Launch-Traffic.'}
             </p>
           </div>
         </div>
 
         <aside className="notify-side panel panel-contrast">
-          <p className="hero-card-label">Was als Naechstes kommt</p>
+          <p className="hero-card-label">Was als Nächstes kommt</p>
           <ol className="contract-list">
-            <li>oeffentliche Produktseite mit klarem Mitgliedervorteil</li>
-            <li>leichtes Signup fuer E-Mail, Praeferenzen und Alert-Kanaele</li>
-            <li>verzoegertes Archiv fuer `public-visible` Deals</li>
+            <li>öffentliche Produktseite mit klarem Mitgliedervorteil</li>
+            <li>leichtes Signup für E-Mail, Präferenzen und Alert-Kanäle</li>
+            <li>verzögertes Archiv für `public-visible` Deals</li>
           </ol>
           <div className="notify-links">
             <a href="/" className="button button-secondary">
@@ -730,7 +730,7 @@ function SignupPreview(props: { draft: SignupDraft }) {
   const brands = draft.brands.length > 0 ? draft.brands.join(', ') : 'offen';
   const formats = draft.formats.length > 0 ? draft.formats.join(', ') : 'offen';
   const preferredShops = draft.preferredShops.length > 0 ? draft.preferredShops.join(', ') : 'keine Vorgabe';
-  const excludedShops = draft.excludedShops.length > 0 ? draft.excludedShops.join(', ') : 'keine Ausschluesse';
+  const excludedShops = draft.excludedShops.length > 0 ? draft.excludedShops.join(', ') : 'keine Ausschlüsse';
   const channels = [
     draft.notifications.digestEnabled ? 'E-Mail-Digest' : null,
     draft.notifications.hotDealEmailEnabled ? 'Hot-Deal E-Mail' : null,
@@ -760,8 +760,8 @@ function SignupPreview(props: { draft: SignupDraft }) {
         </p>
       </div>
       <div className="info-callout">
-        <strong>Kanaele</strong>
-        <p>{channels || 'keine zusaetzlichen Alerts aktiv'}</p>
+        <strong>Kanäle</strong>
+        <p>{channels || 'keine zusätzlichen Alerts aktiv'}</p>
       </div>
     </div>
   );
@@ -802,7 +802,7 @@ function DealCard(props: { deal: SiteDeal; audience: 'members' | 'public' }) {
         </div>
       </dl>
       <p className="deal-footnote">
-        Kanaele: {deal.publication.channels.join(', ')}. Mitgliederfenster bis {formatTimestamp(deal.visibility.membersOnlyUntil)}.
+        Kanäle: {deal.publication.channels.join(', ')}. Mitgliederfenster bis {formatTimestamp(deal.visibility.membersOnlyUntil)}.
       </p>
     </article>
   );
