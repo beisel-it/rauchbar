@@ -15,6 +15,7 @@ import { canQueueNotification, createQueuedDispatch } from '@rauchbar/notificati
 
 export * from './scrapers/registry.ts';
 export * from './scrapers/types.ts';
+export * from './scrapers/catalog.ts';
 export * from './scrapers/cigarworld-webshop.ts';
 
 const HOT_DEAL_EMAIL_CHANNEL = 'email-hot-deal';
