@@ -43,13 +43,15 @@ Falls der Host über Portainer statt direkte Docker-Compose-CLI betrieben werden
    - `ACME_EMAIL`
    - `POSTGRES_PASSWORD`
    - `SESSION_SECRET`
-   - `EMAIL_PROVIDER_API_KEY`
-   - `WHATSAPP_PROVIDER_API_KEY`
+   - `EMAIL_PROVIDER_API_KEY` nur wenn echte oder Sandbox-Benachrichtigungstests gebraucht werden
+   - `WHATSAPP_PROVIDER_API_KEY` nur wenn echte oder Sandbox-Benachrichtigungstests gebraucht werden
 3. Compose-Konfiguration prüfen:
 
 ```bash
 docker compose --env-file .env.deploy -f docker-compose.deploy.yml config
 ```
+
+Wenn `ALLOW_REAL_EMAIL_SEND=false` und `ALLOW_REAL_WHATSAPP_SEND=false` gesetzt bleiben, dürfen beide Provider-API-Keys leer bleiben. Das blockiert den aktuellen Deploy- und Aktivierungspfad nicht.
 
 4. Services bauen und starten:
 
@@ -77,7 +79,7 @@ docker compose --env-file .env.deploy -f docker-compose.deploy.yml exec worker \
 - keine direkten Port-Publishes für `site`, `admin`, `worker`, `postgres` oder `redis`
 - nur Caddy öffnet `80` und `443`
 - `worker` bleibt intern und bekommt keine öffentliche Route
-- `postgres` und `redis` bleiben ausschliesslich im internen Docker-Netz
+- `postgres` und `redis` bleiben ausschließlich im internen Docker-Netz
 
 ## Rollback
 

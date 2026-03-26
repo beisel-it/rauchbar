@@ -1,8 +1,6 @@
 services:
   caddy:
-    build:
-      context: ./ops/caddy
-      dockerfile: Dockerfile.portainer
+    image: ${GHCR_NAMESPACE}/rauchbar-caddy:${IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "${PUBLIC_BIND_IPV4}:80:80"
@@ -18,9 +16,7 @@ services:
       - app
 
   site:
-    build:
-      context: .
-      dockerfile: ./apps/site/Dockerfile
+    image: ${GHCR_NAMESPACE}/rauchbar-site:${IMAGE_TAG}
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV}
@@ -45,9 +41,7 @@ services:
       - app
 
   admin:
-    build:
-      context: .
-      dockerfile: ./apps/admin/Dockerfile
+    image: ${GHCR_NAMESPACE}/rauchbar-admin:${IMAGE_TAG}
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV}
@@ -72,9 +66,7 @@ services:
       - app
 
   worker:
-    build:
-      context: .
-      dockerfile: ./apps/worker/Dockerfile
+    image: ${GHCR_NAMESPACE}/rauchbar-worker:${IMAGE_TAG}
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV}

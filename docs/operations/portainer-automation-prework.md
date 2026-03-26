@@ -13,10 +13,20 @@ Workflow: `.github/workflows/portainer-stack-ci.yml`
 Leistet automatisch:
 
 - `docker-compose.portainer.yml` mit `ops/portainer/stack.env.example` validieren
-- das Portainer-spezifische Caddy-Image bauen
+- die Quell-Dockerfiles für `caddy`, `site`, `admin` und `worker` lokal bauen
 - den nicht-geheimen Stack-Bundle-Artefakt hochladen
 
-### 2. Deploy-Prework
+### 2. Image-Publish
+
+Workflow: `.github/workflows/portainer-image-publish.yml`
+
+Leistet automatisch:
+
+- `caddy`, `site`, `admin` und `worker` bauen
+- Images nach GHCR pushen
+- Tags mindestens für Commit-SHA und Branch erzeugen
+
+### 3. Deploy-Prework
 
 Workflow: `.github/workflows/portainer-deploy-prework.yml`
 
@@ -24,6 +34,7 @@ Leistet automatisch:
 
 - GitHub-Variablen und Secrets gegen die benötigten Portainer- und Deploy-Inputs prüfen
 - ein echtes `stack.env` aus GitHub-Inputs rendern
+- prüfen, dass die erwarteten GHCR-Images für den Ziel-Commit existieren
 - die Compose-Datei gegen dieses gerenderte Environment validieren
 - den nicht-geheimen Stack-Bundle-Artefakt hochladen
 
@@ -36,6 +47,10 @@ Leistet automatisch:
 - `ops/portainer/check-automation-inputs.sh`
 - `ops/portainer/render-stack-env.sh`
 - `docs/operations/portainer-staging-runbook.md`
+- `.github/workflows/portainer-stack-ci.yml`
+- `.github/workflows/portainer-image-publish.yml`
+- `.github/workflows/portainer-deploy-prework.yml`
+- `docs/operations/portainer-automation-prework.md`
 
 ## Exakt noch benötigte externe Inputs
 
@@ -48,6 +63,7 @@ Diese Werte oder Zugänge müssen außerhalb des Repos bereitgestellt werden:
 - `PORTAINER_STACK_NAME`
 - `ACME_EMAIL`
 - `PUBLIC_BIND_IPV4`
+- `GHCR_NAMESPACE`
 - `SITE_HOST`
 - `ADMIN_HOST`
 - `SITE_BASE_URL`
@@ -63,9 +79,9 @@ Diese Werte oder Zugänge müssen außerhalb des Repos bereitgestellt werden:
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
 - `SESSION_SECRET`
-- `EMAIL_PROVIDER_API_KEY`
-- `WHATSAPP_PROVIDER_API_KEY`
 - optional: `SENTRY_DSN`
+- optional: `EMAIL_PROVIDER_API_KEY`
+- optional: `WHATSAPP_PROVIDER_API_KEY`
 
 ### Externe Betriebsinputs
 
@@ -77,6 +93,6 @@ Diese Werte oder Zugänge müssen außerhalb des Repos bereitgestellt werden:
 
 - der eigentliche Stack-Create/Update-Call gegen die Portainer-API
 - Host-Bootstrap oder Firewall-Änderungen
-- DNS-Aenderungen
+- DNS-Änderungen
 
 Diese Schritte bleiben solange extern, bis die benötigten Portainer-API-Zugänge, Endpoint-IDs und Betriebsfreigaben verbindlich im Repo-Umfeld hinterlegt sind.
