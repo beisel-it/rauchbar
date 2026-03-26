@@ -44,3 +44,5 @@ See `docs/ux/implementation-support.md` for:
 - dashboard questions and widgets
 - review queue row/detail requirements
 - delivery-state and failure-handling guidance
+
+For the MVP runtime slice, admin-facing dispatch run and per-channel delivery status should read from the shared contracts in `@rauchbar/notifications` instead of inventing a second admin-only status vocabulary.
