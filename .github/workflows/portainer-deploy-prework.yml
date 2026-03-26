@@ -1,0 +1,84 @@
+name: Portainer Deploy Prework
+
+on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: Git ref to prepare for Portainer deployment
+        required: false
+        default: main
+
+jobs:
+  prework:
+    name: Prepare Portainer deploy inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PORTAINER_BASE_URL: ${{ vars.PORTAINER_BASE_URL }}
+      PORTAINER_ENDPOINT_ID: ${{ vars.PORTAINER_ENDPOINT_ID }}
+      PORTAINER_STACK_NAME: ${{ vars.PORTAINER_STACK_NAME }}
+      PORTAINER_ACCESS_TOKEN: ${{ secrets.PORTAINER_ACCESS_TOKEN }}
+      ACME_EMAIL: ${{ vars.ACME_EMAIL }}
+      PUBLIC_BIND_IPV4: ${{ vars.PUBLIC_BIND_IPV4 }}
+      SITE_HOST: ${{ vars.SITE_HOST }}
+      ADMIN_HOST: ${{ vars.ADMIN_HOST }}
+      SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
+      ADMIN_BASE_URL: ${{ vars.ADMIN_BASE_URL }}
+      PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+      NODE_ENV: production
+      APP_ENV: staging
+      LOG_LEVEL: info
+      POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      SCRAPER_JOB_QUEUE: ${{ vars.SCRAPER_JOB_QUEUE }}
+      QUEUE_CONCURRENCY: ${{ vars.QUEUE_CONCURRENCY }}
+      WORKER_ROLE: worker
+      ALLOW_REAL_EMAIL_SEND: 'false'
+      ALLOW_REAL_WHATSAPP_SEND: 'false'
+      EMAIL_PROVIDER_API_KEY: ${{ secrets.EMAIL_PROVIDER_API_KEY }}
+      WHATSAPP_PROVIDER_API_KEY: ${{ secrets.WHATSAPP_PROVIDER_API_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.git_ref }}
+
+      - name: Make helper scripts executable
+        run: chmod +x ops/portainer/*.sh
+
+      - name: Check Portainer automation inputs
+        run: ops/portainer/check-automation-inputs.sh
+
+      - name: Check deployment environment inputs
+        run: ops/portainer/render-stack-env.sh --check
+
+      - name: Render stack environment file
+        run: ops/portainer/render-stack-env.sh --output .tmp/stack.env
+
+      - name: Validate compose configuration with rendered environment
+        run: docker compose --env-file .tmp/stack.env -f docker-compose.portainer.yml config
+
+      - name: Upload non-secret Portainer deploy bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: portainer-deploy-prework
+          path: |
+            docker-compose.portainer.yml
+            ops/caddy/Caddyfile
+            ops/caddy/Dockerfile.portainer
+            docs/operations/portainer-staging-runbook.md
+
+      - name: Summarize remaining external action
+        run: |
+          {
+            echo "## Portainer deploy prework complete"
+            echo
+            echo "The repository-side Portainer stack bundle is valid."
+            echo "Actual deployment still requires a Portainer-side stack create/update action using:"
+            echo "- PORTAINER_BASE_URL"
+            echo "- PORTAINER_ENDPOINT_ID"
+            echo "- PORTAINER_STACK_NAME"
+            echo "- PORTAINER_ACCESS_TOKEN"
+          } >> "$GITHUB_STEP_SUMMARY"
