@@ -54,12 +54,12 @@ jobs:
       - name: Validate compose configuration with example environment
         run: docker compose --env-file ops/portainer/stack.env.example -f docker-compose.portainer.yml config
 
-      - name: Build Portainer deployment images
+      - name: Build source images used by the Portainer publish path
         run: |
-          docker compose \
-            --env-file ops/portainer/stack.env.example \
-            -f docker-compose.portainer.yml \
-            build caddy site admin worker
+          docker build -f ops/caddy/Dockerfile.portainer ops/caddy
+          docker build -f apps/site/Dockerfile .
+          docker build -f apps/admin/Dockerfile .
+          docker build -f apps/worker/Dockerfile .
 
       - name: Upload Portainer stack bundle
         uses: actions/upload-artifact@v4
