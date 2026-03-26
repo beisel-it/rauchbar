@@ -1,0 +1,9 @@
+staging.rauchbar.genussgesellschaft-neckartal.de {
+	encode zstd gzip
+	reverse_proxy site:10000
+}
+
+admin.rauchbar.genussgesellschaft-neckartal.de {
+	encode zstd gzip
+	reverse_proxy admin:10001
+}

@@ -174,6 +174,20 @@ docker compose run --rm worker pnpm install
 
 Die aktuellen App-Skripte sind noch Platzhalter. Das Compose-Setup ist deshalb als Bootstrap fuer die naechsten Implementierungsschritte gedacht, nicht als produktionsreifes Runtime-Layout.
 
+## Host Staging Deployment
+
+Fuer den festen Staging-Host `65.21.2.149` liegen jetzt dedizierte Artefakte fuer einen lokalen Maschinen-Deploy vor:
+
+- `docker-compose.deploy.yml`
+- `ops/caddy/Caddyfile`
+- `.env.deploy.example`
+- `docs/operations/local-machine-staging-runbook.md`
+
+Zielhostnamen:
+
+- `staging.rauchbar.genussgesellschaft-neckartal.de`
+- `admin.rauchbar.genussgesellschaft-neckartal.de`
+
 ## UX Testing Preview
 
 Fuer lokale UX-Reviews ohne kompletten App-Scaffold gibt es einen separaten Preview-Server:

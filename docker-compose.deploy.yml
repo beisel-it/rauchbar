@@ -1,0 +1,146 @@
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "${PUBLIC_BIND_IPV4}:80:80"
+      - "${PUBLIC_BIND_IPV4}:443:443"
+    volumes:
+      - ./ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - site
+      - admin
+    networks:
+      - public
+      - app
+
+  site:
+    build:
+      context: .
+      dockerfile: ./apps/site/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_ENV: ${APP_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      HOST: 0.0.0.0
+      PORT: "10000"
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SITE_BASE_URL: ${SITE_BASE_URL}
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app
+
+  admin:
+    build:
+      context: .
+      dockerfile: ./apps/admin/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_ENV: ${APP_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      HOST: 0.0.0.0
+      PORT: "10001"
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SITE_BASE_URL: ${SITE_BASE_URL}
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./apps/worker/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_ENV: ${APP_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      HOST: 0.0.0.0
+      PORT: "8080"
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SITE_BASE_URL: ${SITE_BASE_URL}
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL}
+      WORKER_ROLE: ${WORKER_ROLE}
+      SCRAPER_JOB_QUEUE: ${SCRAPER_JOB_QUEUE}
+      QUEUE_CONCURRENCY: ${QUEUE_CONCURRENCY}
+      ALLOW_REAL_EMAIL_SEND: ${ALLOW_REAL_EMAIL_SEND}
+      ALLOW_REAL_WHATSAPP_SEND: ${ALLOW_REAL_WHATSAPP_SEND}
+      EMAIL_PROVIDER_API_KEY: ${EMAIL_PROVIDER_API_KEY}
+      WHATSAPP_PROVIDER_API_KEY: ${WHATSAPP_PROVIDER_API_KEY}
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app
+
+  postgres:
+    image: postgres:18-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app
+
+networks:
+  public:
+  app:
+    internal: true
+
+volumes:
+  caddy_data:
+  caddy_config:
+  postgres_data:
+  redis_data:
