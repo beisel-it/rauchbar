@@ -18,6 +18,10 @@ Dieses Runbook beschreibt den kuerzesten Staging-Pfad fuer Rauchbar auf dem Host
 - `ops/caddy/Caddyfile`
 - `.env.deploy.example`
 
+## Alternative
+
+Falls der Host ueber Portainer statt direkte Docker-Compose-CLI betrieben werden soll, liegt der parallele Pfad in `docker-compose.portainer.yml` und `docs/operations/portainer-staging-runbook.md`.
+
 ## Vorbedingungen
 
 1. DNS:
