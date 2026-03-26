@@ -181,6 +181,49 @@ button:disabled {
   margin-top: 20px;
 }
 
+.archive-explainer {
+  display: grid;
+  gap: 20px;
+}
+
+.archive-state-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.archive-state-card {
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(19, 17, 13, 0.08);
+  border-radius: 22px;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.archive-state-card p {
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.timeline-banner {
+  align-items: center;
+  background: rgba(19, 17, 13, 0.06);
+  border: 1px solid rgba(19, 17, 13, 0.08);
+  border-radius: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.timeline-banner span::before {
+  color: var(--color-muted);
+  content: "→";
+  margin-right: 10px;
+}
+
 .metrics {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -504,6 +547,11 @@ button:disabled {
   color: var(--color-accent-deep);
 }
 
+.badge-pending {
+  background: rgba(217, 164, 65, 0.18);
+  color: #8b5f12;
+}
+
 .badge-public {
   background: rgba(47, 107, 72, 0.12);
   color: var(--color-success);
@@ -546,6 +594,7 @@ button:disabled {
 @media (max-width: 960px) {
   .hero,
   .metrics,
+  .archive-state-grid,
   .signup-progress,
   .content-grid,
   .deals-grid,

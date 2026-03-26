@@ -105,6 +105,29 @@ export function App() {
   );
 
   const publicArchiveDeals = sampleDeals.filter((deal) => deal.publicationStatus === 'public-visible');
+  const delayedArchiveStates = [
+    {
+      title: 'Nur fuer Mitglieder',
+      badgeClass: 'badge badge-members',
+      badgeLabel: 'member_visible',
+      description:
+        'Freigegeben, aber oeffentlich noch unsichtbar. Die Homepage kommuniziert hier nur den Vorsprung, nicht die volle Dealkarte.',
+    },
+    {
+      title: 'Oeffentlich geplant',
+      badgeClass: 'badge badge-pending',
+      badgeLabel: 'public_scheduled',
+      description:
+        'Mitglieder sehen den Deal bereits. Die oeffentliche Karte darf erst nach Ablauf des 24h-Fensters erscheinen.',
+    },
+    {
+      title: 'Im verzoegerten Archiv',
+      badgeClass: 'badge badge-public',
+      badgeLabel: 'public_visible',
+      description:
+        'Jetzt wird der gleiche Deal oeffentlich dokumentiert, inklusive Preis, Shop und verzoegertem Freigabezeitpunkt.',
+    },
+  ];
 
   const signupPayload = useMemo(() => buildSignupPayload(signupState), [signupState]);
   const currentStepIndex = getStepIndex(currentStep);
@@ -190,6 +213,31 @@ export function App() {
           <strong>1 Digest</strong>
           <span>E-Mail-Digest ist der verpflichtende Kernkanal, Hot-Deals bleiben optional</span>
         </article>
+      </section>
+
+      <section className="panel archive-explainer">
+        <div className="section-heading">
+          <p className="eyebrow">Delayed Archive States</p>
+          <h2>Die Homepage zeigt nur den verzoegerten Ausschnitt des Dealstroms.</h2>
+          <p>
+            Mitglieder sehen neue Freigaben zuerst. Die oeffentliche Homepage dokumentiert denselben Deal erst nach dem
+            Vorsprung und macht die Zustandswechsel explizit lesbar.
+          </p>
+        </div>
+        <div className="archive-state-grid">
+          {delayedArchiveStates.map((state) => (
+            <article key={state.title} className="archive-state-card">
+              <span className={state.badgeClass}>{state.badgeLabel}</span>
+              <h3>{state.title}</h3>
+              <p>{state.description}</p>
+            </article>
+          ))}
+        </div>
+        <div className="timeline-banner">
+          <strong>Mitglieder jetzt</strong>
+          <span>24h Vorsprung</span>
+          <span>Oeffentliches Archiv spaeter</span>
+        </div>
       </section>
 
       <section id="signup" className="content-grid">
@@ -516,9 +564,9 @@ export function App() {
       <section className="deals-grid">
         <article className="panel">
           <SectionHeading
-            eyebrow="Mitgliederflaeche"
-            title="Frische Deals vor der oeffentlichen Freigabe"
-            text="Diese Liste zeigt bewusst auch `public-scheduled`, weil die Deal-Oeffnung bereits geplant ist, aber noch nicht auf der offenen Site auftauchen darf."
+            eyebrow="Mitglieder zuerst"
+            title="Was im Mitgliederfenster sichtbar ist, bevor die Homepage reagieren darf"
+            text="`member-visible` und `public-scheduled` gehoeren zum members-first Strom. Sie bleiben ausserhalb des oeffentlichen Archivs, bis die Verzoegerung abgelaufen ist."
           />
           <div className="deal-stack">
             {memberDeals.map((deal) => (
@@ -528,9 +576,9 @@ export function App() {
         </article>
         <article className="panel">
           <SectionHeading
-            eyebrow="Oeffentliches Archiv"
-            title="Nur bereits freigegebene Deals"
-            text="Das Archiv bleibt frei von laufenden Mitgliederfenstern. `public-scheduled` fehlt hier absichtlich bis `publicPublishedAt` gesetzt ist."
+            eyebrow="Verzoegertes Archiv"
+            title="Nur bereits freigegebene Deals erscheinen oeffentlich"
+            text="Das Archiv bleibt frei von laufenden Mitgliederfenstern. Erst `public-visible` oeffnet die volle Karte fuer nicht eingeloggte Besucher."
           />
           <div className="deal-stack">
             {publicArchiveDeals.map((deal) => (
@@ -588,7 +636,7 @@ function DealCard(props: { deal: SiteDeal; audience: 'members' | 'public' }) {
         </div>
       </dl>
       <p className="deal-footnote">
-        Kanaele: {deal.publication.channels.join(', ')}. Source of truth bleibt `publication` plus abgeleiteter Sichtbarkeitsstatus.
+        Kanaele: {deal.publication.channels.join(', ')}. Mitgliederfenster bis {formatTimestamp(deal.visibility.membersOnlyUntil)}.
       </p>
     </article>
   );
